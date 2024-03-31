@@ -1,6 +1,6 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import EventsPage from "./pages/eventsPage/EventsPage";
-import MyProfilePage from "./pages/MyProfilePage";
+import ProfilePage from "./pages/profilePage/ProfilePage";
 import FaqPage from "./pages/FaqPage";
 import {useEffect, useState} from "react";
 import Loading from "./commonComponents/Loading";
@@ -11,6 +11,7 @@ import styled from "styled-components";
 import Header from "./commonComponents/Header";
 import EventPage from "./pages/eventPage/EventPage";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage";
+import ShoppingCartPage from "./pages/shoppingCartPage/ShoppingCartPage";
 
 
 const LoaderWrapper = styled.div`
@@ -59,7 +60,8 @@ function App() {
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
                             <Route path={"/events/:id"} element={<EventPage/>} />
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
-                            <Route path={"/profile"} element={<MyProfilePage user={user} />} />
+                            <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
+                            <Route path={"/profile"} element={<ProfilePage user={user} />} />
                             <Route path={"/faq"} element={<FaqPage />} />
                             <Route path={"/404"} element={<NotFoundPage />} />
                             <Route path={"/*"} element={<Navigate to={"/404"} />} />

@@ -1,7 +1,9 @@
+import PageNameHeader from "../commonComponents/PageNameHeader";
+import FAQ_IMAGE from "../img/support.png"
 export default function FaqPage () {
     return (
         <div>
-            Какой-то текст
+            <PageNameHeader image={FAQ_IMAGE} pageName={"FAQ"}/>
         </div>
     );
 }

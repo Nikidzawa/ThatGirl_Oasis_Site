@@ -1,4 +1,5 @@
 import {Map, Placemark, YMaps, ZoomControl} from "react-yandex-maps";
+
 export default function InteractiveMap ({lat, lon}) {
     return (
         <YMaps query={{ apikey: '69b2e791-2b45-4268-841f-2a98c25e62cc' }}>

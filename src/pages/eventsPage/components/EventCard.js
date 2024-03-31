@@ -6,7 +6,6 @@ import HEART from "../../../img/heart.png"
 import HEART_RED from "../../../img/heart-red.png"
 import ExternalAPI from "../../../API/ExternalAPI";
 import Loading from "../../../commonComponents/Loading";
-import InternalAPI from "../../../API/InternalAPI";
 import {useNavigate} from "react-router-dom";
 import DateFormatter from "../../../commonComponents/DateFormatter";
 
@@ -47,7 +46,7 @@ const Content = styled.div`
 `
 const Name = styled.div`
     font-size: 22px;
-    padding: 10px 0 10px 0;
+    padding: 10px 0 2px 0;
     @media screen and (max-width: 300px) {
         font-size: 18px;
         padding: 5px 0 5px 0;
@@ -133,13 +132,31 @@ const LoadImageWrapper = styled.div`
     align-items: center;
     justify-content: center;
 `
+const Circle = styled.div`
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: white;
+    margin-right: 5px;
+`
 
+const EventType = styled.div`
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+`
 export default function EventCard ({event}) {
     const [favourite, setFavourite] = useState();
+    const [image, setImage] = useState()
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log(event.mainImage)
+        async function loadImage () {
+            const image = await ExternalAPI.loadImage(event.mainImage.href)
+            setImage(image)
+        }
+        loadImage()
         setFavourite(isFavourite);
     }, []);
 
@@ -157,8 +174,8 @@ export default function EventCard ({event}) {
     }
 
     async function addOrRemoveToFavourite() {
-        let favouriteEventsData = await localStorage.getItem("favouriteEvents");
-        const eventId = await event.id.toString();
+        let favouriteEventsData = localStorage.getItem("favouriteEvents");
+        const eventId = event.id.toString();
         if (favouriteEventsData) {
             if (favouriteEventsData.includes(eventId)) {
                 favouriteEventsData = favouriteEventsData
@@ -181,7 +198,7 @@ export default function EventCard ({event}) {
     return (
         <Card onClick={openEventPage}>
             {
-                <Image src={event.mainImage.href}></Image>
+                image ? <Image src={image.href}></Image> : <LoadImageWrapper><Loading/></LoadImageWrapper>
             }
             <Content>
                 <Location>
@@ -190,7 +207,7 @@ export default function EventCard ({event}) {
                         addOrRemoveToFavourite();
                     }}>
                         {
-                            favourite ? <img width={"38px"} src={HEART_RED}/> : <img width={"38px"} src={HEART}/>
+                            favourite ? <img width={"38px"} src={HEART_RED} alt={"Избранное"}/> : <img width={"38px"} src={HEART} alt={"Избранное"}/>
                         }
                     </HeartContainer>
                     <div>
@@ -198,14 +215,15 @@ export default function EventCard ({event}) {
                         <Place>{event.address}</Place>
                     </div>
                     <div style={{display: "flex", alignItems: "center"}}>
-                        <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE}/>
+                        <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"Фотография"}/>
                         <Date>{DateFormatter.format(event.date)}</Date>
                     </div>
                 </Location>
                 <Name><strong>{event.name}</strong></Name>
+                <EventType><Circle/>{event.eventType.name}</EventType>
                 <Description>{event.smallDescription}</Description>
                 <StarContainer>
-                    <img width={"25spx"} src={STAR}/>
+                    <img width={"25spx"} src={STAR} alt={"Оценка"}/>
                     <div style={{paddingLeft: "2px"}}>{event.rating}</div>
                 </StarContainer>
                 <Cost>{event.cost}₽</Cost>

@@ -31,9 +31,34 @@ export default class InternalAPI {
         const getUserEventsUrl = `http://localhost:8080/api/getEvent/${eventId}`;
         return fetch(getUserEventsUrl);
     }
-    static getEventImages (eventId) {
-        const getUserEventsUrl = `http://localhost:8080/api/getEvent/${eventId}`;
-        return fetch(getUserEventsUrl);
+
+    static getEventsByType (typeName) {
+        const url = `http://localhost:8080/api/getEventsByType/${typeName}`
+        return fetch(url).then(response => response.json());
+    }
+
+    static getAllEventTypes () {
+        const url = `http://localhost:8080/api/getAllEventTypes`;
+        return fetch(url).then(response => response.json());
+    }
+
+    static deleteEventTypeById (id) {
+        const url = `http://localhost:8080/api/deleteEventType/${id}`;
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        return fetch(url, requestOptions);
+    }
+
+    static postEventType (eventType) {
+        const postEventType = `http://localhost:8080/api/postEventType`;
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventType)
+        };
+        return fetch(postEventType, requestOptions).then(response => response.json());
     }
 
     static subscribeToEvent (userId, eventId) {

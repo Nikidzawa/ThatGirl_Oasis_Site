@@ -1,21 +1,18 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import ExternalAPI from "../../API/ExternalAPI";
 import InternalAPI from "../../API/InternalAPI";
 import InteractiveMap from "../../commonComponents/Map";
+import PageNameHeader from "../../commonComponents/PageNameHeader";
+import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
+import SetEventTypeModal from "./components/SetEventTypeModal";
 
 
 const Content = styled.div`
-    display: flex;
-    padding-bottom: 80px;
-    justify-content: center;
-    background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const H1 = styled.h1`
-    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);\
+    padding-bottom: 30px;
 `;
 
 const InputBlock = styled.div`
@@ -41,7 +38,6 @@ const Button = styled.button`
     background-color: white;
     width: 150px;
     height: 40px;
-    margin-top: 20px;
     border-radius: 20px;
 `;
 const LocationButton = styled.button`
@@ -74,6 +70,12 @@ const Block = styled.p`
     padding: 10px;
     border-bottom: 1px white solid;
 `
+const EventTypeBlock = styled.div`
+    display: flex;
+    gap: 20px;
+    padding-bottom: 20px;
+    align-items: center;
+`
 export default function CreateEventPage({ user }) {
     const [city, setCity] = useState("");
     const [address, setAddress] = useState("");
@@ -85,13 +87,16 @@ export default function CreateEventPage({ user }) {
     const [smallDescription, setSmallDescription] = useState("");
     const [fullDescription, setFullDescription] = useState("");
     const [image, setImage] = useState(null);
+    const [images, setImages] = useState(null);
     const [lon, setLon] = useState(null);
-    const [lat, setLat] = useState(null)
+    const [lat, setLat] = useState(null);
+    const [selectedType, setSelectedType] = useState(null);
 
     const [inputsError, setInputsError] = useState(false);
     const [geocodingError, setGeocodingError] = useState(false);
     const [showMap, setShowMap] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(null);
 
     async function sendData() {
         setLoading(true);
@@ -112,7 +117,11 @@ export default function CreateEventPage({ user }) {
                     lat: lat,
                     smallDescription: smallDescription,
                     fullDescription: fullDescription,
-                    image: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
+                    mainImage: {
+                        href: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
+                    },
+                    eventImages: [],
+                    eventType: selectedType
                 });
             } catch (error) {
                 console.error("Ошибка при отправке данных:", error);
@@ -153,61 +162,81 @@ export default function CreateEventPage({ user }) {
         }
     };
 
+    const handleImagesChange = (e) => {
+        const files = e.target.value();
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImages(image => [...image, reader.result]);
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
     return (
         <Content>
-            <div>
-                <H1>Создать мероприятие</H1>
-                <InputBlock>
-                    <Block>Геолокация</Block>
-                    <BasicInput onChange={e => setCity(e.target.value)} placeholder={"Город"}/>
-                    <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Улица, дом"}/>
-                    {
-                        geocodingError &&
-                        <ErrorMessage>Ошибка геокодирования - не удалось определить долготу и широту объекта.
-                            Проверьте поля адреса, города и попробуйте снова.
-                            Можете дополнительно свериться с https://www.openstreetmap.org</ErrorMessage>
-                    }
-                    {
-                        showMap &&
-                        <div style={{height: "250px"}}>
-                            <InteractiveMap lat={lat} lon={lon}/>
-                        </div>
-                    }
-                    <div style={{textAlign: "center"}}>
-                        <LocationButton onClick={checkLocation}>Проверить местоположение</LocationButton>
-                    </div>
-
-                    <Block>Дата и время (МСК)</Block>
-                    <FlexInput>
-                        <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
-                        <input onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
-                    </FlexInput>
-
-                    <Block>Основная информация</Block>
-                    <BasicInput onChange={e => setName(e.target.value)} placeholder={"Название"}/>
-                    <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
-                    <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"Развёрнутое описание"}/>
-                    <FlexInput>
-                        <BasicInput onChange={e => setRating(e.target.value)} placeholder={"Рейтинг (нап. 4.7)"}/>
-                        <BasicInput onChange={e => setCost(e.target.value)} placeholder={"Цена"}/>
-                    </FlexInput>
-
-                    <Block>Картинка</Block>
-                    <input type="file" onChange={handleImageChange} accept="image/*"></input>
-                </InputBlock>
-                <div style={{display: "flex", justifyContent: "center"}}>
-                    <CreateEventCard name={name} city={city} cost={cost} address={address} rating={rating}
-                                     smallDescription={smallDescription} date={date} image={image}/>
-                </div>
-
+            <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
+            <InputBlock>
+                <Block>Геолокация</Block>
+                <BasicInput onChange={e => setCity(e.target.value)} placeholder={"Город"}/>
+                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Улица, дом"}/>
                 {
-                    inputsError &&
-                    <ErrorMessage>Проверьте, что все поля заполнены, а рейтинг и цена являются цифрами</ErrorMessage>
+                    geocodingError &&
+                    <ErrorMessage>Ошибка геокодирования - не удалось определить долготу и широту объекта.
+                        Проверьте поля адреса, города и попробуйте снова.
+                        Можете дополнительно свериться с https://www.openstreetmap.org</ErrorMessage>
                 }
-                <div onClick={sendData} style={{textAlign: "center"}}>
-                    {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button>Создать</Button>}
+                {
+                    showMap &&
+                    <div style={{height: "250px"}}>
+                        <InteractiveMap lat={lat} lon={lon}/>
+                    </div>
+                }
+                <div style={{textAlign: "center"}}>
+                    <LocationButton onClick={checkLocation}>Проверить местоположение</LocationButton>
                 </div>
+
+                <Block>Дата и время (МСК)</Block>
+                <FlexInput>
+                    <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
+                    <input onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
+                </FlexInput>
+
+                <Block>Основная информация</Block>
+                <BasicInput onChange={e => setName(e.target.value)} placeholder={"Название"}/>
+                <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
+                <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"Развёрнутое описание"}/>
+                <EventTypeBlock onClick={() => setModalVisible(true)}>
+                    <Button>Выбрать тип мероприятия</Button>
+                    {
+                        selectedType ? <div>Тип мероприятия: {selectedType.name}</div> :
+                            <div>Тип мероприятия не выбран</div>
+                    }
+                </EventTypeBlock>
+                <FlexInput>
+                    <BasicInput onChange={e => setRating(e.target.value)} placeholder={"Рейтинг (нап. 4.7)"}/>
+                    <BasicInput onChange={e => setCost(e.target.value)} placeholder={"Цена"}/>
+                </FlexInput>
+
+                <Block>Главная картинка</Block>
+                <input type="file" onChange={handleImageChange} accept="image/*"></input>
+                <Block>Второстепенные картинки</Block>
+                <input type="file" onChange={handleImagesChange} name="photos" id="photos" multiple/>
+            </InputBlock>
+            <div style={{display: "flex", justifyContent: "center"}}>
+                <CreateEventCard name={name} city={city} cost={cost} address={address} rating={rating}
+                                 smallDescription={smallDescription} date={date} image={image} type={selectedType}/>
             </div>
+
+            {
+                inputsError &&
+                <ErrorMessage>Проверьте, что все поля заполнены, а рейтинг и цена являются цифрами</ErrorMessage>
+            }
+            <div onClick={sendData} style={{textAlign: "center", marginTop: "20px"}}>
+                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button>Создать</Button>}
+            </div>
+            <SetEventTypeModal modalIsVisible={modalVisible} setModalVisible={setModalVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>
         </Content>
     );
 }

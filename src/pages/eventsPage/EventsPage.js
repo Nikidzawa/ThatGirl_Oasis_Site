@@ -7,6 +7,8 @@ import GridContainer from "../../commonComponents/GridContainer";
 import SearchPanel from "./components/SearchPannel";
 import Slider from "../../commonComponents/Slider";
 import BACKGROUND_IMAGE from "../../img/background.jpg"
+import EVENT_IMAGE from "../../img/event.png"
+import PageNameHeader from "../../commonComponents/PageNameHeader";
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -55,25 +57,8 @@ export default function EventsPage ({user}) {
                 loading ? <LoadingWrapper><Loading/></LoadingWrapper> : !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper>
                     :
                     <Background image={BACKGROUND_IMAGE}>
-                        <div style={{
-                            textAlign: "center",
-                            fontSize: "23px",
-                            padding: "15px 0 15px 0",
-                            backgroundColor: "#333",
-                            fontWeight: "bold",
-                            fontFamily: "Candara"
-                        }}>Популярные мероприятия
-                        </div>
+                        <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
                         <Slider/>
-                        <div style={{
-                            textAlign: "center",
-                            fontSize: "23px",
-                            padding: "25px 0 10px 0",
-                            backgroundColor: "#333",
-                            fontWeight: "bold",
-                            fontFamily: "Candara"
-                        }}>Все мероприятия
-                        </div>
                         <SearchPanel user={user} events={events} setSortedEvents={setSortedEvents}/>
                         <GridContainer>{!sortedEvents || sortedEvents.length === 0 ?
                             <NotFoundMessage>К сожалению, ничего не нашли</NotFoundMessage> :

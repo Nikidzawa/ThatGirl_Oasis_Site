@@ -134,20 +134,23 @@ export default function EventPage () {
                 if (response.ok) {
                     const eventData = await response.json();
                     setEvent(eventData);
-                    const mainImage = eventData.mainImage;
-                    setMainImage(mainImage);
-                    const eventImages = eventData.eventImages;
-                    if (eventImages && eventImages.length > 0) {
-                        setImages([mainImage, ...eventData.eventImages]);
-                    } else {
-                        setImages(null)
-                    }
+                    loadImages(eventData);
                 } else {
                     throw new Exception("Мероприятие не найдено");
                 }
                 setLoading(false)
             } catch (ex) {
                 navigate("./404")
+            }
+        }
+
+        async function loadImages (eventData) {
+            const mainImage = await ExternalAPI.loadImage(eventData.mainImage.href);
+            setMainImage(mainImage);
+            if (eventData.eventImages) {
+                const responses = await eventData.eventImages.map(e => ExternalAPI.loadImage(e.href));
+                const eventImages = await Promise.all(responses);
+                setImages([mainImage, ...eventImages]);
             }
         }
     }, []);
@@ -157,14 +160,16 @@ export default function EventPage () {
             <div style={{paddingBottom: "80px", fontFamily: "Trebuchet MS"}}>
                 <NameContainer>
                     <Title>{event.name}</Title>
-                    <Types><Circle/>Кулинарный мастер-класс</Types>
+                    <Types><Circle/>{event.eventType.name}</Types>
                 </NameContainer>
                 <MainContainer>
                     <div>
-                        {mainImage ? <img height={"280px"} width={"100%"} src={mainImage.href}/> :
+                        {mainImage ? <img height={"280px"} width={"100%"} src={mainImage.href} alt={"Фотография"}/> :
                             <LoadImageWrapper><Loading circleColor={"#333"}/></LoadImageWrapper>}
                         <Images>
-                            {images && images.map(image => <Img onClick={() => setMainImage(image)} src={image.href}/>)}
+                            {images && images.length > 1 &&
+                                images.map(image => <Img onClick={() => setMainImage(image)} src={image.href}/>)
+                            }
                         </Images>
                     </div>
                     <BLock>
@@ -175,7 +180,7 @@ export default function EventPage () {
                         <Title>Место и время</Title>
                         <Description>
                             <div>{event.city}, {event.address}</div>
-                            <div>{DateFormatter.format(event.date)} в {event.time}</div>
+                            <div>{DateFormatter.format(event.date)} в {event.time} по МСК</div>
                             <div>+79821873500</div>
                         </Description>
                     </BLock>

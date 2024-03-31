@@ -84,7 +84,7 @@ const ModalWindow = styled.div`
     opacity: ${props => props.visible ? "1" : "0"};
     pointer-events: ${props => props.visible ? "auto" : "none"};;
     animation: ${props => props.visible ? fadeIn : fadeOut} 0.4s ease;
-    background: rgba(0, 0, 0, 0.9);
+    background: rgba(0, 0, 0, 0.85);
 `
 
 const ModalWindowContent = styled.div`
@@ -132,6 +132,8 @@ export default function Header ({userStatus}) {
             setButton("events");
         } else if (location.pathname.includes("/profile")) {
             setButton("profile");
+        } else if (location.pathname.includes("/shopping_cart")) {
+          setButton("shopping_cart")
         } else if (location.pathname.includes("/faq")) {
             setButton("faq");
         } else if (location.pathname.includes("/createEvents")) {
@@ -167,8 +169,8 @@ export default function Header ({userStatus}) {
                         <LinkImage src={buttonSelected === "profile" ? GREEN_PROFILE_IMAGE : PROFILE_IMAGE} value={"160px"}/>
                         <LinkText>профиль</LinkText>
                     </PageLink>
-                    <PageLink>
-                        <LinkImage onClick={handleMenu} src={SHOPPING_CART_IMAGE} value={"150px"}/>
+                    <PageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>
+                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"150px"}/>
                         <LinkText>корзина</LinkText>
                     </PageLink>
                     <PageLink to={"/faq"} className={buttonSelected === "faq" ? "active" : ""}>

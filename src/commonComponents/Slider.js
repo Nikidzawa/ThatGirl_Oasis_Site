@@ -10,6 +10,7 @@ const SliderContainer = styled.div`
     min-height: 350px;
     max-width: 430px;
     position: relative;
+    padding-bottom: 10px;
     background-color: #333;
 `
 
@@ -171,14 +172,14 @@ export default function Slider () {
                                 </Types>
                             </div>
                         </ModalContent>
-                        <Fire><img width={"22px"} src={FIRE_IMAGE}/></Fire>
+                        <Fire><img width={"22px"} src={FIRE_IMAGE} alt={"Популярно"}/></Fire>
                         <Cost>{event.price}₽</Cost>
                     </ModalWindow>
                     <RightArrow onClick={e => handleRightClick()} value={currentPosition} maxValue={events.length - 1}>
-                        <img width={"15px"} src={RIGHT_ARROW}/>
+                        <img width={"15px"} src={RIGHT_ARROW} alt={"Вправо"}/>
                     </RightArrow>
                     <LeftArrow onClick={e => handleLeftClick()} value={currentPosition}>
-                        <img width={"15px"} src={LEFT_ARROW}/>
+                        <img width={"15px"} src={LEFT_ARROW} alt={"Влево"}/>
                     </LeftArrow>
                 </Slide>
             ))}

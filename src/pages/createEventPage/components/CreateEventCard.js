@@ -20,7 +20,7 @@ const Card = styled.div`
     border-radius: 20px;
 
     @media screen and (max-width: 600px) {
-        height: 430px;
+        height: 450px;
         width: 330px;
     }
 
@@ -43,7 +43,7 @@ const Content = styled.div`
 `
 const Name = styled.div`
     font-size: 22px;
-    padding: 10px 0 10px 0;
+    padding: 10px 0 2px 0;
     @media screen and (max-width: 300px) {
         font-size: 18px;
         padding: 5px 0 5px 0;
@@ -129,7 +129,21 @@ const LoadImageWrapper = styled.div`
     align-items: center;
     justify-content: center;
 `
-export default function CreateEventCard ({name, date, city, address, smallDescription, rating, cost, image}) {
+const Circle = styled.div`
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: white;
+    margin-right: 5px;
+`
+
+const EventType = styled.div`
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+`
+export default function CreateEventCard ({name, date, city, address, smallDescription, rating, cost, image, type}) {
     return (
         <Card>
             <Image src={image ? image : NULL_PHOTO}></Image>
@@ -148,6 +162,7 @@ export default function CreateEventCard ({name, date, city, address, smallDescri
                     </div>
                 </Location>
                 <Name><strong>{name ? name : "Название"}</strong></Name>
+                <EventType><Circle/>{type ? type.name : "тип не выбран"}</EventType>
                 <Description>{smallDescription ? smallDescription : "Краткое описание"}</Description>
                 <StarContainer>
                     <img width={"25spx"} src={STAR}/>
