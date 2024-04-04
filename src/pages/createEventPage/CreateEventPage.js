@@ -1,6 +1,6 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import ExternalAPI from "../../API/ExternalAPI";
 import InternalAPI from "../../API/InternalAPI";
@@ -14,6 +14,20 @@ const Content = styled.div`
     background-color: rgba(0, 0, 0, 0.5);\
     padding-bottom: 30px;
 `;
+
+const Images = styled.div`
+    display: flex;
+    padding-bottom: 5px;
+    grid-gap: 10px;
+    align-items: center;
+    overflow-x: auto;
+    white-space: nowrap;
+`;
+
+const Img = styled.img`
+    width: 70px;
+    height: 75px;
+`
 
 const InputBlock = styled.div`
     margin: 20px 0 30px 0;
@@ -101,7 +115,7 @@ export default function CreateEventPage({ user }) {
     async function sendData() {
         setLoading(true);
         const regex = /^\d+(\.\d+)?$/;
-        if (city && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image) {
+        if (city && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
             setInputsError(false);
             try {
                 await checkLocation();
@@ -120,7 +134,20 @@ export default function CreateEventPage({ user }) {
                     mainImage: {
                         href: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
                     },
-                    eventImages: [],
+                    eventImages: [
+                        {
+                            href: "https://pteat.ru/wp-content/uploads/2017/02/IMG_0959-1-803x535.jpg"
+                        },
+                        {
+                            href: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6xJcVF2Fsg80FDSCCXOHIBwtIDF8uJB07hpWeDAEhFA&s"
+                        },
+                        {
+                            href: "https://dostavka-tsvety.ru/wp-content/uploads/2023/08/1-4-1.jpg"
+                        },
+                        {
+                            href: "https://img.iamcook.ru/2023/upl/recipes/cat/u-04cb75101d3d166893ce7ae62162b28f.JPG"
+                        }
+                    ],
                     eventType: selectedType
                 });
             } catch (error) {
@@ -163,16 +190,19 @@ export default function CreateEventPage({ user }) {
     };
 
     const handleImagesChange = (e) => {
-        const files = e.target.value();
+        const files = e.target.files;
+        const newImages = [];
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImages(image => [...image, reader.result]);
-            }
+                newImages.push(reader.result);
+                setImages(newImages);
+            };
             reader.readAsDataURL(file);
         }
-    }
+    };
+
 
     return (
         <Content>
@@ -221,8 +251,6 @@ export default function CreateEventPage({ user }) {
 
                 <Block>Главная картинка</Block>
                 <input type="file" onChange={handleImageChange} accept="image/*"></input>
-                <Block>Второстепенные картинки</Block>
-                <input type="file" onChange={handleImagesChange} name="photos" id="photos" multiple/>
             </InputBlock>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <CreateEventCard name={name} city={city} cost={cost} address={address} rating={rating}
@@ -233,8 +261,19 @@ export default function CreateEventPage({ user }) {
                 inputsError &&
                 <ErrorMessage>Проверьте, что все поля заполнены, а рейтинг и цена являются цифрами</ErrorMessage>
             }
-            <div onClick={sendData} style={{textAlign: "center", marginTop: "20px"}}>
-                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button>Создать</Button>}
+            <Block>Второстепенные картинки</Block>
+            <input style={{marginBottom: "20px"}} type="file" onChange={handleImagesChange} name="photos" id="photos" multiple/>
+            {
+                images &&
+                <Images>
+                    {
+                        images.map(image => <Img key={image.id} src={image}/>)
+                    }
+                </Images>
+            }
+
+            <div style={{textAlign: "center", marginTop: "20px"}}>
+                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={sendData}>Создать</Button>}
             </div>
             <SetEventTypeModal modalIsVisible={modalVisible} setModalVisible={setModalVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>
         </Content>

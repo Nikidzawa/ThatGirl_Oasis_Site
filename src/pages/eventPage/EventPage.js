@@ -73,6 +73,22 @@ const Button = styled.button`
     flex: 1;
 `
 
+const ModalWindow = styled.div`
+    position: fixed;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333333;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+    opacity: ${props => props.visible ? "1" : "0"};
+    pointer-events: ${props => props.visible ? "auto" : "none"};;
+    transition: opacity 0.5s ease-in-out;
+`;
+
 const ImageContainer = styled.div`
     height: 100%;
     width: 80px;
@@ -94,6 +110,7 @@ const NameContainer = styled.div`
 
 const Types = styled.div`
     padding-top: 10px;
+    font-size: 18px;
     display: flex;
     align-items: center;
 `
@@ -118,13 +135,15 @@ const Img = styled.img`
     width: 70px;
     height: 75px;
 `
-export default function EventPage () {
+export default function EventPage ({user}) {
     const { id } = useParams();
     const [event, setEvent] = useState();
     const [loading, setLoading] = useState(true);
     const [mainImage, setMainImage] = useState(null);
     const [images, setImages] = useState([])
     const navigate = useNavigate();
+    const [isOpen,setOpen] = useState(false);
+    const [loadingBeforeAddToCart, setLoadingBeforeAddToCart] = useState(false);
 
     useEffect(() => {
         getEvent();
@@ -154,6 +173,23 @@ export default function EventPage () {
             }
         }
     }, []);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setOpen(false);
+        }, 2000)
+        return () => clearTimeout(timer);
+    }, [isOpen])
+
+    async function addEventToCart () {
+        setLoadingBeforeAddToCart(true);
+        const response = await InternalAPI.addEventToCart(user.id, event.id);
+        if (response.ok) {
+            setOpen(true);
+        }
+        setLoadingBeforeAddToCart(false);
+    }
+
 
     return (
         loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
@@ -186,10 +222,9 @@ export default function EventPage () {
                     </BLock>
                 </MainContainer>
                 <ButtonsContainer>
-                    <Button>Купить билет {event.cost}₽</Button>
-                    <ImageContainer>
-                        <Image src={HEART_IMG}/>
-                    </ImageContainer>
+                    <ModalWindow visible={isOpen}>Добавлено ✨</ModalWindow>
+                    <Button onClick={addEventToCart}>В корзину {event.cost}₽</Button>
+                    <ImageContainer><Image src={HEART_IMG}/></ImageContainer>
                 </ButtonsContainer>
             </div>
     )

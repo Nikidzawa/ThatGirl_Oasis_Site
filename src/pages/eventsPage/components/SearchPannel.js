@@ -2,9 +2,11 @@ import LUPA from "../../../img/lupa.png";
 import LIGHT from "../../../img/ligth.png";
 import Location from "../../../img/location.png";
 import Money from "../../../img/money.png";
+import BALLON from "../../../img/ballon.png";
 import RedHeart from "../../../img/red_heart.png";
 import styled from "styled-components";
-import {useMemo, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
+import InternalAPI from "../../../API/InternalAPI";
 
 const Button = styled.button`
     height: 40px;
@@ -77,7 +79,7 @@ const Select = styled.select`
     background-repeat: no-repeat;
     background-position: center left 5px;
     background-size: 25px;
-    ${(props) => props.value !== "Не важна" ? 
+    ${(props) => props.value !== "NONE" ? 
             `
             background-color: green;
             color: white;
@@ -115,8 +117,18 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 export default function SearchPanel ({user, events, setSortedEvents}) {
     const [sortBy, setSortBy] = useState(["Скоро", "Рядом"]);
-    const [priceSort, setPriceSort] = useState("Не важна")
+    const [priceSort, setPriceSort] = useState("NONE");
     const [search, setSearch] = useState("");
+    const [typeSort, setTypeSort] = useState("NONE");
+    const [types, setTypes] = useState("");
+
+    useEffect(() => {
+        getTypes();
+        async function getTypes () {
+            const response = await InternalAPI.getAllEventTypes();
+            setTypes(response);
+        }
+    }, [])
 
     useMemo(() => {
         if (!events) return;
@@ -142,6 +154,11 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
                 return distance1 - distance2;
             });
         }
+        if (typeSort !== "NONE") {
+            sorted = sorted.filter(event => event.eventType.name === typeSort);
+            return searchSort(sorted);
+        }
+
         if (sortBy.includes("Избранное")) {
             sorted = sorted.filter(event => {
                 const favouriteEvents = localStorage.getItem("favouriteEvents");
@@ -160,8 +177,7 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
             event.name.toLowerCase().includes(search.toLowerCase()) ||
             event.smallDescription.toLowerCase().includes(search.toLowerCase()) ||
             event.fullDescription.toLowerCase().includes(search.toLowerCase()) ||
-            event.city.toLowerCase().includes(search.toLowerCase()) ||
-            event.address.toLowerCase().includes(search.toLowerCase())
+            event.city.toLowerCase().includes(search.toLowerCase())
         );
     }
 
@@ -177,6 +193,11 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
         const sorted = sortBy.filter(item => item !== priceSort);
         setPriceSort(option);
         setSortBy([...sorted, option]);
+    }
+    function handleTypeSort(type) {
+        const sorted = sortBy.filter(item => item !== typeSort);
+        setTypeSort(type);
+        setSortBy([...sorted, type]);
     }
 
     return (
@@ -195,8 +216,15 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
                     selected={sortBy.includes('Рядом')}
                     onClick={() => handleSort('Рядом')}
                 >Рядом</Button>
+                <Select onChange={e => handleTypeSort(e.target.value)} backgroundImage={BALLON} value={typeSort}>
+                    <Option value={"NONE"}>Без категории</Option>
+                    {
+                        types &&
+                        types.map(type => <Option value={type.name}>{type.name}</Option>)
+                    }
+                </Select>
                 <Select onChange={e => handlePriceSort(e.target.value)} backgroundImage={Money} value={priceSort}>
-                    <Option value={"Не важна"}>Цена не важна</Option>
+                    <Option value={"NONE"}>Цена не важна</Option>
                     <Option value={"Недорогие"}>Сначала недорогие</Option>
                     <Option value={"Дорогие"}>Сначала дорогие</Option>
                 </Select>

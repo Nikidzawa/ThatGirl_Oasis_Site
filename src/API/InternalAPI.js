@@ -22,10 +22,6 @@ export default class InternalAPI {
         const getAllEventsUrl = `http://localhost:8080/api/getAllEvents`;
         return fetch(getAllEventsUrl).then(response => response.json());
     }
-    static getUserEvents (userId) {
-        const getUserEventsUrl = `http://localhost:8080/api/getUserEvents/${userId}`;
-        return fetch(getUserEventsUrl).then(response => response.json());
-    }
 
     static getEvent (eventId) {
         const getUserEventsUrl = `http://localhost:8080/api/getEvent/${eventId}`;
@@ -61,12 +57,25 @@ export default class InternalAPI {
         return fetch(postEventType, requestOptions).then(response => response.json());
     }
 
-    static subscribeToEvent (userId, eventId) {
-        const subscribeToEvent = `http://localhost:8080/api/event/${eventId}/images`
+    static addEventToCart (userId, eventId) {
+        const url = `http://localhost:8080/api/addEventToCart/${userId}/${eventId}`
         const requestOptions = {
-            method: 'GET',
+            method: 'POST',
             headers: { 'Content-Type': 'application/json' },
         };
-        return fetch(subscribeToEvent, requestOptions);
+        return fetch(url, requestOptions);
+    }
+
+    static removeEventFromCart (userId, eventId) {
+        const url = `http://localhost:8080/api/removeEventFromCart/${userId}/${eventId}`
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        return fetch(url, requestOptions);
+    }
+    static getUserCartEvents (userId) {
+        const url = `http://localhost:8080/api/getUserCartEvents/${userId}`
+        return fetch(url).then(response => response.json());
     }
 }

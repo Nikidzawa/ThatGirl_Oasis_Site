@@ -132,7 +132,7 @@ export default function Slider () {
             name: "Сбор гербария",
             type: "Туристический поход",
             date: "10 Марта",
-            img: "https://school592.ru/wp-content/uploads/0/9/9/099b31544f6f825b4db9984f5a0df32f.jpeg",
+            img: "https://img.7dach.ru/image/600/17/79/12/2019/10/08/ebbd5a.jpg",
             price: 150
         },
         ]
@@ -158,9 +158,7 @@ export default function Slider () {
                     <IMAGE src={event.img}/>
                     <ModalWindow>
                         <ModalContent>
-                            <EventName>
-                                {event.name}
-                            </EventName>
+                            <EventName>{event.name}</EventName>
                             <div style={{display: "flex", gap: "15px"}}>
                                 <Types>
                                     <Circle/>

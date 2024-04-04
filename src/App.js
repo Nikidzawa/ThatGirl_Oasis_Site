@@ -58,14 +58,14 @@ function App() {
                     <div style={{paddingTop: "60px"}}>
                         <Routes>
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
-                            <Route path={"/events/:id"} element={<EventPage/>} />
+                            <Route path={"/events/:id"} element={<EventPage user={user}/>} />
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
                             <Route path={"/profile"} element={<ProfilePage user={user} />} />
                             <Route path={"/faq"} element={<FaqPage />} />
                             <Route path={"/404"} element={<NotFoundPage />} />
                             <Route path={"/*"} element={<Navigate to={"/404"} />} />
-                    </Routes>
+                        </Routes>
                     </div>
                 </div>
             }

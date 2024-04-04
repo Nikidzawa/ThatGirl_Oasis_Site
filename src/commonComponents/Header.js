@@ -62,12 +62,6 @@ const SiteName = styled.div`
         font-size: 22px;
     }
 `
-const Description = styled.div`
-    font-size: 14px;
-    @media screen and (max-width: 370px){
-        font-size: 12px;
-    }
-`
 
 const MenuButton = styled.img`
     width: 30px;
