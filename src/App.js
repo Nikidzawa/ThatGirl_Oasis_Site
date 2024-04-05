@@ -32,27 +32,30 @@ function App() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        getUser();
+
         async function getUser() {
             const userData = await InternalAPI.getUser(720970497);
-            if (userData) {
-                setUser(userData);
-                getUserStatus(userData)
+            if (userData.ok) {
+                const user = await userData.json();
+                setUser(user);
+                getUserStatus(user)
             } else {
                 setLoading(false);
-
             }
         }
-        async function getUserStatus (userData) {
-            const status = await InternalAPI.getRole(userData.id);
-            setUserStatus(status)
+
+        async function getUserStatus (user) {
+            const status = await InternalAPI.getRole(user.id);
+            setUserStatus(status);
             setLoading(false);
         }
-        getUser();
+
     }, []);
 
     return (
         <div>
-            {loading ? <LoaderWrapper><Loading/></LoaderWrapper> : (user === null || userStatus === null) ? <Exception/> :
+            {loading ? <LoaderWrapper><Loading/></LoaderWrapper> :
                 <div>
                     <Header userStatus={userStatus}/>
                     <div style={{paddingTop: "60px"}}>

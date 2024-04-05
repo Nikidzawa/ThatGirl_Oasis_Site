@@ -211,7 +211,7 @@ export default function EventCard ({event}) {
                         }
                     </HeartContainer>
                     <div>
-                        <City>{event.city},</City>
+                        <City>{event.city.name},</City>
                         <Place>{event.address}</Place>
                     </div>
                     <div style={{display: "flex", alignItems: "center"}}>

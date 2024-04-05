@@ -1,7 +1,7 @@
 export default class InternalAPI {
     static getUser (userId) {
-        const getUserURL = `http://localhost:8080/api/getUserSite/${userId}`
-        return fetch(getUserURL).then(response => response.json());
+        const getUserURL = `http://localhost:8080/api/getUserById/${userId}`
+        return fetch(getUserURL);
     }
 
     static getRole (userId) {
@@ -16,11 +16,6 @@ export default class InternalAPI {
             body: JSON.stringify(event)
         };
         return fetch(getUserRoleURL, requestOptions);
-    }
-
-    static getAllEvents () {
-        const getAllEventsUrl = `http://localhost:8080/api/getAllEvents`;
-        return fetch(getAllEventsUrl).then(response => response.json());
     }
 
     static getEvent (eventId) {
@@ -57,25 +52,32 @@ export default class InternalAPI {
         return fetch(postEventType, requestOptions).then(response => response.json());
     }
 
-    static addEventToCart (userId, eventId) {
-        const url = `http://localhost:8080/api/addEventToCart/${userId}/${eventId}`
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-        };
-        return fetch(url, requestOptions);
+    static getEventsByCityId (cityId) {
+        const url = `http://localhost:8080/api/getEventsByCityId/${cityId}`
+        return fetch(url).then(response => response.json());
     }
 
-    static removeEventFromCart (userId, eventId) {
-        const url = `http://localhost:8080/api/removeEventFromCart/${userId}/${eventId}`
+    static getAllCities () {
+        const url = `http://localhost:8080/api/getEventCities`
+        return fetch(url).then(response => response.json());
+    }
+
+    static postEventCity (eventCity) {
+        const url = `http://localhost:8080/api/postEventCity`
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(eventCity)
+        };
+        return fetch(url, requestOptions).then(response => response.json());
+    }
+
+    static deleteEventCityById (eventCityId) {
+        const url = `http://localhost:8080/api/deleteEventCity/${eventCityId}`;
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
         };
         return fetch(url, requestOptions);
-    }
-    static getUserCartEvents (userId) {
-        const url = `http://localhost:8080/api/getUserCartEvents/${userId}`
-        return fetch(url).then(response => response.json());
     }
 }

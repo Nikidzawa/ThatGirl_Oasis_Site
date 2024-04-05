@@ -1,6 +1,5 @@
 import LUPA from "../../../img/lupa.png";
 import LIGHT from "../../../img/ligth.png";
-import Location from "../../../img/location.png";
 import Money from "../../../img/money.png";
 import BALLON from "../../../img/ballon.png";
 import RedHeart from "../../../img/red_heart.png";
@@ -73,6 +72,8 @@ const Select = styled.select`
     width: auto;
     border: none;
     outline: none;
+    text-align: center;
+    max-width: 190px;
     background-color: #F5F5F5;
     padding: ${props => props.backgroundImage ? "10px 10px 10px 32px" : "10px 10px 10px 10px"};
     background-image: ${props => props.backgroundImage ? `url('${props.backgroundImage}')` : 'none'};
@@ -100,22 +101,7 @@ const Option = styled.option`
     
 `
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 6371;
-    const dLat = deg2rad(lat2 - lat1);
-    const dLon = deg2rad(lon2 - lon1);
-    const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c;
-
-    function deg2rad(deg) {
-        return deg * (Math.PI / 180);
-    }
-}
-
-export default function SearchPanel ({user, events, setSortedEvents}) {
+export default function SearchPanel ({events, setSortedEvents}) {
     const [sortBy, setSortBy] = useState(["Скоро", "Рядом"]);
     const [priceSort, setPriceSort] = useState("NONE");
     const [search, setSearch] = useState("");
@@ -147,13 +133,6 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
         } else if (sortBy.includes("Дорогие")) {
             sorted.sort((a, b) => b.cost - a.cost);
         }
-        if (sortBy.includes("Рядом")) {
-            sorted.sort((event1, event2) => {
-                const distance1 = calculateDistance(user.latitude, user.longitude, event1.lat, event1.lon);
-                const distance2 = calculateDistance(user.latitude, user.longitude, event2.lat, event2.lon);
-                return distance1 - distance2;
-            });
-        }
         if (typeSort !== "NONE") {
             sorted = sorted.filter(event => event.eventType.name === typeSort);
             return searchSort(sorted);
@@ -177,7 +156,7 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
             event.name.toLowerCase().includes(search.toLowerCase()) ||
             event.smallDescription.toLowerCase().includes(search.toLowerCase()) ||
             event.fullDescription.toLowerCase().includes(search.toLowerCase()) ||
-            event.city.toLowerCase().includes(search.toLowerCase())
+            event.city.name.toLowerCase().includes(search.toLowerCase())
         );
     }
 
@@ -211,11 +190,6 @@ export default function SearchPanel ({user, events, setSortedEvents}) {
                     selected={sortBy.includes('Скоро')}
                     onClick={() => handleSort('Скоро')}
                 >Скоро</Button>
-                <Button
-                    backgroundImage={Location}
-                    selected={sortBy.includes('Рядом')}
-                    onClick={() => handleSort('Рядом')}
-                >Рядом</Button>
                 <Select onChange={e => handleTypeSort(e.target.value)} backgroundImage={BALLON} value={typeSort}>
                     <Option value={"NONE"}>Без категории</Option>
                     {

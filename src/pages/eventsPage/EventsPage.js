@@ -9,6 +9,8 @@ import Slider from "../../commonComponents/Slider";
 import BACKGROUND_IMAGE from "../../img/background.jpg"
 import EVENT_IMAGE from "../../img/event.png"
 import PageNameHeader from "../../commonComponents/PageNameHeader";
+import LOCATION from "../../img/location.png"
+import LocationModalWindow from "./components/LocationModalWindow";
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -37,35 +39,109 @@ const NotFoundMessage = styled.div`
     margin-top: 200px;
     padding: 20px;
 `
+
+const LocationContainer = styled.div`
+    background-color: #333333;
+    padding: 0 0 15px 15px;
+    display: flex;
+`
+
+const Location = styled.div`
+    display: flex;
+    align-items: center;
+    background-color: #f1e3d8;
+    color: #333333;
+    padding: 5px 10px 5px 5px;
+    border-radius: 10px;
+`
+
+function calculateDistance(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = deg2rad(lat2 - lat1);
+    const dLon = deg2rad(lon2 - lon1);
+    const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+
+    function deg2rad(deg) {
+        return deg * (Math.PI / 180);
+    }
+}
+
 export default function EventsPage ({user}) {
-    const [loading, setLoading] = useState(true)
-    const [events, setEvents] = useState(null)
-    const [sortedEvents, setSortedEvents] = useState(null)
+    const [loading, setLoading] = useState(true);
+    const [events, setEvents] = useState(null);
+    const [city, setCity] = useState(null);
+    const [cities, setCities] = useState(null);
+    const [sortedEvents, setSortedEvents] = useState(null);
+    const [locationModalVisible, setLocationModalVisible] = useState(false);
 
     useEffect(() => {
-        async function getAllEvents() {
-            const data = await InternalAPI.getAllEvents();
-            setEvents(data);
+        async function fetchCities () {
+            const responseCities = await InternalAPI.getAllCities();
+            if (responseCities.length === 0) {
+                setLoading(false);
+                return;
+            }
+            setCities(responseCities);
+            let selectedCity;
+            if (user) {
+                const filteredCities = responseCities.sort((event1, event2) => {
+                    const distance1 = calculateDistance(user.latitude, user.longitude, event1.lat, event1.lon);
+                    const distance2 = calculateDistance(user.latitude, user.longitude, event2.lat, event2.lon);
+                    return distance1 - distance2;
+                });
+                selectedCity = filteredCities[0];
+            } else {
+                selectedCity = responseCities[0];
+            }
+            setCity(selectedCity);
+        }
+        fetchCities();
+    }, []);
+
+    useState(() => {
+        getEvents(city);
+    }, [city])
+
+    async function getEvents (city) {
+        if (city) {
+            setLoading(true);
+            const response = await InternalAPI.getEventsByCityId(city.id);
+            setEvents(response);
             setLoading(false);
         }
-        getAllEvents();
-    }, []);
+    }
 
     return (
         <div>
             {
-                loading ? <LoadingWrapper><Loading/></LoadingWrapper> : !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper>
-                    :
+                loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
+                    !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper> :
                     <Background image={BACKGROUND_IMAGE}>
                         <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
+                        <LocationContainer>
+                            <Location onClick={() => setLocationModalVisible(true)}>
+                                <img width={"25px"} src={LOCATION}/>
+                                <div>{city.name}</div>
+                            </Location>
+                        </LocationContainer>
                         <Slider/>
-                        <SearchPanel user={user} events={events} setSortedEvents={setSortedEvents}/>
+                        <SearchPanel events={events} setSortedEvents={setSortedEvents}/>
                         <GridContainer>{!sortedEvents || sortedEvents.length === 0 ?
                             <NotFoundMessage>К сожалению, ничего не нашли</NotFoundMessage> :
                             sortedEvents.map(event => <EventCard key={event.id} event={event} user={user}/>)}
                         </GridContainer>
                     </Background>
             }
+            <LocationModalWindow
+                locationModalVisible={locationModalVisible}
+                setLocationModalVisible={setLocationModalVisible}
+                cities={cities}
+                setCity={setCity}
+            />
         </div>
     )
 }

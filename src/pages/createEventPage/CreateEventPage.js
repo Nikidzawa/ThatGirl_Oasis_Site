@@ -8,6 +8,7 @@ import InteractiveMap from "../../commonComponents/Map";
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
 import SetEventTypeModal from "./components/SetEventTypeModal";
+import SetEventCityModal from "./components/SetEventCityModal";
 
 
 const Content = styled.div`
@@ -91,7 +92,7 @@ const EventTypeBlock = styled.div`
     align-items: center;
 `
 export default function CreateEventPage({ user }) {
-    const [city, setCity] = useState("");
+    const [selectedCity, setSelectedCity] = useState(null);
     const [address, setAddress] = useState("");
     const [name, setName] = useState("");
     const [date, setDate] = useState(null)
@@ -110,17 +111,18 @@ export default function CreateEventPage({ user }) {
     const [geocodingError, setGeocodingError] = useState(false);
     const [showMap, setShowMap] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [modalVisible, setModalVisible] = useState(null);
+    const [eventCityModalIsVisible, setEventCityModalIsVisible] = useState(false);
+    const [eventTypeModalIsVisible, setEventTypeModalIsVisible] = useState(false)
 
     async function sendData() {
         setLoading(true);
         const regex = /^\d+(\.\d+)?$/;
-        if (city && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
+        if (selectedCity && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
             setInputsError(false);
             try {
                 await checkLocation();
                 await InternalAPI.postEvent({
-                    city: city,
+                    city: selectedCity,
                     address: address,
                     name: name,
                     date: date,
@@ -159,7 +161,7 @@ export default function CreateEventPage({ user }) {
         setLoading(false);
     }
     async function checkLocation() {
-        const data = await ExternalAPI.getGeocode(city, address);
+        const data = await ExternalAPI.getGeocode(selectedCity.name, address);
         if (data.response.GeoObjectCollection.featureMember.length > 0) {
             const firstObject = data.response.GeoObjectCollection.featureMember[0].GeoObject;
             const coordinates = firstObject.Point.pos.split(' ');
@@ -209,7 +211,10 @@ export default function CreateEventPage({ user }) {
             <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
-                <BasicInput onChange={e => setCity(e.target.value)} placeholder={"Город"}/>
+                <Button onClick={() => setEventCityModalIsVisible(true)}>Выбрать город</Button>
+                {
+                    selectedCity ? selectedCity.name : <div>Город не задан</div>
+                }
                 <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Улица, дом"}/>
                 {
                     geocodingError &&
@@ -237,7 +242,7 @@ export default function CreateEventPage({ user }) {
                 <BasicInput onChange={e => setName(e.target.value)} placeholder={"Название"}/>
                 <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
                 <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"Развёрнутое описание"}/>
-                <EventTypeBlock onClick={() => setModalVisible(true)}>
+                <EventTypeBlock onClick={() => setEventTypeModalIsVisible(true)}>
                     <Button>Выбрать тип мероприятия</Button>
                     {
                         selectedType ? <div>Тип мероприятия: {selectedType.name}</div> :
@@ -253,7 +258,7 @@ export default function CreateEventPage({ user }) {
                 <input type="file" onChange={handleImageChange} accept="image/*"></input>
             </InputBlock>
             <div style={{display: "flex", justifyContent: "center"}}>
-                <CreateEventCard name={name} city={city} cost={cost} address={address} rating={rating}
+                <CreateEventCard name={name} city={selectedCity ? selectedCity.name : ""} cost={cost} address={address} rating={rating}
                                  smallDescription={smallDescription} date={date} image={image} type={selectedType}/>
             </div>
 
@@ -275,7 +280,8 @@ export default function CreateEventPage({ user }) {
             <div style={{textAlign: "center", marginTop: "20px"}}>
                 {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={sendData}>Создать</Button>}
             </div>
-            <SetEventTypeModal modalIsVisible={modalVisible} setModalVisible={setModalVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>
+            <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>
+            <SetEventTypeModal modalIsVisible={eventTypeModalIsVisible} setModalVisible={setEventTypeModalIsVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>
         </Content>
     );
 }

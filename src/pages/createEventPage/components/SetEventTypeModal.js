@@ -24,9 +24,6 @@ const ModalContent = styled.div`
     min-width: 250px;
     min-height: 250px;
 `
-const InputWrapper = styled.div`
-    margin-bottom: 20px;
-`
 
 const EventTypesContainer = styled.div`
     align-items: center;

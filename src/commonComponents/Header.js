@@ -159,10 +159,6 @@ export default function Header ({userStatus}) {
                         <LinkImage src={buttonSelected === "events" ? GREEN_EVENT_IMAGE : EVENT_IMAGE} value={"220px"}/>
                         <LinkText>мероприятия</LinkText>
                     </PageLink>
-                    <PageLink to={"/profile"} className={buttonSelected === "profile" ? "active" : ""}>
-                        <LinkImage src={buttonSelected === "profile" ? GREEN_PROFILE_IMAGE : PROFILE_IMAGE} value={"160px"}/>
-                        <LinkText>профиль</LinkText>
-                    </PageLink>
                     <PageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>
                         <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"150px"}/>
                         <LinkText>корзина</LinkText>
