@@ -89,7 +89,7 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
 
     async function deleteEventCity(e, city) {
         e.stopPropagation();
-        const checkResponse = await InternalAPI.getEventsByEventCityId(city.id);
+        const checkResponse = await InternalAPI.getEventsByCityId(city.id);
         if (checkResponse.length > 0) {
             setDeleteException(true);
             return;
@@ -126,14 +126,14 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
                 </div>
                 <h2>Создать тип</h2>
                 {
-                    cityExists && <p style={{color: "red"}}>Указаный тип уже существует</p>
+                    cityExists && <p style={{color: "red"}}>Указаный город уже существует</p>
                 }
                 {
-                    deleteException && <p style={{color: "red"}}>Чтобы удалить тип, необходимо удалить все мероприятия с эти типом</p>
+                    deleteException && <p style={{color: "red"}}>Чтобы удалить город, необходимо удалить все мероприятия с этим городом</p>
                 }
                 <div style={{display: "flex", gap: "10px"}}>
                     <input placeholder={"Имя"} onChange={e => setNewEventCityName(e.target.value)} value={newEventCityName}/>
-                    <CreateEventCityButton onClick={createEventCity}>Создать тип</CreateEventCityButton>
+                    <CreateEventCityButton onClick={createEventCity}>Создать город</CreateEventCityButton>
                 </div>
             </ModalContent>
         </ModalWindow>

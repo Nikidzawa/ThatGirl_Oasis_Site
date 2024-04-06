@@ -50,6 +50,12 @@ const CityContainer = styled.div`
 `
 
 export default function LocationModalWindow({locationModalVisible, setLocationModalVisible, cities, setCity}) {
+
+    function handleCity (city) {
+        setCity(city);
+        setLocationModalVisible(false);
+    }
+
     return (
         <ModalWindow visible={locationModalVisible}>
             <ModalContent>
@@ -60,8 +66,8 @@ export default function LocationModalWindow({locationModalVisible, setLocationMo
                 </div>
                 <CitiesContainer>
                     {
-                        cities ? cities.map(city => <CityContainer onClick={() => setCity(city)} key={city.id}>{city.name}</CityContainer>) :
-                            <div>Города не найдены</div>
+                        cities ? cities.map(city => <CityContainer onClick={() => handleCity(city)} key={city.id}>{city.name}</CityContainer>) :
+                            <div>Города не созданы</div>
                     }
                 </CitiesContainer>
             </ModalContent>

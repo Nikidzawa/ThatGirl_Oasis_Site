@@ -135,7 +135,7 @@ const Img = styled.img`
     width: 70px;
     height: 75px;
 `
-export default function EventPage ({user}) {
+export default function EventPage () {
     const { id } = useParams();
     const [event, setEvent] = useState();
     const [loading, setLoading] = useState(true);
@@ -143,7 +143,8 @@ export default function EventPage ({user}) {
     const [images, setImages] = useState([])
     const navigate = useNavigate();
     const [isOpen,setOpen] = useState(false);
-    const [loadingBeforeAddToCart, setLoadingBeforeAddToCart] = useState(false);
+    const [eventContainsInCart, setEventContainsInCart] = useState(false);
+    const [checkContainsInCart, setCheckContainsInCart] = useState(true);
 
     useEffect(() => {
         getEvent();
@@ -154,13 +155,19 @@ export default function EventPage ({user}) {
                     const eventData = await response.json();
                     setEvent(eventData);
                     loadImages(eventData);
+                    isEventInCart(eventData.id)
                 } else {
                     throw new Exception("Мероприятие не найдено");
                 }
                 setLoading(false)
             } catch (ex) {
-                navigate("./404")
+                navigate("/404")
             }
+        }
+        async function isEventInCart(eventId) {
+            const cartEvents = JSON.parse(localStorage.getItem("cartEvents")) || [];
+            setEventContainsInCart(cartEvents.some(event => event.id === eventId));
+            setCheckContainsInCart(false);
         }
 
         async function loadImages (eventData) {
@@ -182,17 +189,21 @@ export default function EventPage ({user}) {
     }, [isOpen])
 
     async function addEventToCart () {
-        setLoadingBeforeAddToCart(true);
-        const response = await InternalAPI.addEventToCart(user.id, event.id);
-        if (response.ok) {
-            setOpen(true);
-        }
-        setLoadingBeforeAddToCart(false);
+        setEventContainsInCart(true)
+        const cartData = JSON.parse(localStorage.getItem("cartEvents")) || [];
+        let countedEvent = event;
+        countedEvent.count = 1;
+        cartData.push(countedEvent);
+        localStorage.setItem("cartEvents", JSON.stringify(cartData));
+    }
+
+    function goToShopCartPage () {
+        navigate("/shopping_cart")
     }
 
 
     return (
-        loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
+        loading && checkContainsInCart ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
             <div style={{paddingBottom: "80px", fontFamily: "Trebuchet MS"}}>
                 <NameContainer>
                     <Title>{event.name}</Title>
@@ -215,15 +226,18 @@ export default function EventPage ({user}) {
                     <BLock>
                         <Title>Место и время</Title>
                         <Description>
-                            <div>{event.city}, {event.address}</div>
+                            <div>{event.city.name}, {event.address}</div>
                             <div>{DateFormatter.format(event.date)} в {event.time} по МСК</div>
                             <div>+79821873500</div>
                         </Description>
                     </BLock>
                 </MainContainer>
                 <ButtonsContainer>
-                    <ModalWindow visible={isOpen}>Добавлено ✨</ModalWindow>
-                    <Button onClick={addEventToCart}>В корзину {event.cost}₽</Button>
+                    <ModalWindow visible={isOpen}> Добавлено ✨</ModalWindow>
+                    {
+                        eventContainsInCart ? <Button onClick={goToShopCartPage}>В корзине</Button> :
+                            <Button onClick={addEventToCart}>В корзину {event.cost}₽</Button>
+                    }
                     <ImageContainer><Image src={HEART_IMG}/></ImageContainer>
                 </ButtonsContainer>
             </div>

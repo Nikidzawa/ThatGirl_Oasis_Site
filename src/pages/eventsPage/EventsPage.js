@@ -88,9 +88,9 @@ export default function EventsPage ({user}) {
             setCities(responseCities);
             let selectedCity;
             if (user) {
-                const filteredCities = responseCities.sort((event1, event2) => {
-                    const distance1 = calculateDistance(user.latitude, user.longitude, event1.lat, event1.lon);
-                    const distance2 = calculateDistance(user.latitude, user.longitude, event2.lat, event2.lon);
+                const filteredCities = responseCities.sort((city1, city2) => {
+                    const distance1 = calculateDistance(user.latitude, user.longitude, city1.latitude, city1.longitude);
+                    const distance2 = calculateDistance(user.latitude, user.longitude, city2.latitude, city2.longitude);
                     return distance1 - distance2;
                 });
                 selectedCity = filteredCities[0];
@@ -98,13 +98,14 @@ export default function EventsPage ({user}) {
                 selectedCity = responseCities[0];
             }
             setCity(selectedCity);
+            getEvents(selectedCity);
         }
         fetchCities();
     }, []);
 
-    useState(() => {
+    useEffect(() => {
         getEvents(city);
-    }, [city])
+    }, [city]);
 
     async function getEvents (city) {
         if (city) {
@@ -118,7 +119,7 @@ export default function EventsPage ({user}) {
     return (
         <div>
             {
-                loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
+                loading ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
                     !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper> :
                     <Background image={BACKGROUND_IMAGE}>
                         <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>

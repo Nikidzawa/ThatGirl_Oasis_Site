@@ -37,7 +37,7 @@ const PriceAndCountContainer = styled.div`
     justify-content: space-between;
     padding-top: 6px;
 `
-const Price = styled.div`
+const Text = styled.div`
     font-size: 20px;
 `
 const UpperRow = styled.div`
@@ -54,46 +54,46 @@ const LoadImageWrapper = styled.div`
 `
 
 
-export default function EventCart ({setEventCarts, eventCarts, user, eventCart}) {
+export default function EventCart ({setEventCarts, eventCarts, eventCart, setFinalCost, finalCost}) {
     const [image, setImage] = useState(null);
-    const [event, setEvent] = useState(null);
-    const [count, setCount] = useState(null);
 
     useEffect(() => {
-        setFields();
         loadImage();
 
-        async function setFields () {
-            setEvent(eventCart.event);
-            setCount(eventCart.count);
-        }
         async function loadImage () {
-            const image = await ExternalAPI.loadImage(eventCart.event.mainImage.href);
+            const image = await ExternalAPI.loadImage(eventCart.mainImage.href);
             setImage(image);
         }
     }, [])
 
-    async function adToCart () {
-        const response = await InternalAPI.addEventToCart(user.id, event.id);
-        if (response.ok) {
-            if (count !== 100) {
-                const json = await response.json();
-                setCount(json.count)
-            }
+    async function plusCount () {
+        const count = Number.parseInt(eventCart.count) + 1;
+        if (count < 100) {
+            eventCart.count=count;
+            setFinalCost(finalCost + eventCart.cost)
+            await updateLocalStorageData();
         }
     }
 
-    async function removeFromCart() {
-        const response = await InternalAPI.removeEventFromCart(user.id, event.id);
-        if (response.ok) {
-            if (count === 1) {
-                const newEventCarts = eventCarts.filter(otherEventCart => otherEventCart.id !== eventCart.id);
-                setEventCarts(newEventCarts);
-            } else {
-                const json = await response.json();
-                setCount(json.count);
-            }
+    async function minusCount() {
+        const count = Number.parseInt(eventCart.count) - 1;
+        if (count === 0) {
+            await deleteEvent()
+        } else {
+            eventCart.count=count;
+            setFinalCost(finalCost - eventCart.cost);
+            await updateLocalStorageData();
         }
+    }
+
+    async function deleteEvent() {
+        const updatedCartEvents = eventCarts.filter(otherEventCart => otherEventCart.id !== eventCart.id);
+        setEventCarts(updatedCartEvents);
+        localStorage.setItem("cartEvents", JSON.stringify(updatedCartEvents));
+    }
+
+    async function updateLocalStorageData() {
+        localStorage.setItem("cartEvents", JSON.stringify(eventCarts));
     }
 
     return (
@@ -103,22 +103,21 @@ export default function EventCart ({setEventCarts, eventCarts, user, eventCart})
                     <LoadImageWrapper><Loading/></LoadImageWrapper>
             }
             {
-                event && count && (
-                    <div style={{marginLeft: "10px", flex: "1"}}>
-                        <UpperRow>
-                            <Title>{event.name}</Title>
-                            <img style={{marginLeft: "auto"}} width={"30px"} src={BUCKET}/>
-                        </UpperRow>
-                        <PriceAndCountContainer>
-                            <ButtonsContainer>
-                                <img onClick={adToCart} width={"35px"} src={PLUS}/>
-                                <Price>{count}</Price>
-                                <img onClick={removeFromCart} width={"35px"} src={MINUS}/>
-                            </ButtonsContainer>
-                            <Price>{event.cost}₽</Price>
-                        </PriceAndCountContainer>
-                    </div>
-                )
+
+                <div style={{marginLeft: "10px", flex: "1"}}>
+                    <UpperRow>
+                        <Title>{eventCart.name}</Title>
+                        <img onClick={deleteEvent} style={{marginLeft: "auto"}} width={"30px"} src={BUCKET}/>
+                    </UpperRow>
+                    <PriceAndCountContainer>
+                        <ButtonsContainer>
+                            <img onClick={plusCount} width={"35px"} src={PLUS}/>
+                            <Text>{eventCart.count}</Text>
+                            <img onClick={minusCount} width={"35px"} src={MINUS}/>
+                        </ButtonsContainer>
+                        <Text>{eventCart.cost}₽</Text>
+                    </PriceAndCountContainer>
+                </div>
             }
         </Background>
     )

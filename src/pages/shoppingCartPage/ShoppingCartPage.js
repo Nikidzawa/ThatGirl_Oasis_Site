@@ -10,6 +10,7 @@ const EventsContainer = styled.div`
     display: flex;
     flex-direction: column;
     padding: 5px;
+    gap: 10px;
 `
 const LoaderWrapper = styled.div`
     display: flex;
@@ -40,33 +41,68 @@ const Button = styled.button`
     padding: 10px 15px;
     flex: 1;
 `
-export default function ShoppingCartPage ({user}) {
+const CenterText = styled.div`
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #333333;
+    font-size: 20px;
+`
+export default function ShoppingCartPage () {
     const [eventCarts, setEventCarts] = useState(null);
     const [loading, setLoading] = useState(null);
+    const [finalCost, setFinalCost] = useState(null);
 
     useEffect(() => {
         fetchEvents();
         async function fetchEvents () {
-            const response = await InternalAPI.getUserCartEvents(user.id);
-            console.log(response)
-            if (response && response.length > 0) {
-                setEventCarts(response);
-            }
+            setLoading(true)
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents"));
+            setEventCarts(cartsData);
+            calculateFinalCost(cartsData);
             setLoading(false);
         }
     }, [])
+
+    useEffect(() => {
+        calculateFinalCost(eventCarts);
+    }, [eventCarts])
+
+    async function calculateFinalCost(events) {
+        if (events && events.length > 0) {
+            let totalCost = 0;
+            events.forEach(eventCart => {
+                totalCost += eventCart.cost * eventCart.count;
+            });
+            setFinalCost(totalCost);
+        }
+    }
 
     return (
         <div>
             <PageNameHeader pageName={"Корзина"} image={SHOPPING_CART_IMAGE} />
             {
                 loading ? <LoaderWrapper><Loading circleColor={"black"}/></LoaderWrapper> : eventCarts && eventCarts.length > 0 ?
-                    <EventsContainer>{eventCarts.map(eventCart => <EventCart setEventCarts={setEventCarts} eventCarts={eventCarts} user={user} eventCart={eventCart}/>)}</EventsContainer> :
-                    <div style={{color: "#333"}}>Пока тут пусто...</div>
+                    <EventsContainer>
+                        {
+                            eventCarts.map(eventCart => <EventCart
+                                key={eventCart.id}
+                                setEventCarts={setEventCarts}
+                                eventCarts={eventCarts}
+                                eventCart={eventCart}
+                                setFinalCost={setFinalCost}
+                                finalCost={finalCost}
+                            />)
+                        }
+                    </EventsContainer> :
+                    <CenterText>
+                        <div style={{textAlign: "center"}}>Вы пока не добавили мероприятия в корзину</div>
+                    </CenterText>
             }
-            <ButtonsContainer>
-                <Button>Оплатить</Button>
-            </ButtonsContainer>
+            {
+                eventCarts && eventCarts.length > 0 && finalCost && <ButtonsContainer><Button>Оплатить {finalCost}₽</Button></ButtonsContainer>
+            }
         </div>
     )
 }

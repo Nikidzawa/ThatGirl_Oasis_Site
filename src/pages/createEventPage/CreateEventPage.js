@@ -85,13 +85,13 @@ const Block = styled.p`
     padding: 10px;
     border-bottom: 1px white solid;
 `
-const EventTypeBlock = styled.div`
+const ButtonAndText = styled.div`
     display: flex;
     gap: 20px;
     padding-bottom: 20px;
     align-items: center;
 `
-export default function CreateEventPage({ user }) {
+export default function CreateEventPage() {
     const [selectedCity, setSelectedCity] = useState(null);
     const [address, setAddress] = useState("");
     const [name, setName] = useState("");
@@ -103,13 +103,9 @@ export default function CreateEventPage({ user }) {
     const [fullDescription, setFullDescription] = useState("");
     const [image, setImage] = useState(null);
     const [images, setImages] = useState(null);
-    const [lon, setLon] = useState(null);
-    const [lat, setLat] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
 
     const [inputsError, setInputsError] = useState(false);
-    const [geocodingError, setGeocodingError] = useState(false);
-    const [showMap, setShowMap] = useState(false);
     const [loading, setLoading] = useState(false);
     const [eventCityModalIsVisible, setEventCityModalIsVisible] = useState(false);
     const [eventTypeModalIsVisible, setEventTypeModalIsVisible] = useState(false)
@@ -120,7 +116,6 @@ export default function CreateEventPage({ user }) {
         if (selectedCity && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
             setInputsError(false);
             try {
-                await checkLocation();
                 await InternalAPI.postEvent({
                     city: selectedCity,
                     address: address,
@@ -129,8 +124,6 @@ export default function CreateEventPage({ user }) {
                     time: time,
                     rating: rating,
                     cost: cost,
-                    lon: lon,
-                    lat: lat,
                     smallDescription: smallDescription,
                     fullDescription: fullDescription,
                     mainImage: {
@@ -160,26 +153,6 @@ export default function CreateEventPage({ user }) {
         }
         setLoading(false);
     }
-    async function checkLocation() {
-        const data = await ExternalAPI.getGeocode(selectedCity.name, address);
-        if (data.response.GeoObjectCollection.featureMember.length > 0) {
-            const firstObject = data.response.GeoObjectCollection.featureMember[0].GeoObject;
-            const coordinates = firstObject.Point.pos.split(' ');
-
-            const lon = coordinates[0];
-            const lat = coordinates[1];
-
-            setLon(Number.parseFloat(lon));
-            setLat(Number.parseFloat(lat));
-            setShowMap(true);
-            setGeocodingError(false);
-        } else {
-            setShowMap(false);
-            setGeocodingError(true);
-            throw new Error("Геокодирование не удалось");
-        }
-    }
-
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -211,27 +184,13 @@ export default function CreateEventPage({ user }) {
             <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
-                <Button onClick={() => setEventCityModalIsVisible(true)}>Выбрать город</Button>
-                {
-                    selectedCity ? selectedCity.name : <div>Город не задан</div>
-                }
+                <ButtonAndText>
+                    <Button onClick={() => setEventCityModalIsVisible(true)}>Выбрать город</Button>
+                    {
+                        selectedCity ? selectedCity.name : <div>Город не задан</div>
+                    }
+                </ButtonAndText>
                 <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Улица, дом"}/>
-                {
-                    geocodingError &&
-                    <ErrorMessage>Ошибка геокодирования - не удалось определить долготу и широту объекта.
-                        Проверьте поля адреса, города и попробуйте снова.
-                        Можете дополнительно свериться с https://www.openstreetmap.org</ErrorMessage>
-                }
-                {
-                    showMap &&
-                    <div style={{height: "250px"}}>
-                        <InteractiveMap lat={lat} lon={lon}/>
-                    </div>
-                }
-                <div style={{textAlign: "center"}}>
-                    <LocationButton onClick={checkLocation}>Проверить местоположение</LocationButton>
-                </div>
-
                 <Block>Дата и время (МСК)</Block>
                 <FlexInput>
                     <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
@@ -242,13 +201,13 @@ export default function CreateEventPage({ user }) {
                 <BasicInput onChange={e => setName(e.target.value)} placeholder={"Название"}/>
                 <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
                 <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"Развёрнутое описание"}/>
-                <EventTypeBlock onClick={() => setEventTypeModalIsVisible(true)}>
+                <ButtonAndText onClick={() => setEventTypeModalIsVisible(true)}>
                     <Button>Выбрать тип мероприятия</Button>
                     {
                         selectedType ? <div>Тип мероприятия: {selectedType.name}</div> :
                             <div>Тип мероприятия не выбран</div>
                     }
-                </EventTypeBlock>
+                </ButtonAndText>
                 <FlexInput>
                     <BasicInput onChange={e => setRating(e.target.value)} placeholder={"Рейтинг (нап. 4.7)"}/>
                     <BasicInput onChange={e => setCost(e.target.value)} placeholder={"Цена"}/>

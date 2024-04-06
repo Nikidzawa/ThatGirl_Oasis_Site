@@ -1,10 +1,8 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import EventsPage from "./pages/eventsPage/EventsPage";
-import ProfilePage from "./pages/profilePage/ProfilePage";
 import FaqPage from "./pages/FaqPage";
 import {useEffect, useState} from "react";
 import Loading from "./commonComponents/Loading";
-import Exception from "./commonComponents/Exception";
 import InternalAPI from "./API/InternalAPI";
 import CreateEventPage from "./pages/createEventPage/CreateEventPage";
 import styled from "styled-components";
@@ -55,7 +53,7 @@ function App() {
 
     return (
         <div>
-            {loading ? <LoaderWrapper><Loading/></LoaderWrapper> :
+            {loading ? <LoaderWrapper><Loading circleColor={"#333"}/></LoaderWrapper> :
                 <div>
                     <Header userStatus={userStatus}/>
                     <div style={{paddingTop: "60px"}}>
@@ -64,10 +62,9 @@ function App() {
                             <Route path={"/events/:id"} element={<EventPage user={user}/>} />
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
-                            <Route path={"/profile"} element={<ProfilePage user={user} />} />
                             <Route path={"/faq"} element={<FaqPage />} />
                             <Route path={"/404"} element={<NotFoundPage />} />
-                            <Route path={"/*"} element={<Navigate to={"/404"} />} />
+                            <Route path={"/*"} element={<Navigate to={"/events"} />} />
                         </Routes>
                     </div>
                 </div>
