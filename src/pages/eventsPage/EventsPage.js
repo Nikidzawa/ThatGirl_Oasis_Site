@@ -27,8 +27,7 @@ const Background = styled.div`
     background-image: none;
     background-repeat: repeat;
     background-size: contain;
-    
-    @media screen and (max-width: 500px) {
+    @media screen and (max-width: 760px) {
         background-image: ${props => props.image && `url(${props.image})`};
     }
 `
@@ -41,8 +40,7 @@ const NotFoundMessage = styled.div`
 `
 
 const LocationContainer = styled.div`
-    background-color: #333333;
-    padding: 0 0 15px 15px;
+    padding-left: 15px;
     display: flex;
 `
 
@@ -121,16 +119,19 @@ export default function EventsPage ({user}) {
             {
                 loading ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
                     !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper> :
-                    <Background image={BACKGROUND_IMAGE}>
-                        <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
-                        <LocationContainer>
-                            <Location onClick={() => setLocationModalVisible(true)}>
-                                <img width={"25px"} src={LOCATION}/>
-                                <div>{city.name}</div>
-                            </Location>
-                        </LocationContainer>
-                        <Slider/>
-                        <SearchPanel events={events} setSortedEvents={setSortedEvents}/>
+                    <Background className={"main"} image={BACKGROUND_IMAGE}>
+                        <div style={{backgroundColor: "#333"}}>
+                            <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
+                            <LocationContainer>
+                                <Location onClick={() => setLocationModalVisible(true)}>
+                                    <img width={"25px"} src={LOCATION}/>
+                                    <div>{city.name}</div>
+                                </Location>
+                            </LocationContainer>
+                            <Slider/>
+                            <SearchPanel events={events} setSortedEvents={setSortedEvents}/>
+                        </div>
+
                         <GridContainer>{!sortedEvents || sortedEvents.length === 0 ?
                             <NotFoundMessage>К сожалению, ничего не нашли</NotFoundMessage> :
                             sortedEvents.map(event => <EventCard key={event.id} event={event} user={user}/>)}

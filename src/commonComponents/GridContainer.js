@@ -1,23 +1,26 @@
 import styled from "styled-components";
 
 const Container = styled.div`
-    min-height: 900px;
     display: grid;
-    grid-template-columns: auto;
+    grid-template-columns: auto auto auto;
+    gap: 20px;
+    background: rgba(0, 0, 0, 0.6);
     justify-content: center;
+    padding-bottom: 20px;
+    min-height: 100vh;
+    
+    @media (max-width: 1120px) {
+        grid-template-columns: auto auto;
+    }
+    
+    @media (max-width: 760px) {
+        gap: 10px;
+        grid-template-columns: auto;
+    }
 `
 
-const ElementsContainer = styled.div`
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    padding: 10px;
-`
 export default function GridContainer ({children}) {
     return (
-        <Container>
-            <ElementsContainer>
-                {children}
-            </ElementsContainer>
-        </Container>
+        <Container>{children}</Container>
     )
 }

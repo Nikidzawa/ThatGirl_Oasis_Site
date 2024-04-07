@@ -4,8 +4,6 @@ import {useEffect, useState} from "react";
 import MENU_BUTTON_IMAGE from "../img/menu.png"
 import SHOPPING_CART_IMAGE from "../img/cart.png"
 import GREEN_SHOPPING_CART_IMAGE from "../img/cart_green.png"
-import PROFILE_IMAGE from "../img/profile.png"
-import GREEN_PROFILE_IMAGE from "../img/profile_green.png"
 import EVENT_IMAGE from "../img/event.png"
 import GREEN_EVENT_IMAGE from "../img/event_green.png"
 import SUPPORT_IMAGE from "../img/support.png"
@@ -14,6 +12,8 @@ import ADD_EVENT_IMAGE from "../img/addEvent.png"
 import GREEN_ADD_EVENT_IMAGE from "../img/addEvent_green.png"
 import CLOSE_BUTTON from "../img/close.png"
 import LOGO from "../img/logo.png"
+import OUR_IMAGE from "../img/our.png"
+import OUR_GREEN_IMAGE from "../img/our_green.png"
 
 const fadeIn = keyframes`
     from {
@@ -34,7 +34,6 @@ const fadeOut = keyframes`
 `
 const HeaderContainer = styled.header`
     width: 100%;
-    height: 60px;
     background-color: #f1e3d8;
     position: fixed;
     border-bottom: 2px solid #562626;
@@ -46,10 +45,12 @@ const HeaderContent = styled.div`
     font-family: "Candara";
     font-weight: bold;
     height: 100%;
+    margin: 0 auto;
+    max-width: 1200px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
+    padding: 15px;
 `
 
 const SiteName = styled.div`
@@ -128,8 +129,8 @@ export default function Header ({userStatus}) {
             setButton("profile");
         } else if (location.pathname.includes("/shopping_cart")) {
           setButton("shopping_cart")
-        } else if (location.pathname.includes("/faq")) {
-            setButton("faq");
+        } else if (location.pathname.includes("/aboutUs")) {
+            setButton("aboutUs");
         } else if (location.pathname.includes("/createEvents")) {
             setButton("createEvents");
         }
@@ -163,9 +164,9 @@ export default function Header ({userStatus}) {
                         <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"150px"}/>
                         <LinkText>корзина</LinkText>
                     </PageLink>
-                    <PageLink to={"/faq"} className={buttonSelected === "faq" ? "active" : ""}>
-                        <LinkImage src={buttonSelected === "faq" ? GREEN_SUPPORT_IMAGE : SUPPORT_IMAGE} value={"150px"}/>
-                        <LinkText>помощь</LinkText>
+                    <PageLink to={"/aboutUs"} className={buttonSelected === "aboutUs" ? "active" : ""}>
+                        <LinkImage src={buttonSelected === "aboutUs" ? OUR_GREEN_IMAGE : OUR_IMAGE} value={"150px"}/>
+                        <LinkText>О нас</LinkText>
                     </PageLink>
                     {userStatus && (userStatus === "creator" || userStatus === "administrator") &&
                         <div>

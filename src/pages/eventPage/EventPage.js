@@ -6,6 +6,7 @@ import InternalAPI from "../../API/InternalAPI";
 import Exception from "../../commonComponents/Exception";
 import ExternalAPI from "../../API/ExternalAPI";
 import HEART_IMG from "../../img/heart.png"
+import RED_HEART_IMG from "../../img/red_heart.png"
 import DateFormatter from "../../commonComponents/DateFormatter";
 
 const LoadingWrapper = styled.div`
@@ -50,7 +51,6 @@ const BLock = styled.div`
     background: rgba(0, 0, 0, 0.5);
     padding: 20px;
     border-radius: 20px;
-    
 `
 
 const ButtonsContainer = styled.div`
@@ -61,6 +61,7 @@ const ButtonsContainer = styled.div`
     align-items: center;
     border-radius: 20px;
     height: 70px;
+    max-width: 1200px;
 `
 
 const Button = styled.button`
@@ -138,16 +139,21 @@ const Img = styled.img`
 export default function EventPage () {
     const { id } = useParams();
     const [event, setEvent] = useState();
+
     const [loading, setLoading] = useState(true);
+    const [checkContainsInCart, setCheckContainsInCart] = useState(true);
+
     const [mainImage, setMainImage] = useState(null);
     const [images, setImages] = useState([])
     const navigate = useNavigate();
     const [isOpen,setOpen] = useState(false);
     const [eventContainsInCart, setEventContainsInCart] = useState(false);
-    const [checkContainsInCart, setCheckContainsInCart] = useState(true);
+
+    const [favourite, setFavourite] = useState(false);
 
     useEffect(() => {
         getEvent();
+
         async function getEvent () {
             try {
                 const response = await InternalAPI.getEvent(id);
@@ -155,12 +161,14 @@ export default function EventPage () {
                     const eventData = await response.json();
                     setEvent(eventData);
                     loadImages(eventData);
-                    isEventInCart(eventData.id)
+                    isEventInCart(eventData.id);
+                    checkFavourite(eventData.id);
                 } else {
-                    throw new Exception("Мероприятие не найдено");
+                    throw new Exception("Ошибка при загрузке мероприятия");
                 }
                 setLoading(false)
             } catch (ex) {
+                console.log(ex)
                 navigate("/404")
             }
         }
@@ -179,6 +187,15 @@ export default function EventPage () {
                 setImages([mainImage, ...eventImages]);
             }
         }
+
+        async function checkFavourite(eventId) {
+            const articles_read = localStorage.getItem("favouriteEvents");
+            if (articles_read) {
+                setFavourite(articles_read.includes(eventId.toString()));
+            } else {
+                return false;
+            }
+        }
     }, []);
 
     useEffect(() => {
@@ -189,7 +206,8 @@ export default function EventPage () {
     }, [isOpen])
 
     async function addEventToCart () {
-        setEventContainsInCart(true)
+        setEventContainsInCart(true);
+        setOpen(true);
         const cartData = JSON.parse(localStorage.getItem("cartEvents")) || [];
         let countedEvent = event;
         countedEvent.count = 1;
@@ -201,17 +219,39 @@ export default function EventPage () {
         navigate("/shopping_cart")
     }
 
+    async function handleFavourite () {
+        let favouriteEventsData = localStorage.getItem("favouriteEvents");
+        const eventId = event.id.toString();
+        if (favouriteEventsData) {
+            if (favouriteEventsData.includes(eventId)) {
+                favouriteEventsData = favouriteEventsData
+                    .split(',')
+                    .filter(id => id !== eventId)
+                    .join(',');
+                localStorage.setItem("favouriteEvents", favouriteEventsData);
+                setFavourite(false);
+            } else {
+                favouriteEventsData += ',' + eventId;
+                localStorage.setItem("favouriteEvents", favouriteEventsData);
+                setFavourite(true);
+            }
+        } else {
+            localStorage.setItem("favouriteEvents", eventId);
+            setFavourite(true);
+        }
+    }
+
 
     return (
         loading && checkContainsInCart ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
-            <div style={{paddingBottom: "80px", fontFamily: "Trebuchet MS"}}>
+            <div className={"main"} style={{paddingBottom: "80px", fontFamily: "Trebuchet MS"}}>
                 <NameContainer>
                     <Title>{event.name}</Title>
                     <Types><Circle/>{event.eventType.name}</Types>
                 </NameContainer>
                 <MainContainer>
-                    <div>
-                        {mainImage ? <img height={"280px"} width={"100%"} src={mainImage.href} alt={"Фотография"}/> :
+                    <div style={{minHeight: "200px", maxWidth: "600px"}}>
+                        {mainImage ? <img height={"auto"} width={"100%"} src={mainImage.href} alt={"Фотография"}/> :
                             <LoadImageWrapper><Loading circleColor={"#333"}/></LoadImageWrapper>}
                         <Images>
                             {images && images.length > 1 &&
@@ -238,7 +278,14 @@ export default function EventPage () {
                         eventContainsInCart ? <Button onClick={goToShopCartPage}>В корзине</Button> :
                             <Button onClick={addEventToCart}>В корзину {event.cost}₽</Button>
                     }
-                    <ImageContainer><Image src={HEART_IMG}/></ImageContainer>
+                    <ImageContainer onClick={handleFavourite}>
+                        {
+                            favourite ?
+                                <Image src={RED_HEART_IMG}/>
+                                :
+                                <Image src={HEART_IMG}/>
+                        }
+                    </ImageContainer>
                 </ButtonsContainer>
             </div>
     )

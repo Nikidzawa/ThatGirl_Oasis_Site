@@ -5,19 +5,25 @@ import RIGHT_ARROW from "../img/right-arrow.png"
 import LEFT_ARROW from "../img/left-arrow.png"
 import "../index.css"
 
-
-const SliderContainer = styled.div`
-    min-height: 350px;
-    max-width: 430px;
-    position: relative;
-    padding-bottom: 10px;
+const Background = styled.div`
     background-color: #333;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: 350px;
+    margin: 15px 0 10px 0;
+    @media screen and (max-width: 370px){
+        height: 280px;
+    }
 `
 
 const IMAGE = styled.img`
-    height: 350px;
     width: 100%;
+    height: 350px;
     border-radius: 15px;
+    @media screen and (max-width: 370px){
+        height: 280px;
+    }
 `
 const ModalWindow = styled.div`
     position: absolute;
@@ -152,35 +158,35 @@ export default function Slider () {
     }
 
     return (
-        <SliderContainer>
-            {events.map((event, index) => (
-                <Slide key={index} active={index === currentPosition}>
-                    <IMAGE src={event.img}/>
-                    <ModalWindow>
-                        <ModalContent>
-                            <EventName>{event.name}</EventName>
-                            <div style={{display: "flex", gap: "15px"}}>
-                                <Types>
-                                    <Circle/>
-                                    <div>{event.type}</div>
-                                </Types>
-                                <Types style={{display: "flex", alignItems: "center"}}>
-                                    <Circle/>
-                                    <span>{event.date}</span>
-                                </Types>
-                            </div>
-                        </ModalContent>
-                        <Fire><img width={"22px"} src={FIRE_IMAGE} alt={"Популярно"}/></Fire>
-                        <Cost>{event.price}₽</Cost>
-                    </ModalWindow>
-                    <RightArrow onClick={e => handleRightClick()} value={currentPosition} maxValue={events.length - 1}>
-                        <img width={"15px"} src={RIGHT_ARROW} alt={"Вправо"}/>
-                    </RightArrow>
-                    <LeftArrow onClick={e => handleLeftClick()} value={currentPosition}>
-                        <img width={"15px"} src={LEFT_ARROW} alt={"Влево"}/>
-                    </LeftArrow>
-                </Slide>
-            ))}
-        </SliderContainer>
+        <Background>
+                {events.map((event, index) => (
+                    <Slide key={index} active={index === currentPosition}>
+                        <IMAGE src={event.img}/>
+                        <ModalWindow>
+                            <ModalContent>
+                                <EventName>{event.name}</EventName>
+                                <div style={{display: "flex", gap: "15px"}}>
+                                    <Types>
+                                        <Circle/>
+                                        <div>{event.type}</div>
+                                    </Types>
+                                    <Types style={{display: "flex", alignItems: "center"}}>
+                                        <Circle/>
+                                        <span>{event.date}</span>
+                                    </Types>
+                                </div>
+                            </ModalContent>
+                            <Fire><img width={"22px"} src={FIRE_IMAGE} alt={"Популярно"}/></Fire>
+                            <Cost>{event.price}₽</Cost>
+                        </ModalWindow>
+                        <RightArrow onClick={e => handleRightClick()} value={currentPosition} maxValue={events.length - 1}>
+                            <img width={"15px"} src={RIGHT_ARROW} alt={"Вправо"}/>
+                        </RightArrow>
+                        <LeftArrow onClick={e => handleLeftClick()} value={currentPosition}>
+                            <img width={"15px"} src={LEFT_ARROW} alt={"Влево"}/>
+                        </LeftArrow>
+                    </Slide>
+                ))}
+]        </Background>
     )
 }

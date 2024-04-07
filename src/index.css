@@ -8,7 +8,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: aliceblue;
-  background-color: #f1e3d8;
+  background-color: #eeded2;
 }
 button {
   padding: 0;
@@ -19,16 +19,10 @@ button {
   cursor: pointer;
   outline: none;
 }
+header {
+}
 
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  font-size: 15px;
-  height: 60px;
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
 }

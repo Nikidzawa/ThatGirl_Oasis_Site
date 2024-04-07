@@ -1,7 +1,6 @@
 import SHOPPING_CART_IMAGE from "../../img/cart.png"
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import {useEffect, useState} from "react";
-import InternalAPI from "../../API/InternalAPI";
 import EventCart from "./components/EventCart";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
@@ -80,7 +79,7 @@ export default function ShoppingCartPage () {
     }
 
     return (
-        <div>
+        <div className={"main"}>
             <PageNameHeader pageName={"Корзина"} image={SHOPPING_CART_IMAGE} />
             {
                 loading ? <LoaderWrapper><Loading circleColor={"black"}/></LoaderWrapper> : eventCarts && eventCarts.length > 0 ?

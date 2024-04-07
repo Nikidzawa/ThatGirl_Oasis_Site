@@ -14,6 +14,8 @@ const ModalWindow = styled.div`
 `
 
 const ModalContent = styled.div`
+    margin: 0 auto;
+    max-width: 600px;
     position: fixed;
     top: 20%;
     right: 10px;

@@ -3,7 +3,6 @@ import {useEffect, useState} from "react";
 import ExternalAPI from "../../../API/ExternalAPI";
 import PLUS from "../../../img/plus.png"
 import MINUS from "../../../img/minus.png"
-import InternalAPI from "../../../API/InternalAPI";
 import BUCKET from "../../../img/bucket.png"
 import Loading from "../../../commonComponents/Loading";
 
@@ -103,7 +102,6 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
                     <LoadImageWrapper><Loading/></LoadImageWrapper>
             }
             {
-
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>
                         <Title>{eventCart.name}</Title>

@@ -22,12 +22,7 @@ const Card = styled.div`
     flex-direction: column;
     border-radius: 20px;
 
-    @media screen and (max-width: 600px) {
-        height: 450px;
-        width: 330px;
-    }
-
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         height: 400px;
         width: 250px;
     }
@@ -47,38 +42,30 @@ const Content = styled.div`
 const Name = styled.div`
     font-size: 22px;
     padding: 10px 0 2px 0;
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         font-size: 18px;
         padding: 5px 0 5px 0;
     }
 `
 
-const City = styled.div`
-    padding-bottom: 5px;
-`
-
-const Place = styled.div`
-    display: flex;
-    padding-bottom: 5px;
-`
-
 const Location = styled.div`
-    font-size: 14px;
+    font-size: 15px;
+    padding-top: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         font-size: 13px;
     }
 `
 
 const Description = styled.div`
-    font-size: 14px;
+    font-size: 15px;
     height: 80px;
     overflow: hidden;
     text-overflow: ellipsis;
 
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         height: 75px;
         font-size: 13px;
     }
@@ -86,7 +73,7 @@ const Description = styled.div`
 const Date = styled.div`
     font-size: 15px;
     white-space: nowrap;
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         font-size: 13px;
     }
 `
@@ -100,7 +87,7 @@ const Cost = styled.div`
     border-radius: 10px;
     padding: 5px 10px;
 
-    @media screen and (max-width: 300px) {
+    @media screen and (max-width: 360px) {
         font-size: 22px;
     }
 `
@@ -197,22 +184,21 @@ export default function EventCard ({event}) {
 
     return (
         <Card onClick={openEventPage}>
+            <HeartContainer onClick={e => {
+                e.stopPropagation();
+                addOrRemoveToFavourite();
+            }}>
+                {
+                    favourite ? <img width={"38px"} src={HEART_RED} alt={"Избранное"}/> : <img width={"38px"} src={HEART} alt={"Избранное"}/>
+                }
+            </HeartContainer>
             {
                 image ? <Image src={image.href}></Image> : <LoadImageWrapper><Loading/></LoadImageWrapper>
             }
             <Content>
                 <Location>
-                    <HeartContainer onClick={e => {
-                        e.stopPropagation();
-                        addOrRemoveToFavourite();
-                    }}>
-                        {
-                            favourite ? <img width={"38px"} src={HEART_RED} alt={"Избранное"}/> : <img width={"38px"} src={HEART} alt={"Избранное"}/>
-                        }
-                    </HeartContainer>
                     <div>
-                        <City>{event.city.name},</City>
-                        <Place>{event.address}</Place>
+                        <div>{event.address}</div>
                     </div>
                     <div style={{display: "flex", alignItems: "center"}}>
                         <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"Фотография"}/>
