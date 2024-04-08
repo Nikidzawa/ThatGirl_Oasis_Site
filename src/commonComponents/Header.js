@@ -157,11 +157,11 @@ export default function Header ({userStatus}) {
             <ModalWindow visible={menuVisible} onClick={() => setMenuVisible(false)}>
                 <ModalWindowContent>
                     <PageLink to={"/events"} className={buttonSelected === "events" ? "active" : ""}>
-                        <LinkImage src={buttonSelected === "events" ? GREEN_EVENT_IMAGE : EVENT_IMAGE} value={"220px"}/>
+                        <LinkImage src={buttonSelected === "events" ? GREEN_EVENT_IMAGE : EVENT_IMAGE} value={"230px"}/>
                         <LinkText>мероприятия</LinkText>
                     </PageLink>
                     <PageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>
-                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"150px"}/>
+                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"160px"}/>
                         <LinkText>корзина</LinkText>
                     </PageLink>
                     <PageLink to={"/aboutUs"} className={buttonSelected === "aboutUs" ? "active" : ""}>

@@ -89,7 +89,7 @@ const SetEventTypeModal = ({modalIsVisible, setModalVisible, setSelectedType, se
 
     async function deleteEventType(e, type) {
         e.stopPropagation();
-        const checkResponse = await InternalAPI.getEventsByType(type.name);
+        const checkResponse = await InternalAPI.getEventsByType(type.id);
         if (checkResponse.length > 0) {
             setDeleteException(true);
             return;

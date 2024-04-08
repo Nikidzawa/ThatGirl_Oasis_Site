@@ -1,6 +1,6 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import ExternalAPI from "../../API/ExternalAPI";
 import InternalAPI from "../../API/InternalAPI";
@@ -9,6 +9,7 @@ import PageNameHeader from "../../commonComponents/PageNameHeader";
 import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
 import SetEventTypeModal from "./components/SetEventTypeModal";
 import SetEventCityModal from "./components/SetEventCityModal";
+import Exception from "../../commonComponents/Exception";
 
 
 const Content = styled.div`
@@ -104,6 +105,7 @@ export default function CreateEventPage() {
     const [image, setImage] = useState(null);
     const [images, setImages] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
+    const [favorite, setFavorite] = useState(false);
 
     const [inputsError, setInputsError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -116,7 +118,7 @@ export default function CreateEventPage() {
         if (selectedCity && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
             setInputsError(false);
             try {
-                await InternalAPI.postEvent({
+                const response =await InternalAPI.postEvent({
                     city: selectedCity,
                     address: address,
                     name: name,
@@ -126,6 +128,7 @@ export default function CreateEventPage() {
                     cost: cost,
                     smallDescription: smallDescription,
                     fullDescription: fullDescription,
+                    favorite: favorite,
                     mainImage: {
                         href: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
                     },
@@ -178,7 +181,6 @@ export default function CreateEventPage() {
         }
     };
 
-
     return (
         <Content>
             <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
@@ -212,7 +214,14 @@ export default function CreateEventPage() {
                     <BasicInput onChange={e => setRating(e.target.value)} placeholder={"Рейтинг (нап. 4.7)"}/>
                     <BasicInput onChange={e => setCost(e.target.value)} placeholder={"Цена"}/>
                 </FlexInput>
-
+                <label>
+                    <input
+                    type={"checkbox"}
+                    checked={favorite}
+                    onChange={() => setFavorite(!favorite)}
+                    />
+                    Дополнительно поместить в слайдер
+                </label>
                 <Block>Главная картинка</Block>
                 <input type="file" onChange={handleImageChange} accept="image/*"></input>
             </InputBlock>
@@ -220,7 +229,6 @@ export default function CreateEventPage() {
                 <CreateEventCard name={name} city={selectedCity ? selectedCity.name : ""} cost={cost} address={address} rating={rating}
                                  smallDescription={smallDescription} date={date} image={image} type={selectedType}/>
             </div>
-
             {
                 inputsError &&
                 <ErrorMessage>Проверьте, что все поля заполнены, а рейтинг и цена являются цифрами</ErrorMessage>

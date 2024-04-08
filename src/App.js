@@ -47,6 +47,7 @@ function App() {
             const status = await InternalAPI.getRole(user.id);
             setUserStatus(status);
             setLoading(false);
+            localStorage.setItem("userId", user.id);
         }
 
     }, []);

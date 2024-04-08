@@ -4,7 +4,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     color: #333;
-    width: 250px;
+    width: 300px;
     height: 400px;
     text-align: center;
     align-items: center;
@@ -18,12 +18,12 @@ const Name = styled.div`
     padding-top: 5px;
 `
 const Role = styled.div`
-    padding: 5px;
+    
 `
 
 const Image = styled.img`
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 220px;
     border-radius: 50%;
 `
 
@@ -34,19 +34,32 @@ const SocialLinksContainer = styled.div`
     position: absolute;
     bottom: 10px;
 `
+const Circle = styled.div`
+    margin-bottom: 2px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: #333;
+    margin-right: 5px;
+`
+const RoleContainer = styled.div`
+    padding-top: 5px;
+    display: flex;
+    align-items: center;
+`
 
 export default function TeamMember({teamMember}) {
     return (
         <Container>
             <Image src={teamMember.img} alt="Изображение сотрудника" />
             <Name>{teamMember.name}</Name>
-            <Role>{teamMember.role}.</Role>
-            <div>{teamMember.description}</div>
+            <RoleContainer><Circle/><Role>{teamMember.role}</Role></RoleContainer>
+            <div style={{paddingTop: "10px"}}>{teamMember.description}</div>
             <SocialLinksContainer>
                 {
                     teamMember.socialLinks.map(link => (
                         <a key={link.href} href={link.href}>
-                            <img width={"55px"} src={link.img} alt="Иконка социальной сети" />
+                            <img width={"50px"} src={link.img} alt="Иконка социальной сети" />
                         </a>
                     ))
                 }

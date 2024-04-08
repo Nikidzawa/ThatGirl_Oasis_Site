@@ -5,7 +5,7 @@ import InternalAPI from "../../API/InternalAPI";
 import Loading from "../../commonComponents/Loading";
 import GridContainer from "../../commonComponents/GridContainer";
 import SearchPanel from "./components/SearchPannel";
-import Slider from "../../commonComponents/Slider";
+import Slider from "./components/slider/Slider";
 import BACKGROUND_IMAGE from "../../img/background.jpg"
 import EVENT_IMAGE from "../../img/event.png"
 import PageNameHeader from "../../commonComponents/PageNameHeader";
@@ -13,6 +13,7 @@ import LOCATION from "../../img/location.png"
 import LocationModalWindow from "./components/LocationModalWindow";
 
 const LoadingWrapper = styled.div`
+    color: #333;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -71,12 +72,15 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 export default function EventsPage ({user}) {
     const [loading, setLoading] = useState(true);
     const [events, setEvents] = useState(null);
+    const [favoriteEvents, setFavoriteEvents] = useState(null);
     const [city, setCity] = useState(null);
     const [cities, setCities] = useState(null);
     const [sortedEvents, setSortedEvents] = useState(null);
     const [locationModalVisible, setLocationModalVisible] = useState(false);
 
     useEffect(() => {
+        fetchCities();
+
         async function fetchCities () {
             const responseCities = await InternalAPI.getAllCities();
             if (responseCities.length === 0) {
@@ -98,21 +102,18 @@ export default function EventsPage ({user}) {
             setCity(selectedCity);
             getEvents(selectedCity);
         }
-        fetchCities();
-    }, []);
 
-    useEffect(() => {
-        getEvents(city);
-    }, [city]);
-
-    async function getEvents (city) {
-        if (city) {
-            setLoading(true);
-            const response = await InternalAPI.getEventsByCityId(city.id);
-            setEvents(response);
-            setLoading(false);
+        async function getEvents (city) {
+            if (city) {
+                setLoading(true);
+                const response = await InternalAPI.getEventsByCityId(city.id);
+                setEvents(response);
+                const favouriteEvents = response.filter(event => event.favorite === true);
+                setFavoriteEvents(favouriteEvents);
+                setLoading(false);
+            }
         }
-    }
+    }, []);
 
     return (
         <div>
@@ -128,7 +129,11 @@ export default function EventsPage ({user}) {
                                     <div>{city.name}</div>
                                 </Location>
                             </LocationContainer>
-                            <Slider/>
+                            {
+                                favoriteEvents &&
+                                favoriteEvents.length > 0 &&
+                                <Slider>{favoriteEvents}</Slider>
+                            }
                             <SearchPanel events={events} setSortedEvents={setSortedEvents}/>
                         </div>
 

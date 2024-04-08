@@ -27,7 +27,7 @@ class TeamData {
                 socialLinks: [
                     {
                         img: TELEGRAM,
-                        href: "https://t.me/leralo_00"
+                        href: "https://t.me/kudryavvcevaa"
                     },
                 ]
             },
