@@ -28,12 +28,12 @@ function App() {
     const [user, setUser] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [loading, setLoading] = useState(true);
-
     useEffect(() => {
         getUser();
-
         async function getUser() {
-            const userData = await InternalAPI.getUser(720970497);
+            let tg = window.Telegram.WebApp
+            const  userId = tg.initDataUnsafe.user.id
+            const userData = await InternalAPI.getUser(userId);
             if (userData.ok) {
                 const user = await userData.json();
                 setUser(user);
