@@ -1,15 +1,12 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Loading from "../../commonComponents/Loading";
-import ExternalAPI from "../../API/ExternalAPI";
 import InternalAPI from "../../API/InternalAPI";
-import InteractiveMap from "../../commonComponents/Map";
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
 import SetEventTypeModal from "./components/SetEventTypeModal";
 import SetEventCityModal from "./components/SetEventCityModal";
-import Exception from "../../commonComponents/Exception";
 
 
 const Content = styled.div`

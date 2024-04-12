@@ -1,10 +1,8 @@
 import styled from "styled-components";
 import {useState} from "react";
-import FIRE_IMAGE from "../../../../img/fire.png"
 import RIGHT_ARROW from "../../../../img/right-arrow.png"
 import LEFT_ARROW from "../../../../img/left-arrow.png"
 import "../../../../index.css"
-import DateFormatter from "../../../../commonComponents/DateFormatter";
 import Slide from "./Slide";
 
 const Background = styled.div`
