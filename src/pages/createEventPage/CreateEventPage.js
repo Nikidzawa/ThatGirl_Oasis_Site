@@ -126,23 +126,8 @@ export default function CreateEventPage() {
                     smallDescription: smallDescription,
                     fullDescription: fullDescription,
                     favorite: favorite,
-                    mainImage: {
-                        href: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
-                    },
-                    eventImages: [
-                        {
-                            href: "https://pteat.ru/wp-content/uploads/2017/02/IMG_0959-1-803x535.jpg"
-                        },
-                        {
-                            href: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6xJcVF2Fsg80FDSCCXOHIBwtIDF8uJB07hpWeDAEhFA&s"
-                        },
-                        {
-                            href: "https://dostavka-tsvety.ru/wp-content/uploads/2023/08/1-4-1.jpg"
-                        },
-                        {
-                            href: "https://img.iamcook.ru/2023/upl/recipes/cat/u-04cb75101d3d166893ce7ae62162b28f.JPG"
-                        }
-                    ],
+                    mainImage: image,
+                    eventImages: images,
                     eventType: selectedType
                 });
             } catch (error) {
@@ -158,7 +143,10 @@ export default function CreateEventPage() {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result);
+                const imageObject = {
+                    href: reader.result
+                }
+                setImage(imageObject);
             };
             reader.readAsDataURL(file);
         }
@@ -167,13 +155,22 @@ export default function CreateEventPage() {
     const handleImagesChange = (e) => {
         const files = e.target.files;
         const newImages = [];
+
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
             const reader = new FileReader();
+
             reader.onloadend = () => {
-                newImages.push(reader.result);
-                setImages(newImages);
+                const imageObject = {
+                    href: reader.result,
+                };
+                newImages.push(imageObject);
+
+                if (newImages.length === files.length) {
+                    setImages(newImages);
+                }
             };
+
             reader.readAsDataURL(file);
         }
     };

@@ -32,7 +32,7 @@ function App() {
         getUser();
         async function getUser() {
             let tg = window.Telegram.WebApp;
-            const  user = tg.initDataUnsafe.user;
+            const user = tg.initDataUnsafe.user;
             if (user) {
                 const userId = user.id;
                 const userData = await InternalAPI.getUser(userId);
