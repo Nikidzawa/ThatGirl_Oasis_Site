@@ -31,16 +31,18 @@ function App() {
 
     useEffect(() => {
         getUser();
-
         async function getUser() {
-            const userData = await InternalAPI.getUser(720970497);
-            if (userData.ok) {
-                const user = await userData.json();
-                setUser(user);
-                getUserStatus(user)
-            } else {
-                setLoading(false);
+            const tg = window.Telegram.WebApp;
+            const user = tg.initDataUnsafe.user;
+            if (user) {
+                const userData = await InternalAPI.getUser(user.id);
+                if (userData.ok) {
+                    const user = await userData.json();
+                    setUser(user);
+                    getUserStatus(user)
+                }
             }
+            setLoading(false);
         }
 
         async function getUserStatus (user) {

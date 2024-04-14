@@ -1,15 +1,13 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import Loading from "../../commonComponents/Loading";
-import ExternalAPI from "../../API/ExternalAPI";
+import FireBase from "../../API/FireBase";
 import InternalAPI from "../../API/InternalAPI";
-import InteractiveMap from "../../commonComponents/Map";
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
 import SetEventTypeModal from "./components/SetEventTypeModal";
 import SetEventCityModal from "./components/SetEventCityModal";
-import Exception from "../../commonComponents/Exception";
 
 
 const Content = styled.div`
@@ -56,13 +54,6 @@ const Button = styled.button`
     height: 40px;
     border-radius: 20px;
 `;
-const LocationButton = styled.button`
-    background-color: white;
-    width: 180px;
-    height: 50px;
-    border-radius: 20px;
-    margin: 0 0 20px 0;
-`;
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -102,8 +93,13 @@ export default function CreateEventPage() {
     const [cost, setCost] = useState("");
     const [smallDescription, setSmallDescription] = useState("");
     const [fullDescription, setFullDescription] = useState("");
+
     const [image, setImage] = useState(null);
-    const [images, setImages] = useState(null);
+    const [images, setImages] = useState([]);
+
+    const [handleImage, setHandleImage] = useState(null);
+    const [handleImages, setHandleImages] = useState([]);
+
     const [selectedType, setSelectedType] = useState(null);
     const [favorite, setFavorite] = useState(false);
 
@@ -112,44 +108,59 @@ export default function CreateEventPage() {
     const [eventCityModalIsVisible, setEventCityModalIsVisible] = useState(false);
     const [eventTypeModalIsVisible, setEventTypeModalIsVisible] = useState(false)
 
+
+    const [exception, setException] = useState(false);
+    const [success, setSuccess] = useState(false);
+
     async function sendData() {
         setLoading(true);
         const regex = /^\d+(\.\d+)?$/;
-        if (selectedCity && address && name && date && time && smallDescription && regex.test(rating) && regex.test(cost) && fullDescription && image && selectedType) {
+        if (selectedCity && address && name && date && time && regex.test(rating) && regex.test(cost) && fullDescription && handleImage && selectedType) {
             setInputsError(false);
+            let eventId;
+            let eventObject = {
+                city: selectedCity,
+                address: address,
+                name: name,
+                date: date,
+                time: time,
+                rating: rating,
+                cost: cost,
+                smallDescription: smallDescription,
+                fullDescription: fullDescription,
+                favorite: favorite,
+                eventType: selectedType
+            }
             try {
-                const response =await InternalAPI.postEvent({
-                    city: selectedCity,
-                    address: address,
-                    name: name,
-                    date: date,
-                    time: time,
-                    rating: rating,
-                    cost: cost,
-                    smallDescription: smallDescription,
-                    fullDescription: fullDescription,
-                    favorite: favorite,
-                    mainImage: {
-                        href: "https://mykaleidoscope.ru/x/uploads/posts/2022-10/1666788313_65-mykaleidoscope-ru-p-kapkeiki-dekor-vkontakte-68.jpg"
-                    },
-                    eventImages: [
-                        {
-                            href: "https://pteat.ru/wp-content/uploads/2017/02/IMG_0959-1-803x535.jpg"
-                        },
-                        {
-                            href: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6xJcVF2Fsg80FDSCCXOHIBwtIDF8uJB07hpWeDAEhFA&s"
-                        },
-                        {
-                            href: "https://dostavka-tsvety.ru/wp-content/uploads/2023/08/1-4-1.jpg"
-                        },
-                        {
-                            href: "https://img.iamcook.ru/2023/upl/recipes/cat/u-04cb75101d3d166893ce7ae62162b28f.JPG"
-                        }
-                    ],
-                    eventType: selectedType
-                });
+                const response = await InternalAPI.postEvent(eventObject);
+                if (response.ok) {
+                    eventObject = await response.json();
+                } else {
+                    throw new Error(response.status)
+                }
+
+                const mainImageHref = await FireBase.uploadImage(image, eventId);
+                eventObject.mainImage = { href: mainImageHref };
+
+                if (images && images.length > 0) {
+                    const imagesPromises = images.map(image => FireBase.uploadImage(image, eventId));
+                    const imagesHrefs = await Promise.all(imagesPromises);
+                    eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
+                }
+
+                const response2 = await InternalAPI.setImages(eventObject);
+                if (response2.ok) {
+                    setException(false);
+                    setSuccess(true)
+                } else {
+                    throw new Error(response2.status);
+                }
             } catch (error) {
-                console.error("Ошибка при отправке данных:", error);
+                if (eventId) {
+                    await FireBase.deleteFolder(eventId);
+                }
+                setException(true);
+                console.error("Ошибка при отправке данных: ", error);
             }
         } else {
             setInputsError(true);
@@ -161,8 +172,9 @@ export default function CreateEventPage() {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setImage(reader.result);
+                setHandleImage(reader.result);
             };
+            setImage(file)
             reader.readAsDataURL(file);
         }
     };
@@ -170,14 +182,21 @@ export default function CreateEventPage() {
     const handleImagesChange = (e) => {
         const files = e.target.files;
         const newImages = [];
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                newImages.push(reader.result);
-                setImages(newImages);
-            };
-            reader.readAsDataURL(file);
+        const newFiles = [];
+        if (files) {
+            for (let i = 0; i < files.length; i++) {
+                const file = files[i];
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    newImages.push(reader.result);
+                    newFiles.push(file);
+                    if (newImages.length === files.length) {
+                        setHandleImages(newImages);
+                        setImages(newFiles);
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
         }
     };
 
@@ -192,7 +211,7 @@ export default function CreateEventPage() {
                         selectedCity ? selectedCity.name : <div>Город не задан</div>
                     }
                 </ButtonAndText>
-                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Улица, дом"}/>
+                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Адрес"}/>
                 <Block>Дата и время (МСК)</Block>
                 <FlexInput>
                     <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
@@ -226,8 +245,15 @@ export default function CreateEventPage() {
                 <input type="file" onChange={handleImageChange} accept="image/*"></input>
             </InputBlock>
             <div style={{display: "flex", justifyContent: "center"}}>
-                <CreateEventCard name={name} city={selectedCity ? selectedCity.name : ""} cost={cost} address={address} rating={rating}
-                                 smallDescription={smallDescription} date={date} image={image} type={selectedType}/>
+                <CreateEventCard name={name}
+                                 cost={cost}
+                                 address={address}
+                                 rating={rating}
+                                 smallDescription={smallDescription}
+                                 date={date}
+                                 image={handleImage}
+                                 type={selectedType}
+                />
             </div>
             {
                 inputsError &&
@@ -236,15 +262,21 @@ export default function CreateEventPage() {
             <Block>Второстепенные картинки</Block>
             <input style={{marginBottom: "20px"}} type="file" onChange={handleImagesChange} name="photos" id="photos" multiple/>
             {
-                images &&
+                handleImages &&
                 <Images>
                     {
-                        images.map(image => <Img key={image.id} src={image}/>)
+                        handleImages.map(image => <Img key={image.id} src={image}/>)
                     }
                 </Images>
             }
 
             <div style={{textAlign: "center", marginTop: "20px"}}>
+                {
+                    exception && <div style={{color: "red"}}>Неизвестная ошибка, возможно проболема с облаком</div>
+                }
+                {
+                    success && <div style={{color: "green"}}>Успешно создано</div>
+                }
                 {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={sendData}>Создать</Button>}
             </div>
             <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>

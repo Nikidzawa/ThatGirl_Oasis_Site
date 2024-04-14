@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
 import InternalAPI from "../../API/InternalAPI";
 import Exception from "../../commonComponents/Exception";
-import ExternalAPI from "../../API/ExternalAPI";
 import HEART_IMG from "../../img/heart.png"
 import RED_HEART_IMG from "../../img/red_heart.png"
 import DateFormatter from "../../commonComponents/DateFormatter";
@@ -143,8 +142,8 @@ export default function EventPage () {
     const [loading, setLoading] = useState(true);
     const [checkContainsInCart, setCheckContainsInCart] = useState(true);
 
-    const [mainImage, setMainImage] = useState(null);
-    const [images, setImages] = useState([])
+    const [selectedImage, setSelectedImage] = useState(null);
+
     const navigate = useNavigate();
     const [isOpen,setOpen] = useState(false);
     const [eventContainsInCart, setEventContainsInCart] = useState(false);
@@ -152,48 +151,38 @@ export default function EventPage () {
     const [favourite, setFavourite] = useState(false);
 
     useEffect(() => {
-        getEvent();
+        getEventData();
 
-        async function getEvent () {
+        async function getEventData () {
             try {
                 const response = await InternalAPI.getEvent(id);
                 if (response.ok) {
                     const eventData = await response.json();
                     setEvent(eventData);
-                    loadImages(eventData);
-                    isEventInCart(eventData.id);
+                    setSelectedImage(eventData.mainImage)
+                    checkEventInCart(eventData.id);
                     checkFavourite(eventData.id);
                 } else {
                     throw new Exception("Ошибка при загрузке мероприятия");
                 }
                 setLoading(false)
             } catch (ex) {
+                navigate("./404")
                 console.log(ex)
-                navigate("/404")
             }
         }
-        async function isEventInCart(eventId) {
+        async function checkEventInCart(eventId) {
             const cartEvents = JSON.parse(localStorage.getItem("cartEvents")) || [];
             setEventContainsInCart(cartEvents.some(event => event.id === eventId));
             setCheckContainsInCart(false);
         }
 
-        async function loadImages (eventData) {
-            const mainImage = await ExternalAPI.loadImage(eventData.mainImage.href);
-            setMainImage(mainImage);
-            if (eventData.eventImages) {
-                const responses = await eventData.eventImages.map(e => ExternalAPI.loadImage(e.href));
-                const eventImages = await Promise.all(responses);
-                setImages([mainImage, ...eventImages]);
-            }
-        }
-
         async function checkFavourite(eventId) {
-            const articles_read = localStorage.getItem("favouriteEvents");
-            if (articles_read) {
-                setFavourite(articles_read.includes(eventId.toString()));
+            const favoriteEvents = localStorage.getItem("favouriteEvents");
+            if (favoriteEvents) {
+                setFavourite(favoriteEvents.includes(eventId.toString()));
             } else {
-                return false;
+                setFavourite(false);
             }
         }
     }, []);
@@ -251,11 +240,19 @@ export default function EventPage () {
                 </NameContainer>
                 <MainContainer>
                     <div style={{minHeight: "200px", maxWidth: "600px"}}>
-                        {mainImage ? <img height={"auto"} width={"100%"} src={mainImage.href} alt={"Фотография"}/> :
-                            <LoadImageWrapper><Loading circleColor={"#333"}/></LoadImageWrapper>}
+                        {
+                            selectedImage && <img height={"auto"} width={"100%"} src={selectedImage.href} alt={"Фотография"}/>
+                        }
                         <Images>
-                            {images && images.length > 1 &&
-                                images.map(image => <Img onClick={() => setMainImage(image)} src={image.href}/>)
+                            {event.eventImages && event.eventImages.length > 0 &&
+                                <>
+                                {
+                                    <Img onClick={() => setSelectedImage(event.mainImage)} src={event.mainImage.href}/>
+                                }
+                                {
+                                    event.eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
+                                }
+                                </>
                             }
                         </Images>
                     </div>

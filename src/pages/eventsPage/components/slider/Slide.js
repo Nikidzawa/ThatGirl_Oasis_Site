@@ -1,8 +1,6 @@
 import DateFormatter from "../../../../commonComponents/DateFormatter";
 import FIRE_IMAGE from "../../../../img/fire.png";
 import styled from "styled-components";
-import {useEffect, useState} from "react";
-import ExternalAPI from "../../../../API/ExternalAPI";
 
 const SlideContainer = styled.div`
     position: absolute;
@@ -15,13 +13,16 @@ const EventName = styled.div`
     font-size: 25px;
     font-weight: bold;
     font-family: Candara;
-    padding-bottom: 8px;
-    overflow: auto;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 `
 const ModalContent = styled.div`
-    position: absolute;
+    position: relative;
+    display: flex;
+    flex-direction: column;
     padding: 10px;
-    bottom: 45px;
+    gap: 5px;
 `
 const Circle = styled.div`
     width: 7px;
@@ -47,36 +48,30 @@ const IMAGE = styled.img`
     }
 `
 
-const ImageContainer = styled.div`
-    width: 100%;
-    height: 350px;
-`
-
 const ModalWindow = styled.div`
     position: absolute;
-    top: 60%;
+    top: 65%;
     bottom: 0;
     right: 0;
     left: 0;
     border-radius: 0 0 20px 20px;
     background-color: rgba(0, 0, 0, 0.4);
+    
+`
+
+const FireAndCostContainer = styled.div`
+    display: flex;
+    gap: 10px;
 `
 
 const Fire = styled.div`
-    position: absolute;
-    bottom: 10px;
-    left: 93px;
     background-color: rgba(0, 0, 0, 0.75);
-
     border-radius: 50%;
     padding: 5px 10px;
 `
 
 const Cost = styled.div`
     font-size: 25px;
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
     color: white;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 10px;
@@ -88,21 +83,9 @@ const Cost = styled.div`
 `
 
 export default function Slide ({event, index, currentPosition}) {
-    const [image, setImage] = useState();
-
-    useEffect(() => {
-        fetchImage();
-        async function fetchImage() {
-            const eventImage = await ExternalAPI.loadImage(event.mainImage.href)
-            setImage(eventImage);
-        }
-    }, []);
-
     return (
         <SlideContainer key={index} active={index === currentPosition}>
-            {
-                image ? <IMAGE src={image.href}/> : <ImageContainer/>
-            }
+            <IMAGE src={event.mainImage.href}/>
             <ModalWindow>
                 <ModalContent>
                     <EventName>{event.name}</EventName>
@@ -116,9 +99,11 @@ export default function Slide ({event, index, currentPosition}) {
                             <span>{DateFormatter.format(event.date)}</span>
                         </Types>
                     </div>
+                    <FireAndCostContainer>
+                        <Cost>{event.cost}₽</Cost>
+                        <Fire><img width={"22px"} src={FIRE_IMAGE} alt={"Популярно"}/></Fire>
+                    </FireAndCostContainer>
                 </ModalContent>
-                <Fire><img width={"22px"} src={FIRE_IMAGE} alt={"Популярно"}/></Fire>
-                <Cost>{event.cost}₽</Cost>
             </ModalWindow>
         </SlideContainer>
     )

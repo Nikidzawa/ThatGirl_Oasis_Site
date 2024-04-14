@@ -100,10 +100,12 @@ export default function EventsPage ({user}) {
                 selectedCity = responseCities[0];
             }
             setCity(selectedCity);
-            getEvents(selectedCity);
         }
+    }, []);
 
-        async function getEvents (city) {
+    useEffect(() => {
+        getEvents()
+        async function getEvents () {
             if (city) {
                 setLoading(true);
                 const response = await InternalAPI.getEventsByCityId(city.id);
@@ -113,8 +115,7 @@ export default function EventsPage ({user}) {
                 setLoading(false);
             }
         }
-    }, []);
-
+    }, [city]);
     return (
         <div>
             {

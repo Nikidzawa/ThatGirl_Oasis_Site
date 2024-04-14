@@ -4,14 +4,12 @@ import IMAGE from "../../../img/calendar.png"
 import STAR from "../../../img/star.png"
 import HEART from "../../../img/heart.png"
 import HEART_RED from "../../../img/heart-red.png"
-import ExternalAPI from "../../../API/ExternalAPI";
-import Loading from "../../../commonComponents/Loading";
 import {useNavigate} from "react-router-dom";
 import DateFormatter from "../../../commonComponents/DateFormatter";
 
 const Card = styled.div`
-    height: 460px;
-    width: 350px;
+    height: 450px;
+    width: 340px;
     cursor: pointer;
     overflow: hidden;
     position: relative;
@@ -58,15 +56,19 @@ const Location = styled.div`
         font-size: 13px;
     }
 `
+const MainContainer = styled.div`
+    height: 83%;
+    overflow: hidden;
+`
 
 const Description = styled.div`
-    font-size: 15px;
-    height: 80px;
+    font-size: 14px;
+    height: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
 
     @media screen and (max-width: 360px) {
-        height: 75px;
+        height: 70px;
         font-size: 13px;
     }
 `
@@ -77,11 +79,14 @@ const Date = styled.div`
         font-size: 13px;
     }
 `
+
+const StarAndCostContainer = styled.div`
+    display: flex;
+    justify-content: space-between;
+`
+
 const Cost = styled.div`
     font-size: 25px;
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
@@ -93,9 +98,6 @@ const Cost = styled.div`
 `
 
 const StarContainer = styled.div`
-    position: absolute;
-    bottom: 15px;
-    left: 10px;
     display: flex;
     align-items: center;
 `
@@ -113,12 +115,6 @@ const HeartContainer = styled.div`
     cursor: pointer;
 `
 
-const LoadImageWrapper = styled.div`
-    display: flex;
-    height: 50%;
-    align-items: center;
-    justify-content: center;
-`
 const Circle = styled.div`
     width: 7px;
     height: 7px;
@@ -135,30 +131,19 @@ const EventType = styled.div`
 `
 export default function EventCard ({event}) {
     const [favourite, setFavourite] = useState();
-    const [image, setImage] = useState()
     const navigate = useNavigate();
 
     useEffect(() => {
-        async function loadImage () {
-            const image = await ExternalAPI.loadImage(event.mainImage.href)
-            setImage(image)
+        checkIsFavourite()
+        async function checkIsFavourite() {
+            const favoriteEvents = localStorage.getItem("favouriteEvents");
+            if (favoriteEvents) {
+                setFavourite(favoriteEvents.includes(event.id.toString()));
+            } else {
+                setFavourite(false)
+            }
         }
-        loadImage()
-        setFavourite(isFavourite);
-    }, []);
-
-    async function openEventPage () {
-        navigate(`./${event.id}`)
-    }
-
-    function isFavourite() {
-        const articles_read = localStorage.getItem("favouriteEvents");
-        if (articles_read) {
-            return articles_read.includes(event.id.toString());
-        } else {
-            return false;
-        }
-    }
+    }, [])
 
     async function addOrRemoveToFavourite() {
         let favouriteEventsData = localStorage.getItem("favouriteEvents");
@@ -182,6 +167,10 @@ export default function EventCard ({event}) {
         }
     }
 
+    async function openEventPage () {
+        navigate(`./${event.id}`)
+    }
+
     return (
         <Card onClick={openEventPage}>
             <HeartContainer onClick={e => {
@@ -192,27 +181,27 @@ export default function EventCard ({event}) {
                     favourite ? <img width={"38px"} src={HEART_RED} alt={"Избранное"}/> : <img width={"38px"} src={HEART} alt={"Избранное"}/>
                 }
             </HeartContainer>
-            {
-                image ? <Image src={image.href}></Image> : <LoadImageWrapper><Loading/></LoadImageWrapper>
-            }
+            <Image src={event.mainImage.href}></Image>
             <Content>
-                <Location>
-                    <div>
+                <MainContainer>
+                    <Location>
                         <div>{event.address}</div>
-                    </div>
-                    <div style={{display: "flex", alignItems: "center"}}>
-                        <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"Фотография"}/>
-                        <Date>{DateFormatter.format(event.date)}</Date>
-                    </div>
-                </Location>
-                <Name><strong>{event.name}</strong></Name>
-                <EventType><Circle/>{event.eventType.name}</EventType>
-                <Description>{event.smallDescription}</Description>
-                <StarContainer>
-                    <img width={"25spx"} src={STAR} alt={"Оценка"}/>
-                    <div style={{paddingLeft: "2px"}}>{event.rating}</div>
-                </StarContainer>
-                <Cost>{event.cost}₽</Cost>
+                        <div style={{display: "flex", alignItems: "center"}}>
+                            <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"Фотография"}/>
+                            <Date>{DateFormatter.format(event.date)}</Date>
+                        </div>
+                    </Location>
+                    <Name><strong>{event.name}</strong></Name>
+                    <EventType><Circle/>{event.eventType.name}</EventType>
+                    <Description>{event.smallDescription}</Description>
+                </MainContainer>
+                <StarAndCostContainer>
+                    <StarContainer>
+                        <img width={"25spx"} src={STAR} alt={"Оценка"}/>
+                        <div style={{paddingLeft: "2px"}}>{event.rating}</div>
+                    </StarContainer>
+                    <Cost>{event.cost}₽</Cost>
+                </StarAndCostContainer>
             </Content>
         </Card>
     )

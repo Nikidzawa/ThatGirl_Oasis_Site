@@ -1,15 +1,14 @@
 import styled from "styled-components";
 import {useState} from "react";
-import FIRE_IMAGE from "../../../../img/fire.png"
 import RIGHT_ARROW from "../../../../img/right-arrow.png"
 import LEFT_ARROW from "../../../../img/left-arrow.png"
 import "../../../../index.css"
-import DateFormatter from "../../../../commonComponents/DateFormatter";
 import Slide from "./Slide";
 
 const Background = styled.div`
     background-color: #333;
     display: flex;
+    position: relative;
     justify-content: center;
     width: 100%;
     height: 350px;
@@ -21,7 +20,7 @@ const Background = styled.div`
 
 const LeftArrow = styled.div`
     position: absolute;
-    bottom: 58%;
+    bottom: 50%;
     left: 15px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 50%;
@@ -33,7 +32,7 @@ const LeftArrow = styled.div`
 
 const RightArrow = styled.div`
     position: absolute;
-    bottom: 58%;
+    bottom: 50%;
     right: 15px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 50%;

@@ -1,10 +1,7 @@
 import styled from "styled-components";
-import {useEffect, useState} from "react";
-import ExternalAPI from "../../../API/ExternalAPI";
 import PLUS from "../../../img/plus.png"
 import MINUS from "../../../img/minus.png"
 import BUCKET from "../../../img/bucket.png"
-import Loading from "../../../commonComponents/Loading";
 
 const Background = styled.div`
     height: 80px;
@@ -26,8 +23,8 @@ const Title = styled.div`
     white-space: nowrap;
     text-overflow: ellipsis;
     position: absolute;
-    left: 100px;
-    right: 50px;
+    left: 0;
+    right: 40px;
 `;
 
 const PriceAndCountContainer = styled.div`
@@ -41,30 +38,13 @@ const Text = styled.div`
 `
 const UpperRow = styled.div`
     display: flex;
+    position: relative;
     justify-content: space-between;
     align-items: center;
 `
 
-const LoadImageWrapper = styled.div`
-    display: flex;
-    height: 50%;
-    align-items: center;
-    justify-content: center;
-`
-
 
 export default function EventCart ({setEventCarts, eventCarts, eventCart, setFinalCost, finalCost}) {
-    const [image, setImage] = useState(null);
-
-    useEffect(() => {
-        loadImage();
-
-        async function loadImage () {
-            const image = await ExternalAPI.loadImage(eventCart.mainImage.href);
-            setImage(image);
-        }
-    }, [])
-
     async function plusCount () {
         const count = Number.parseInt(eventCart.count) + 1;
         if (count < 100) {
@@ -97,10 +77,7 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
 
     return (
         <Background>
-            {
-                image ? <img width={"75px"} height={"65px"} src={image.href}/> :
-                    <LoadImageWrapper><Loading/></LoadImageWrapper>
-            }
+            <img width={"75px"} height={"65px"} src={eventCart.mainImage.href}/>
             {
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>
