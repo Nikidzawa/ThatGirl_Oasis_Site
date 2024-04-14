@@ -3,10 +3,12 @@ import {useEffect, useState} from "react";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
 import InternalAPI from "../../API/InternalAPI";
-import Exception from "../../commonComponents/Exception";
 import HEART_IMG from "../../img/heart.png"
 import RED_HEART_IMG from "../../img/red_heart.png"
 import DateFormatter from "../../commonComponents/DateFormatter";
+import BUCKET from "../../img/bucket.png"
+import FireBase from "../../API/FireBase";
+import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -14,16 +16,11 @@ const LoadingWrapper = styled.div`
     justify-content: center;
     align-items: center;
     position: fixed;
+    background: rgba(0, 0, 0, 0.6);
     top: 0;
     right: 0;
-    bottom: 60px;
+    bottom: 0;
     left: 0;
-`
-const LoadImageWrapper = styled.div`
-    display: flex;
-    height: 280px;
-    align-items: center;
-    justify-content: center;
 `
 
 const MainContainer = styled.div`
@@ -135,24 +132,30 @@ const Img = styled.img`
     width: 70px;
     height: 75px;
 `
-export default function EventPage () {
+
+export default function EventPage ({role}) {
     const { id } = useParams();
     const [event, setEvent] = useState();
 
     const [loading, setLoading] = useState(true);
+
+    const [deleteLoading, setDeleteLoading] = useState(false);
+    const [deleteText, setDeleteText] = useState("");
+    const [modalVisible, setModalVisible] = useState(false);
+
     const [checkContainsInCart, setCheckContainsInCart] = useState(true);
 
     const [selectedImage, setSelectedImage] = useState(null);
 
-    const navigate = useNavigate();
     const [isOpen,setOpen] = useState(false);
     const [eventContainsInCart, setEventContainsInCart] = useState(false);
 
     const [favourite, setFavourite] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         getEventData();
-
         async function getEventData () {
             try {
                 const response = await InternalAPI.getEvent(id);
@@ -163,12 +166,13 @@ export default function EventPage () {
                     checkEventInCart(eventData.id);
                     checkFavourite(eventData.id);
                 } else {
-                    throw new Exception("Ошибка при загрузке мероприятия");
+                    throw new Error("Ошибка при загрузке мероприятия");
                 }
-                setLoading(false)
             } catch (ex) {
-                navigate("./404")
+                navigate("/404")
                 console.log(ex)
+            } finally {
+                setLoading(false)
             }
         }
         async function checkEventInCart(eventId) {
@@ -230,13 +234,43 @@ export default function EventPage () {
         }
     }
 
+    async function deleteEvent() {
+        try {
+            setDeleteLoading(true);
+            setDeleteText("Удаление мероприятия из базы данных...")
+            const response = await InternalAPI.deleteEvent(id);
+            if (response.ok) {
+                setDeleteText("Мероприятие успешно удалено, удаляем изображения...")
+                try {
+                    await FireBase.deleteFolder(id);
+                    navigate("/events");
+                } catch (ex) {
+                    console.error(ex);
+                    throw new Error(`Ошибка при удалении файлов из облачного хранилища. Попробуйте удалить папку images/${id} вручную`);
+                }
+            } else {
+                throw new Error(`Ошибка при удалении мероприятия. Код ошибки - ${response.status}`);
+            }
+        } catch (ex) {
+            console.error(ex);
+        } finally {
+            setDeleteLoading(false);
+        }
+    }
+
 
     return (
         loading && checkContainsInCart ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
             <div className={"main"} style={{paddingBottom: "80px", fontFamily: "Trebuchet MS"}}>
                 <NameContainer>
                     <Title>{event.name}</Title>
-                    <Types><Circle/>{event.eventType.name}</Types>
+                    <div style={{display: "flex", alignItems: "center", justifyContent: "space-between"}}>
+                        <Types><Circle/>{event.eventType.name}</Types>
+                        {
+                            role && (role === "administrator" || role === "creator") &&
+                            <img onClick={() => setModalVisible(true)} style={{cursor: "pointer", padding: "5px 0 0 5px"}} height={"30px"} width={"35px"} src={BUCKET}/>
+                        }
+                    </div>
                 </NameContainer>
                 <MainContainer>
                     <div style={{minHeight: "200px", maxWidth: "600px"}}>
@@ -246,26 +280,26 @@ export default function EventPage () {
                         <Images>
                             {event.eventImages && event.eventImages.length > 0 &&
                                 <>
-                                {
-                                    <Img onClick={() => setSelectedImage(event.mainImage)} src={event.mainImage.href}/>
-                                }
-                                {
-                                    event.eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
-                                }
+                                    {
+                                        <Img onClick={() => setSelectedImage(event.mainImage)} src={event.mainImage.href}/>
+                                    }
+                                    {
+                                        event.eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
+                                    }
                                 </>
                             }
                         </Images>
                     </div>
                     <BLock>
                         <Title>Описание</Title>
-                        <Description>{event.smallDescription}</Description>
+                        <Description>{event.fullDescription}</Description>
                     </BLock>
                     <BLock>
                         <Title>Место и время</Title>
                         <Description>
                             <div>{event.city.name}, {event.address}</div>
                             <div>{DateFormatter.format(event.date)} в {event.time} по МСК</div>
-                            <div>+79821873500</div>
+                            <div>+{event.contactPhone}</div>
                         </Description>
                     </BLock>
                 </MainContainer>
@@ -284,6 +318,14 @@ export default function EventPage () {
                         }
                     </ImageContainer>
                 </ButtonsContainer>
+                <AcceptDeleteEventModal visible={modalVisible} setVisible={setModalVisible} deleteEvent={deleteEvent}/>
+                {
+                    deleteLoading &&
+                    <LoadingWrapper>
+                        <Loading/>
+                        <div>{deleteText}</div>
+                    </LoadingWrapper>
+                }
             </div>
     )
 }

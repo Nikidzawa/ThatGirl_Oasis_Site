@@ -93,6 +93,7 @@ export default function CreateEventPage() {
     const [cost, setCost] = useState("");
     const [smallDescription, setSmallDescription] = useState("");
     const [fullDescription, setFullDescription] = useState("");
+    const [contactPhone, setContactPhone] =useState("")
 
     const [image, setImage] = useState(null);
     const [images, setImages] = useState([]);
@@ -115,7 +116,7 @@ export default function CreateEventPage() {
     async function sendData() {
         setLoading(true);
         const regex = /^\d+(\.\d+)?$/;
-        if (selectedCity && address && name && date && time && regex.test(rating) && regex.test(cost) && fullDescription && handleImage && selectedType) {
+        if (selectedCity && address && name && contactPhone && date && time && regex.test(rating) && regex.test(cost) && fullDescription && handleImage && selectedType) {
             setInputsError(false);
             let eventId;
             let eventObject = {
@@ -124,6 +125,7 @@ export default function CreateEventPage() {
                 name: name,
                 date: date,
                 time: time,
+                contactPhone: contactPhone,
                 rating: rating,
                 cost: cost,
                 smallDescription: smallDescription,
@@ -138,6 +140,7 @@ export default function CreateEventPage() {
                 } else {
                     throw new Error(response.status)
                 }
+                const eventId = eventObject.id;
 
                 const mainImageHref = await FireBase.uploadImage(image, eventId);
                 eventObject.mainImage = { href: mainImageHref };
@@ -201,37 +204,36 @@ export default function CreateEventPage() {
     };
 
     return (
-        <Content>
+        <Content className={"main"}>
             <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
                 <ButtonAndText>
-                    <Button onClick={() => setEventCityModalIsVisible(true)}>Выбрать город</Button>
+                    <Button onClick={() => setEventCityModalIsVisible(true)}>*Выбрать город</Button>
                     {
                         selectedCity ? selectedCity.name : <div>Город не задан</div>
                     }
                 </ButtonAndText>
-                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"Адрес"}/>
-                <Block>Дата и время (МСК)</Block>
+                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"*Адрес"}/>
+                <Block>*Дата и время (МСК)</Block>
                 <FlexInput>
                     <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
                     <input onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
                 </FlexInput>
-
                 <Block>Основная информация</Block>
-                <BasicInput onChange={e => setName(e.target.value)} placeholder={"Название"}/>
-                <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
-                <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"Развёрнутое описание"}/>
+                <BasicInput onChange={e => setName(e.target.value)} placeholder={"*Название"}/>
                 <ButtonAndText onClick={() => setEventTypeModalIsVisible(true)}>
-                    <Button>Выбрать тип мероприятия</Button>
+                    <Button>*Выбрать тип мероприятия</Button>
                     {
-                        selectedType ? <div>Тип мероприятия: {selectedType.name}</div> :
-                            <div>Тип мероприятия не выбран</div>
+                        selectedType ? <div>Тип мероприятия: {selectedType.name}</div> : <div>Тип мероприятия не выбран</div>
                     }
                 </ButtonAndText>
+                <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
+                <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"*Развёрнутое описание"}/>
+                <BasicInput onChange={e => setContactPhone(e.target.value)} placeholder={"*Контактный номер телефона"}/>
                 <FlexInput>
-                    <BasicInput onChange={e => setRating(e.target.value)} placeholder={"Рейтинг (нап. 4.7)"}/>
-                    <BasicInput onChange={e => setCost(e.target.value)} placeholder={"Цена"}/>
+                    <BasicInput onChange={e => setRating(e.target.value)} placeholder={"*Рейтинг (нап. 4.7)"}/>
+                    <BasicInput onChange={e => setCost(e.target.value)} placeholder={"*Цена"}/>
                 </FlexInput>
                 <label>
                     <input
@@ -269,7 +271,6 @@ export default function CreateEventPage() {
                     }
                 </Images>
             }
-
             <div style={{textAlign: "center", marginTop: "20px"}}>
                 {
                     exception && <div style={{color: "red"}}>Неизвестная ошибка, возможно проболема с облаком</div>

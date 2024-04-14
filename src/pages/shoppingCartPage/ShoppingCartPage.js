@@ -8,7 +8,7 @@ import Loading from "../../commonComponents/Loading";
 const EventsContainer = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 5px;
+    padding: 5px 5px 70px 5px;
     gap: 10px;
 `
 const LoaderWrapper = styled.div`
@@ -19,12 +19,13 @@ const LoaderWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    bottom: 60px;
+    bottom: 0;
     left: 0;
 `
 const ButtonsContainer = styled.div`
     position: fixed;
     bottom: 0;
+    left: 0;
     width: 100%;
     display: flex;
     align-items: center;
@@ -54,6 +55,7 @@ export default function ShoppingCartPage () {
     const [finalCost, setFinalCost] = useState(null);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
         fetchEvents();
         async function fetchEvents () {
             setLoading(true)

@@ -8,37 +8,43 @@ import Slide from "./Slide";
 const Background = styled.div`
     background-color: #333;
     display: flex;
+    max-width: 800px;
     position: relative;
     justify-content: center;
     width: 100%;
-    height: 350px;
-    margin: 15px 0 10px 0;
-    @media screen and (max-width: 370px){
+    height: 400px;
+    margin: 15px auto 10px;
+    @media screen and (max-width: 500px){
+        height: 350px;
+    }
+    @media screen and (max-width: 390px){
         height: 280px;
     }
 `
 
 const LeftArrow = styled.div`
     position: absolute;
-    bottom: 50%;
-    left: 15px;
+    bottom: 45%;
+    left: 5px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 50%;
     padding: 10px 15px;
     opacity: 60%;
     z-index: 2;
+    cursor: pointer;
     ${props => props.value === 0 && `display: none`}}
 `
 
 const RightArrow = styled.div`
     position: absolute;
-    bottom: 50%;
-    right: 15px;
+    bottom: 45%;
+    right: 5px;
     background-color: rgba(0, 0, 0, 0.8);
     border-radius: 50%;
     padding: 10px 15px;
     opacity: 60%;
     z-index: 2;
+    cursor: pointer;
     ${props => props.value === props.maxValue && `display: none`}}
 `
 

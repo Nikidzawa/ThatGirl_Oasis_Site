@@ -32,6 +32,18 @@ class TeamData {
                 ]
             },
             {
+                img: LERA,
+                name: "Лера",
+                role: "Куратор мероприятий",
+                description: "Отвечаю за мероприятия, а так же коммуницирую с участниками",
+                socialLinks: [
+                    {
+                        img: TELEGRAM,
+                        href: "https://t.me/leralo_00"
+                    },
+                ]
+            },
+            {
                 img: NIKITA,
                 name: "Никита",
                 role: "Ведущий разработчик",

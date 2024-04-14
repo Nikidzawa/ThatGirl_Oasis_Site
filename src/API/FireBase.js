@@ -1,6 +1,6 @@
 import FireBaseConfig from "./FireBaseConfig";
 import {initializeApp} from "firebase/app";
-import {deleteObject, getDownloadURL, getStorage, ref, uploadBytes} from "firebase/storage";
+import {deleteObject, getDownloadURL, getStorage, listAll, ref, uploadBytes} from "firebase/storage";
 
 class FireBase {
     static async uploadImage(file, eventId) {
@@ -18,13 +18,15 @@ class FireBase {
     static async deleteFolder(eventId) {
         const app = initializeApp(FireBaseConfig.getConfig);
         const storage = getStorage(app);
-        const storageRef = ref(storage, `images/${eventId}`);
+        const folderRef = ref(storage, `images/${eventId}`);
+        const files = await listAll(folderRef);
 
         try {
-            await deleteObject(storageRef);
-            console.log("Folder deleted successfully");
+            await Promise.all(files.items.map(async (item) => {
+                await deleteObject(item);
+            }));
         } catch (error) {
-            console.error("Error deleting folder:", error);
+            console.error("Ошибка при удалении файлов:", error);
         }
     }
 }

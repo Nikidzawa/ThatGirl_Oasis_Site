@@ -17,9 +17,6 @@ const Name = styled.div`
     font-size: 25px;
     padding-top: 5px;
 `
-const Role = styled.div`
-    
-`
 
 const Image = styled.img`
     width: 250px;
@@ -53,7 +50,7 @@ export default function TeamMember({teamMember}) {
         <Container>
             <Image src={teamMember.img} alt="Изображение сотрудника" />
             <Name>{teamMember.name}</Name>
-            <RoleContainer><Circle/><Role>{teamMember.role}</Role></RoleContainer>
+            <RoleContainer><Circle/><div>{teamMember.role}</div></RoleContainer>
             <div style={{paddingTop: "10px"}}>{teamMember.description}</div>
             <SocialLinksContainer>
                 {

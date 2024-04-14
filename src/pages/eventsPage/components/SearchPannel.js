@@ -97,10 +97,6 @@ const Select = styled.select`
     }
 `
 
-const Option = styled.option`
-    
-`
-
 export default function SearchPanel ({events, setSortedEvents}) {
     const [sortBy, setSortBy] = useState(["Скоро", "Рядом"]);
     const [priceSort, setPriceSort] = useState("NONE");
@@ -191,16 +187,16 @@ export default function SearchPanel ({events, setSortedEvents}) {
                     onClick={() => handleSort('Скоро')}
                 >Скоро</Button>
                 <Select onChange={e => handleTypeSort(e.target.value)} backgroundImage={BALLON} value={typeSort}>
-                    <Option value={"NONE"}>Без категории</Option>
+                    <option value={"NONE"}>Без категории</option>
                     {
                         types &&
-                        types.map(type => <Option value={type.name}>{type.name}</Option>)
+                        types.map(type => <option value={type.name}>{type.name}</option>)
                     }
                 </Select>
                 <Select onChange={e => handlePriceSort(e.target.value)} backgroundImage={Money} value={priceSort}>
-                    <Option value={"NONE"}>Цена не важна</Option>
-                    <Option value={"Недорогие"}>Сначала недорогие</Option>
-                    <Option value={"Дорогие"}>Сначала дорогие</Option>
+                    <option value={"NONE"}>Цена не важна</option>
+                    <option value={"Недорогие"}>Сначала недорогие</option>
+                    <option value={"Дорогие"}>Сначала дорогие</option>
                 </Select>
                 <Button
                     backgroundImage={RedHeart}

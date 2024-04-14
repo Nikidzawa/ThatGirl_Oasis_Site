@@ -2,6 +2,7 @@ import styled from "styled-components";
 import PLUS from "../../../img/plus.png"
 import MINUS from "../../../img/minus.png"
 import BUCKET from "../../../img/bucket.png"
+import {useNavigate} from "react-router-dom";
 
 const Background = styled.div`
     height: 80px;
@@ -45,6 +46,7 @@ const UpperRow = styled.div`
 
 
 export default function EventCart ({setEventCarts, eventCarts, eventCart, setFinalCost, finalCost}) {
+    const navigate = useNavigate()
     async function plusCount () {
         const count = Number.parseInt(eventCart.count) + 1;
         if (count < 100) {
@@ -77,18 +79,18 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
 
     return (
         <Background>
-            <img width={"75px"} height={"65px"} src={eventCart.mainImage.href}/>
+            <img alt={"картинка"} onClick={() => navigate(`/events/${eventCart.id}`)} width={"75px"} height={"65px"} src={eventCart.mainImage.href}/>
             {
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>
                         <Title>{eventCart.name}</Title>
-                        <img onClick={deleteEvent} style={{marginLeft: "auto"}} width={"30px"} src={BUCKET}/>
+                        <img alt={"удалить"} onClick={deleteEvent} style={{marginLeft: "auto"}} width={"30px"} src={BUCKET}/>
                     </UpperRow>
                     <PriceAndCountContainer>
                         <ButtonsContainer>
-                            <img onClick={plusCount} width={"35px"} src={PLUS}/>
+                            <img alt={"увеличить"} onClick={plusCount} width={"35px"} src={PLUS}/>
                             <Text>{eventCart.count}</Text>
-                            <img onClick={minusCount} width={"35px"} src={MINUS}/>
+                            <img alt={"уменьшить"} onClick={minusCount} width={"35px"} src={MINUS}/>
                         </ButtonsContainer>
                         <Text>{eventCart.cost}₽</Text>
                     </PriceAndCountContainer>

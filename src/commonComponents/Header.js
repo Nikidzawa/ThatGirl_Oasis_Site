@@ -1,4 +1,4 @@
-import {Link, useLocation} from "react-router-dom";
+import {Link, useLocation, useNavigate} from "react-router-dom";
 import styled, {keyframes} from "styled-components";
 import {useEffect, useState} from "react";
 import MENU_BUTTON_IMAGE from "../img/menu.png"
@@ -56,6 +56,7 @@ const SiteName = styled.div`
     align-items: center;
     gap: 5px;
     font-size: 26px;
+    cursor: pointer;
     
     @media screen and (max-width: 370px){
         font-size: 22px;
@@ -64,6 +65,7 @@ const SiteName = styled.div`
 
 const MenuButton = styled.img`
     width: 30px;
+    cursor: pointer;
 `
 
 const ModalWindow = styled.div`
@@ -117,8 +119,9 @@ const LinkTextAdmin = styled.div`
 
 export default function Header ({userStatus}) {
     const [menuVisible, setMenuVisible] = useState(false);
-    const location = useLocation();
     const [buttonSelected, setButton] = useState("events");
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (location.pathname.includes("/events")) {
@@ -138,13 +141,16 @@ export default function Header ({userStatus}) {
         setMenuVisible(!menuVisible);
     }
 
+    function goToEventsPage () {
+        navigate("./events")
+    }
 
     return (
         <header>
             <HeaderContainer>
                 <HeaderContent>
                     <div>
-                        <SiteName>
+                        <SiteName onClick={goToEventsPage}>
                             <img src={LOGO} width={"40px"}/>
                             <div>THAT GIRLS OASIS </div>
                         </SiteName>

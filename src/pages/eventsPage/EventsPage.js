@@ -11,6 +11,7 @@ import EVENT_IMAGE from "../../img/event.png"
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import LOCATION from "../../img/location.png"
 import LocationModalWindow from "./components/LocationModalWindow";
+import NotFound from "./components/NotFound";
 
 const LoadingWrapper = styled.div`
     color: #333;
@@ -21,7 +22,7 @@ const LoadingWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    bottom: 60px;
+    bottom: 0;
     left: 0;
 `
 const Background = styled.div`
@@ -31,13 +32,6 @@ const Background = styled.div`
     @media screen and (max-width: 760px) {
         background-image: ${props => props.image && `url(${props.image})`};
     }
-`
-
-const NotFoundMessage = styled.div`
-    text-align: center;
-    align-items: center;
-    margin-top: 200px;
-    padding: 20px;
 `
 
 const LocationContainer = styled.div`
@@ -126,7 +120,7 @@ export default function EventsPage ({user}) {
                             <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
                             <LocationContainer>
                                 <Location onClick={() => setLocationModalVisible(true)}>
-                                    <img width={"25px"} src={LOCATION}/>
+                                    <img alt={"location"} width={"25px"} src={LOCATION}/>
                                     <div>{city.name}</div>
                                 </Location>
                             </LocationContainer>
@@ -139,8 +133,7 @@ export default function EventsPage ({user}) {
                         </div>
 
                         <GridContainer>{!sortedEvents || sortedEvents.length === 0 ?
-                            <NotFoundMessage>К сожалению, ничего не нашли</NotFoundMessage> :
-                            sortedEvents.map(event => <EventCard key={event.id} event={event} user={user}/>)}
+                            <NotFound/> : sortedEvents.map(event => <EventCard key={event.id} event={event} user={user}/>)}
                         </GridContainer>
                     </Background>
             }

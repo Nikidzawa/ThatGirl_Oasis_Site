@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import CLOSE_BUTTON from "../../../img/delete.png"
+import {useEffect, useState} from "react";
 
 const ModalWindow = styled.div`
     z-index: 2;
@@ -27,8 +28,8 @@ const ModalContent = styled.div`
 `
 
 const Input = styled.input`
-    width: 100%;
-    height: 25px;
+    width: 95%;
+    padding: 5px;
     background-color: #f1e3d8;
     border-radius: 10px;
     font-size: 18px;
@@ -43,36 +44,49 @@ const CitiesContainer = styled.div`
 
 const CloseButton = styled.img`
     position: absolute;
+    cursor: pointer;
     right: 10px;
     top: 10px;
 `
 
 const CityContainer = styled.div`
     padding: 10px 0;
+    cursor: pointer;
 `
 
-export default function LocationModalWindow({locationModalVisible, setLocationModalVisible, cities, setCity}) {
-
-    function handleCity (city) {
+export default function LocationModalWindow({ locationModalVisible, setLocationModalVisible, cities, setCity }) {
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredCities, setFilteredCities] = useState([])
+    function handleChangeCity(city) {
         setCity(city);
         setLocationModalVisible(false);
     }
 
+    useEffect(() => {
+        if (cities) {
+            setFilteredCities(cities.filter(city =>
+                city.name.toLowerCase().includes(searchQuery.toLowerCase())
+            ));
+        }
+    }, [searchQuery, cities])
+
     return (
         <ModalWindow visible={locationModalVisible}>
             <ModalContent>
-                <CloseButton onClick={() => setLocationModalVisible(false)} width={"35px"} src={CLOSE_BUTTON}></CloseButton>
-                <div>
-                    <h2 style={{textAlign: "center"}}>Выбрать город</h2>
-                    <Input placeholder={"Поиск..."}/>
-                </div>
+                <CloseButton onClick={() => setLocationModalVisible(false)} width={"35px"}
+                             src={CLOSE_BUTTON}></CloseButton>
+                <h2 style={{ textAlign: "center" }}>Выбрать город</h2>
+                <Input placeholder={"Поиск..."} onChange={e => setSearchQuery(e.target.value)} value={searchQuery} />
                 <CitiesContainer>
-                    {
-                        cities ? cities.map(city => <CityContainer onClick={() => handleCity(city)} key={city.id}>{city.name}</CityContainer>) :
-                            <div>Города не созданы</div>
-                    }
+                    {filteredCities.length > 0 ? (
+                        filteredCities.map(city => (
+                            <CityContainer onClick={() => handleChangeCity(city)} key={city.id}>{city.name}</CityContainer>
+                        ))
+                    ) : (
+                        <div>Ничего не найдено</div>
+                    )}
                 </CitiesContainer>
             </ModalContent>
         </ModalWindow>
-    )
+    );
 }

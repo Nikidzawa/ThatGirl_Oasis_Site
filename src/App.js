@@ -20,7 +20,7 @@ const LoaderWrapper = styled.div`
     position: fixed;
     top: 0;
     right: 0;
-    bottom: 60px;
+    bottom: 0;
     left: 0;
 `
 
@@ -62,7 +62,7 @@ function App() {
                     <div style={{paddingTop: "70px"}}>
                         <Routes>
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
-                            <Route path={"/events/:id"} element={<EventPage user={user}/>} />
+                            <Route path={"/events/:id"} element={<EventPage role={userStatus}/>} />
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
                             <Route path={"/aboutUs"} element={<AboutUsPage />} />

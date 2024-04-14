@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {useEffect} from "react";
 
 const CenterText = styled.div`
     position: absolute;
@@ -10,6 +11,9 @@ const CenterText = styled.div`
 `
 
 export default function NotFoundPage () {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <CenterText>
             <div style={{textAlign: "center"}}>К сожалению, страницы не уже не существует</div>

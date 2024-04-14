@@ -4,6 +4,7 @@ import TeamMember from "./TeamMember";
 import TeamData from "./TeamData";
 import styled from "styled-components";
 import LOGO from "../../img/logo.png"
+import {useEffect} from "react";
 
 const Title = styled.div`
     font-size: 25px;
@@ -39,6 +40,9 @@ const AboutUsTextContainer = styled.div`
 `
 
 export default function AboutUsPage() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
     return (
         <div className="main">
             <PageNameHeader pageName={"О нас"} image={OUR_IMAGE}></PageNameHeader>
@@ -58,7 +62,7 @@ export default function AboutUsPage() {
                 <Title>Команда That Girls Oasis</Title>
                 <TeamContainer>
                     {
-                        TeamData.getTeam().map(teamMember => <TeamMember teamMember={teamMember}/>)
+                        TeamData.getTeam().map((teamMember, index) => <TeamMember key={index} teamMember={teamMember}/>)
                     }
                 </TeamContainer>
                 <div style={{margin: "10px 0"}}>

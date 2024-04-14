@@ -5,6 +5,7 @@ import STAR from "../../../img/star.png"
 import HEART from "../../../img/heart.png"
 import HEART_RED from "../../../img/heart-red.png"
 import {useNavigate} from "react-router-dom";
+import LOCATION_IMG from "../../../img/location.png"
 import DateFormatter from "../../../commonComponents/DateFormatter";
 
 const Card = styled.div`
@@ -39,6 +40,7 @@ const Content = styled.div`
 `
 const Name = styled.div`
     font-size: 22px;
+    font-weight: bold;
     padding: 10px 0 2px 0;
     @media screen and (max-width: 360px) {
         font-size: 18px;
@@ -185,13 +187,16 @@ export default function EventCard ({event}) {
             <Content>
                 <MainContainer>
                     <Location>
-                        <div>{event.address}</div>
+                        <div style={{display: "flex", gap: "3px", alignItems: "center"}}>
+                            <img width={"20px"} src={LOCATION_IMG}/>
+                            <div>{event.address}</div>
+                        </div>
                         <div style={{display: "flex", alignItems: "center"}}>
                             <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"Фотография"}/>
                             <Date>{DateFormatter.format(event.date)}</Date>
                         </div>
                     </Location>
-                    <Name><strong>{event.name}</strong></Name>
+                    <Name>{event.name}</Name>
                     <EventType><Circle/>{event.eventType.name}</EventType>
                     <Description>{event.smallDescription}</Description>
                 </MainContainer>

@@ -21,6 +21,16 @@ export default class InternalAPI {
         return fetch(url, requestOptions);
     }
 
+    static deleteEvent (eventId) {
+        const userId = localStorage.getItem("userId");
+        const url = `${this.defaultPath}/api/deleteEventById/${eventId}/${userId}`;
+        const requestOptions = {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+        };
+        return fetch(url, requestOptions);
+    }
+
     static setImages(event) {
         const userId = localStorage.getItem("userId");
         const url = `${this.defaultPath}/api/setImages/${userId}`
@@ -83,21 +93,6 @@ export default class InternalAPI {
         return fetch(url).then(response => response.json());
     }
 
-    static getFavouriteEventsByCityId (cityId) {
-        const url = `${this.defaultPath}/api/getFavouriteEventsByCityId/${cityId}`
-        return fetch(url).then(response => response.json());
-    }
-
-    static setOrRemoveEventFavorite (cityId, eventId) {
-        const userId = localStorage.getItem("userId");
-        const url = `${this.defaultPath}/api/setOrRemoveEventFavorite/${cityId}/${eventId}/${userId}`;
-        const requestOptions = {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-        };
-        return fetch(url, requestOptions).then(response => response.json());
-    }
-
     static getAllCities () {
         const url = `${this.defaultPath}/api/getEventCities`
         return fetch(url).then(response => response.json());
@@ -112,15 +107,5 @@ export default class InternalAPI {
             body: JSON.stringify(eventCity)
         };
         return fetch(url, requestOptions).then(response => response.json());
-    }
-
-    static deleteEventCityById (eventCityId) {
-        const userId = localStorage.getItem("userId");
-        const url = `${this.defaultPath}/api/deleteEventCity/${eventCityId}/${userId}`;
-        const requestOptions = {
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        };
-        return fetch(url, requestOptions);
     }
 }
