@@ -4,7 +4,7 @@ html, body, #root {
   min-height: 900px;
 }
 body {
-  font-family:  sans-serif;
+  font-family: "Candara", arial, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: aliceblue;

@@ -24,6 +24,8 @@ const LoadingWrapper = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
+    font-size: 26px;
+    text-align: center;
 `
 const Background = styled.div`
     background-image: none;
@@ -114,7 +116,7 @@ export default function EventsPage ({user}) {
         <div>
             {
                 loading ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
-                    !events ? <LoadingWrapper>Мероприятия не найдены</LoadingWrapper> :
+                    !events ? <LoadingWrapper>Никаких мероприятий пока не запланировано, заходите позже</LoadingWrapper> :
                     <Background className={"main"} image={BACKGROUND_IMAGE}>
                         <div style={{backgroundColor: "#333"}}>
                             <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>

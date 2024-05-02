@@ -1,6 +1,6 @@
 export default class InternalAPI {
 
-    static defaultPath = "https://nikidzawa.online"
+    static defaultPath = "http://localhost:8080"
     static getUser (userId) {
         const url = `${this.defaultPath}/api/getUserById/${userId}`
         return fetch(url);
@@ -105,6 +105,14 @@ export default class InternalAPI {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(eventCity)
+        };
+        return fetch(url, requestOptions).then(response => response.json());
+    }
+    static startPay (eventId, count) {
+        const url = `${this.defaultPath}/api/startPay/${eventId}/${count}`
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
         };
         return fetch(url, requestOptions).then(response => response.json());
     }

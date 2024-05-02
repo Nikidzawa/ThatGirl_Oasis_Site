@@ -40,7 +40,6 @@ const HeaderContainer = styled.header`
 
 const HeaderContent = styled.div`
     color: #562626;
-    font-family: "Candara";
     font-weight: bold;
     height: 100%;
     margin: 0 auto;
@@ -152,7 +151,7 @@ export default function Header ({userStatus}) {
                     <div>
                         <SiteName onClick={goToEventsPage}>
                             <img src={LOGO} width={"40px"}/>
-                            <div>THAT GIRLS OASIS </div>
+                            <div style={{fontSize: "25px"}}>THAT GIRL OASIS </div>
                         </SiteName>
                     </div>
                     <MenuButton onClick={handleMenu} src={menuVisible ? CLOSE_BUTTON : MENU_BUTTON_IMAGE}/>

@@ -5,12 +5,11 @@ const PageNameContainer = styled.div`
     background-color: #333333;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
 `
 
 const NameContainer = styled.div`
-    font-size: 28px;
-    font-family: "Trebuchet MS";
+    font-size: 27px;
     font-weight: bold;
 `
 

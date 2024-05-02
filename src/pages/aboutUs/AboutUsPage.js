@@ -49,7 +49,7 @@ export default function AboutUsPage() {
             <div style={{padding: "10px", minHeight: "100vh"}}>
                 <AboutUsTextContainer>
                     <img width={"200px"} src={LOGO}/>
-                    <div>Проект «That girl oasis» — это место для «той самой» девушки, которая хочет вести яркую и
+                    <div>Проект «That Girl Oasis» — это место для «той самой» девушки, которая хочет вести яркую и
                         богатую во всех сферах жизнь
                     </div>
                     <div>Наш проект направлен на саморазвитие, знакомство, общение, поддержку, отдых, здоровый образ
@@ -59,7 +59,7 @@ export default function AboutUsPage() {
                     <div>Мы устраиваем мероприятия, в которых собраны самые разные направления для женского развития✨
                     </div>
                 </AboutUsTextContainer>
-                <Title>Команда That Girls Oasis</Title>
+                <Title>Команда That Girl Oasis</Title>
                 <TeamContainer>
                     {
                         TeamData.getTeam().map((teamMember, index) => <TeamMember key={index} teamMember={teamMember}/>)

@@ -42,6 +42,7 @@ function App() {
                     getUserStatus(user)
                 }
             }
+            localStorage.setItem("userId", user ? user.id : 0);
             setLoading(false);
         }
 
@@ -49,7 +50,6 @@ function App() {
             const status = await InternalAPI.getRole(user.id);
             setUserStatus(status);
             setLoading(false);
-            localStorage.setItem("userId", user.id);
         }
 
     }, []);
@@ -58,11 +58,13 @@ function App() {
         <div>
             {loading ? <LoaderWrapper><Loading circleColor={"#333"}/></LoaderWrapper> :
                 <div>
-                    <Header userStatus={userStatus}/>
+                    {/*//TODO-СТАТУС*/}
+                    <Header userStatus={"creator"}/>
                     <div style={{paddingTop: "70px"}}>
                         <Routes>
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
-                            <Route path={"/events/:id"} element={<EventPage role={userStatus}/>} />
+                            {/*//TODO-СТАТУС*/}
+                            <Route path={"/events/:id"} element={<EventPage role={"creator"}/>} />
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
                             <Route path={"/aboutUs"} element={<AboutUsPage />} />

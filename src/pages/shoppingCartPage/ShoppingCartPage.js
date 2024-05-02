@@ -4,6 +4,8 @@ import {useEffect, useState} from "react";
 import EventCart from "./components/EventCart";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
+import InternalAPI from "../../API/InternalAPI";
+import {useNavigate} from "react-router-dom";
 
 const EventsContainer = styled.div`
     display: flex;
@@ -45,14 +47,16 @@ const CenterText = styled.div`
     position: absolute;
     top: 50%;
     left: 50%;
+    width: 95%;
     transform: translate(-50%, -50%);
     color: #333333;
-    font-size: 20px;
+    font-size: 26px;
 `
 export default function ShoppingCartPage () {
     const [eventCarts, setEventCarts] = useState(null);
     const [loading, setLoading] = useState(null);
     const [finalCost, setFinalCost] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -80,6 +84,16 @@ export default function ShoppingCartPage () {
         }
     }
 
+    async function startPay () {
+        const firstEvent = eventCarts[0];
+        const count = firstEvent.count ? firstEvent.count : 1;
+        const eventId = firstEvent.id;
+
+        const result = await InternalAPI.startPay(eventId, count);
+        console.log(result);
+        navigate(result.confirmation.confirmation_url);
+    }
+
     return (
         <div className={"main"}>
             <PageNameHeader pageName={"Корзина"} image={SHOPPING_CART_IMAGE} />
@@ -102,7 +116,10 @@ export default function ShoppingCartPage () {
                     </CenterText>
             }
             {
-                eventCarts && eventCarts.length > 0 && finalCost && <ButtonsContainer><Button>Оплатить {finalCost}₽</Button></ButtonsContainer>
+                eventCarts && eventCarts.length > 0 && finalCost &&
+                <ButtonsContainer>
+                    <Button onClick={startPay}>Оплатить {finalCost}₽</Button>
+                </ButtonsContainer>
             }
         </div>
     )
