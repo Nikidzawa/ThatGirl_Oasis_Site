@@ -2,13 +2,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
-import InternalAPI from "../../API/InternalAPI";
 import HEART_IMG from "../../img/heart.png"
 import RED_HEART_IMG from "../../img/red_heart.png"
 import DateFormatter from "../../commonComponents/DateFormatter";
 import BUCKET from "../../img/bucket.png"
 import FireBase from "../../API/FireBase";
 import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
+import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -157,8 +157,8 @@ export default function EventPage ({role}) {
         window.scrollTo(0, 0);
         getEventData();
         async function getEventData () {
-            try {
-                const response = await InternalAPI.getEvent(id);
+
+                const response = await EventsAPI.getEventById(id);
                 if (response.ok) {
                     const eventData = await response.json();
                     setEvent(eventData);
@@ -166,15 +166,12 @@ export default function EventPage ({role}) {
                     checkEventInCart(eventData.id);
                     checkFavourite(eventData.id);
                 } else {
-                    throw new Error("Ошибка при загрузке мероприятия");
+                    navigate("/404")
+                    console.error("Мероприятие не найдено")
                 }
-            } catch (ex) {
-                navigate("/404")
-                console.log(ex)
-            } finally {
-                setLoading(false)
-            }
+            setLoading(false)
         }
+
         async function checkEventInCart(eventId) {
             const cartEvents = JSON.parse(localStorage.getItem("cartEvents")) || [];
             setEventContainsInCart(cartEvents.some(event => event.id === eventId));
@@ -238,7 +235,7 @@ export default function EventPage ({role}) {
         try {
             setDeleteLoading(true);
             setDeleteText("Удаление мероприятия из базы данных...")
-            const response = await InternalAPI.deleteEvent(id);
+            const response = await EventsAPI.deleteEvent(id);
             if (response.ok) {
                 setDeleteText("Мероприятие успешно удалено, удаляем изображения...")
                 try {

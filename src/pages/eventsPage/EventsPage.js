@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import EventCard from "./components/EventCard";
 import {useEffect, useState} from "react";
-import InternalAPI from "../../API/InternalAPI";
 import Loading from "../../commonComponents/Loading";
 import GridContainer from "../../commonComponents/GridContainer";
 import SearchPanel from "./components/SearchPannel";
@@ -12,6 +11,7 @@ import PageNameHeader from "../../commonComponents/PageNameHeader";
 import LOCATION from "../../img/location.png"
 import LocationModalWindow from "./components/LocationModalWindow";
 import NotFound from "./components/NotFound";
+import EventCityAPI from "../../API/internal/categoryes/events/EventCityAPI";
 
 const LoadingWrapper = styled.div`
     color: #333;
@@ -78,7 +78,7 @@ export default function EventsPage ({user}) {
         fetchCities();
 
         async function fetchCities () {
-            const responseCities = await InternalAPI.getAllCities();
+            const responseCities = await EventCityAPI.getAllCities();
             if (responseCities.length === 0) {
                 setLoading(false);
                 return;
@@ -104,7 +104,7 @@ export default function EventsPage ({user}) {
         async function getEvents () {
             if (city) {
                 setLoading(true);
-                const response = await InternalAPI.getEventsByCityId(city.id);
+                const response = await EventCityAPI.getEventsByCityId(city.id);
                 setEvents(response);
                 const favouriteEvents = response.filter(event => event.favorite === true);
                 setFavoriteEvents(favouriteEvents);

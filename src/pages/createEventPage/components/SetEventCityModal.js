@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import InternalAPI from "../../../API/InternalAPI";
 import DELETE_IMAGE from "../../../img/delete.png"
+import EventCityAPI from "../../../API/internal/categoryes/events/EventCityAPI";
 
 const ModalWindow = styled.div`
     position: fixed;
@@ -57,7 +57,7 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
     useEffect(() => {
         getAllEventCities();
         async function getAllEventCities() {
-            const data = await InternalAPI.getAllCities();
+            const data = await EventCityAPI.getAllCities();
             setCities(data);
         }
     }, []);
@@ -76,7 +76,7 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
         }
 
         setCityExists(false)
-        const response = await InternalAPI.postEventCity({
+        const response = await EventCityAPI.postEventCity({
             name: newEventCityName
         })
         setCities(prevEventCities => [...prevEventCities, response]);
@@ -89,13 +89,13 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
 
     async function deleteEventCity(e, city) {
         e.stopPropagation();
-        const checkResponse = await InternalAPI.getEventsByCityId(city.id);
+        const checkResponse = await EventCityAPI.getEventsByCityId(city.id);
         if (checkResponse.length > 0) {
             setDeleteException(true);
             return;
         }
 
-        const deleteResponse = await InternalAPI.deleteEventCityById(city.id);
+        const deleteResponse = await EventCityAPI.deleteEventCityById(city.id);
         if (deleteResponse.ok) {
             setDeleteException(false);
             setCities(cities.filter(event => event.id !== city.id));

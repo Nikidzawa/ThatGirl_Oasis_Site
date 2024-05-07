@@ -4,8 +4,8 @@ import {useEffect, useState} from "react";
 import EventCart from "./components/EventCart";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
-import InternalAPI from "../../API/InternalAPI";
 import {useNavigate} from "react-router-dom";
+import PaymentAPI from "../../API/internal/categoryes/PaymentAPI";
 
 const EventsContainer = styled.div`
     display: flex;
@@ -85,13 +85,9 @@ export default function ShoppingCartPage () {
     }
 
     async function startPay () {
-        const firstEvent = eventCarts[0];
-        const count = firstEvent.count ? firstEvent.count : 1;
-        const eventId = firstEvent.id;
-
-        const result = await InternalAPI.startPay(eventId, count);
+        const result = await PaymentAPI.startPay(eventCarts);
         console.log(result);
-        navigate(result.confirmation.confirmation_url);
+        window.location.href = result.confirmation.confirmation_url;
     }
 
     return (

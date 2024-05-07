@@ -2,7 +2,6 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import EventsPage from "./pages/eventsPage/EventsPage";
 import {useEffect, useState} from "react";
 import Loading from "./commonComponents/Loading";
-import InternalAPI from "./API/InternalAPI";
 import CreateEventPage from "./pages/createEventPage/CreateEventPage";
 import styled from "styled-components";
 import Header from "./commonComponents/Header";
@@ -10,6 +9,8 @@ import EventPage from "./pages/eventPage/EventPage";
 import NotFoundPage from "./pages/notFoundPage/NotFoundPage";
 import ShoppingCartPage from "./pages/shoppingCartPage/ShoppingCartPage";
 import AboutUsPage from "./pages/aboutUs/AboutUsPage";
+import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
+import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
 
 
 const LoaderWrapper = styled.div`
@@ -35,7 +36,7 @@ function App() {
             const tg = window.Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
             if (user) {
-                const userData = await InternalAPI.getUser(user.id);
+                const userData = await UsersAPI.getUser(user.id);
                 if (userData.ok) {
                     const user = await userData.json();
                     setUser(user);
@@ -47,7 +48,7 @@ function App() {
         }
 
         async function getUserStatus (user) {
-            const status = await InternalAPI.getRole(user.id);
+            const status = await RolesAPI.getRole(user.id);
             setUserStatus(status);
             setLoading(false);
         }

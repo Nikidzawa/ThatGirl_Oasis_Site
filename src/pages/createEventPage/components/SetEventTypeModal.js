@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import {useEffect, useState} from "react";
-import InternalAPI from "../../../API/InternalAPI";
 import DELETE_IMAGE from "../../../img/delete.png"
+import EventTypesAPI from "../../../API/internal/categoryes/events/EventTypesAPI";
 
 const ModalWindow = styled.div`
     position: fixed;
@@ -57,7 +57,7 @@ const SetEventTypeModal = ({modalIsVisible, setModalVisible, setSelectedType, se
     useEffect(() => {
         getAllEventTypes();
         async function getAllEventTypes() {
-            const data = await InternalAPI.getAllEventTypes();
+            const data = await EventTypesAPI.getAllEventTypes();
             setEventTypes(data);
         }
     }, []);
@@ -76,7 +76,7 @@ const SetEventTypeModal = ({modalIsVisible, setModalVisible, setSelectedType, se
         }
 
         setTypeExists(false)
-        const responseEventType = await InternalAPI.postEventType({
+        const responseEventType = await EventTypesAPI.postEventType({
             name: newEventTypeName
         })
         setEventTypes(prevEventTypes => [...prevEventTypes, responseEventType]);
@@ -89,13 +89,13 @@ const SetEventTypeModal = ({modalIsVisible, setModalVisible, setSelectedType, se
 
     async function deleteEventType(e, type) {
         e.stopPropagation();
-        const checkResponse = await InternalAPI.getEventsByType(type.id);
+        const checkResponse = await EventTypesAPI.getEventsByType(type.id);
         if (checkResponse.length > 0) {
             setDeleteException(true);
             return;
         }
 
-        const deleteResponse = await InternalAPI.deleteEventTypeById(type.id);
+        const deleteResponse = await EventTypesAPI.deleteEventTypeById(type.id);
         if (deleteResponse.ok) {
             setDeleteException(false);
             setEventTypes(eventTypes.filter(event => event.id !== type.id));

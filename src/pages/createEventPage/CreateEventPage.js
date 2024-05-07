@@ -3,11 +3,11 @@ import styled from "styled-components";
 import React, {useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import FireBase from "../../API/FireBase";
-import InternalAPI from "../../API/InternalAPI";
 import PageNameHeader from "../../commonComponents/PageNameHeader";
 import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
 import SetEventTypeModal from "./components/SetEventTypeModal";
 import SetEventCityModal from "./components/SetEventCityModal";
+import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
 
 
 const Content = styled.div`
@@ -134,7 +134,7 @@ export default function CreateEventPage() {
                 eventType: selectedType
             }
             try {
-                const response = await InternalAPI.postEvent(eventObject);
+                const response = await EventsAPI.postEvent(eventObject);
                 if (response.ok) {
                     eventObject = await response.json();
                 } else {
@@ -151,7 +151,7 @@ export default function CreateEventPage() {
                     eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
                 }
 
-                const response2 = await InternalAPI.setImages(eventObject);
+                const response2 = await EventsAPI.setImages(eventObject);
                 if (response2.ok) {
                     setException(false);
                     setSuccess(true)

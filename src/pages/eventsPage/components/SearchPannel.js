@@ -5,7 +5,7 @@ import BALLON from "../../../img/ballon.png";
 import RedHeart from "../../../img/red_heart.png";
 import styled from "styled-components";
 import {useEffect, useMemo, useState} from "react";
-import InternalAPI from "../../../API/InternalAPI";
+import EventTypesAPI from "../../../API/internal/categoryes/events/EventTypesAPI";
 
 const Button = styled.button`
     height: 40px;
@@ -107,7 +107,7 @@ export default function SearchPanel ({events, setSortedEvents}) {
     useEffect(() => {
         getTypes();
         async function getTypes () {
-            const response = await InternalAPI.getAllEventTypes();
+            const response = await EventTypesAPI.getAllEventTypes();
             setTypes(response);
         }
     }, [])
