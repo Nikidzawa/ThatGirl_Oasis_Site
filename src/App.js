@@ -11,6 +11,7 @@ import ShoppingCartPage from "./pages/shoppingCartPage/ShoppingCartPage";
 import AboutUsPage from "./pages/aboutUs/AboutUsPage";
 import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
 import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
+import CheckRegister from "./pages/checkRegister/CheckRegister";
 
 
 const LoaderWrapper = styled.div`
@@ -69,6 +70,7 @@ function App() {
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
                             <Route path={"/aboutUs"} element={<AboutUsPage />} />
+                            <Route path={"checkregister/:eventId/:userId"} element={<CheckRegister/>}></Route>
                             <Route path={"/404"} element={<NotFoundPage />} />
                             <Route path={"/*"} element={<Navigate to={"/events"} />} />
                         </Routes>

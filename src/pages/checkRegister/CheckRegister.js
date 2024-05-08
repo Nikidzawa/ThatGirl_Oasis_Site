@@ -1,0 +1,46 @@
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
+import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
+import styled from "styled-components";
+import DateFormatter from "../../commonComponents/DateFormatter";
+
+const Container = styled.div`
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+`
+
+export default function CheckRegister() {
+    const { eventId, mail } = useParams();
+    const [event, setEvent] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        async function checkRegister() {
+            if (eventId && userId) {
+                const response = await EventsAPI.checkRegister(eventId, mail);
+                if (response.ok) {
+                    const responseJson = await response.json();
+                    setEvent(responseJson);
+                }
+            }
+            setLoading(false);
+        }
+        checkRegister();
+    }, [eventId, userId]);
+
+    return (
+        <>
+            {
+                loading ? <div>Загрузка</div> : !event ? <div>Событие не найдено</div> :
+                    <Container>
+                        <h1>{event.name} {DateFormatter.format(event.date)}</h1>
+                        <h3 style={{color: 'green'}}>Билет подтверждён</h3>
+                        <img src={event.mainImage}/>
+                    </Container>
+            }
+        </>
+    );
+}
+
