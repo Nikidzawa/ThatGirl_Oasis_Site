@@ -47,7 +47,7 @@ class TeamData {
                 img: NIKITA,
                 name: "Никита",
                 role: "Ведущий разработчик",
-                description: "Разработал экосистему That Girls Oasis",
+                description: "Разработал экосистему That Girl Oasis",
                 socialLinks: [
                     {
                         img: TELEGRAM,

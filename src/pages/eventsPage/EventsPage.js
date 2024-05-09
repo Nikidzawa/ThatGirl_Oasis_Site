@@ -116,16 +116,18 @@ export default function EventsPage ({user}) {
         <div>
             {
                 loading ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
-                    !events ? <LoadingWrapper>Никаких мероприятий пока не запланировано, заходите позже</LoadingWrapper> :
                     <Background className={"main"} image={BACKGROUND_IMAGE}>
                         <div style={{backgroundColor: "#333"}}>
                             <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
-                            <LocationContainer>
-                                <Location onClick={() => setLocationModalVisible(true)}>
-                                    <img alt={"location"} width={"25px"} src={LOCATION}/>
-                                    <div>{city.name}</div>
-                                </Location>
-                            </LocationContainer>
+                            {
+                                city &&
+                                <LocationContainer>
+                                    <Location onClick={() => setLocationModalVisible(true)}>
+                                        <img alt={"location"} width={"25px"} src={LOCATION}/>
+                                        <div>{city.name}</div>
+                                    </Location>
+                                </LocationContainer>
+                            }
                             {
                                 favoriteEvents &&
                                 favoriteEvents.length > 0 &&

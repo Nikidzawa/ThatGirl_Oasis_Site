@@ -15,7 +15,7 @@ const Background = styled.div`
 `
 
 const Text = styled.div`
-    font-size: 22px;
+    font-size: 23px;
 `
 
 export default function NotFound () {

@@ -43,7 +43,7 @@ const HeaderContent = styled.div`
     font-weight: bold;
     height: 100%;
     margin: 0 auto;
-    max-width: 1200px;
+    max-width: 1000px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -54,7 +54,7 @@ const SiteName = styled.div`
     display: flex;
     align-items: center;
     gap: 5px;
-    font-size: 26px;
+    font-size: 24px;
     cursor: pointer;
     
     @media screen and (max-width: 370px){
@@ -148,12 +148,10 @@ export default function Header ({userStatus}) {
         <header>
             <HeaderContainer>
                 <HeaderContent>
-                    <div>
-                        <SiteName onClick={goToEventsPage}>
-                            <img src={LOGO} width={"40px"}/>
-                            <div style={{fontSize: "25px"}}>THAT GIRL OASIS </div>
-                        </SiteName>
-                    </div>
+                    <SiteName onClick={goToEventsPage}>
+                        <img src={LOGO} width={"40px"}/>
+                        <div>THAT GIRL OASIS</div>
+                    </SiteName>
                     <MenuButton onClick={handleMenu} src={menuVisible ? CLOSE_BUTTON : MENU_BUTTON_IMAGE}/>
                 </HeaderContent>
             </HeaderContainer>

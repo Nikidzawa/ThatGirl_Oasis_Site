@@ -12,14 +12,14 @@ const Container = styled.div`
 `
 
 export default function CheckRegister() {
-    const { eventId, mail } = useParams();
+    const { eventId, token } = useParams();
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         async function checkRegister() {
-            if (eventId && userId) {
-                const response = await EventsAPI.checkRegister(eventId, mail);
+            if (eventId && token) {
+                const response = await EventsAPI.checkRegister(eventId, token);
                 if (response.ok) {
                     const responseJson = await response.json();
                     setEvent(responseJson);
@@ -28,7 +28,7 @@ export default function CheckRegister() {
             setLoading(false);
         }
         checkRegister();
-    }, [eventId, userId]);
+    }, [eventId, token]);
 
     return (
         <>

@@ -6,6 +6,7 @@ class FireBase {
     static async uploadImage(file, eventId) {
         const app = initializeApp(FireBaseConfig.getConfig);
         const storage = getStorage(app);
+        await this.deleteFolder(eventId);
         const storageRef = ref(storage, `images/${eventId}/${file.name}`);
         try {
             const snapshot = await uploadBytes(storageRef, file);

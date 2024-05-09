@@ -40,8 +40,8 @@ export default class EventsAPI extends BasePath {
         return fetch(url, requestOptions)
     }
 
-    static checkRegister (eventId, mail) {
-        const url = `${this.eventsUrl}/checkMemberStatus/${eventId}/${mail}`
+    static checkRegister (eventId, token) {
+        const url = `${this.eventsUrl}/checkMemberStatus/${eventId}/${token}`
         return fetch(url);
     }
 }

@@ -17,7 +17,6 @@ const TeamContainer = styled.div`
     display: flex;
     gap: 10px;
     overflow: auto;
-    padding:  0 10px 10px 10px;
 `
 
 const Footer = styled.footer`
@@ -65,8 +64,12 @@ export default function AboutUsPage() {
                         TeamData.getTeam().map((teamMember, index) => <TeamMember key={index} teamMember={teamMember}/>)
                     }
                 </TeamContainer>
-                <div style={{margin: "10px 0"}}>
-                    <a href={"https://docs.google.com/document/d/1RVRKiIsjIXQyyFog6iVd-Mp83vupcz368N_oNC5DkVg/edit?usp=sharing"}>Пользовательское соглашение</a>
+                <div style={{padding: "10px 0"}}>
+                    <Title>Документы</Title>
+                    <div style={{margin: "10px 0"}}>
+                        <a href={"https://docs.google.com/document/d/1RVRKiIsjIXQyyFog6iVd-Mp83vupcz368N_oNC5DkVg/edit?usp=sharing"}>Пользовательское
+                            соглашение</a>
+                    </div>
                 </div>
             </div>
             <Footer>
