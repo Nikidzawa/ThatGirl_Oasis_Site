@@ -37,7 +37,6 @@ const Background = styled.div`
 `
 
 const LocationContainer = styled.div`
-    padding-left: 15px;
     display: flex;
 `
 
@@ -49,6 +48,14 @@ const Location = styled.div`
     padding: 5px 10px 5px 5px;
     border-radius: 10px;
 `
+const Container = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 20px 10px 10px 15px;
+`;
 
 function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371;
@@ -118,16 +125,18 @@ export default function EventsPage ({user}) {
                 loading ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
                     <Background className={"main"} image={BACKGROUND_IMAGE}>
                         <div style={{backgroundColor: "#333"}}>
-                            <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
-                            {
-                                city &&
-                                <LocationContainer>
-                                    <Location onClick={() => setLocationModalVisible(true)}>
-                                        <img alt={"location"} width={"25px"} src={LOCATION}/>
-                                        <div>{city.name}</div>
-                                    </Location>
-                                </LocationContainer>
-                            }
+                            <Container>
+                                <PageNameHeader pageName={"Мероприятия"} image={EVENT_IMAGE}></PageNameHeader>
+                                {
+                                    city &&
+                                    <LocationContainer>
+                                        <Location onClick={() => setLocationModalVisible(true)}>
+                                            <img alt={"location"} width={"25px"} src={LOCATION}/>
+                                            <div>{city.name}</div>
+                                        </Location>
+                                    </LocationContainer>
+                                }
+                            </Container>
                             {
                                 favoriteEvents &&
                                 favoriteEvents.length > 0 &&

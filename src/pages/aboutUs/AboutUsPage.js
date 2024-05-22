@@ -44,7 +44,7 @@ export default function AboutUsPage() {
     }, []);
     return (
         <div className="main">
-            <PageNameHeader pageName={"О нас"} image={OUR_IMAGE}></PageNameHeader>
+            <PageNameHeader padding={"20px"} pageName={"О нас"} image={OUR_IMAGE}></PageNameHeader>
             <div style={{padding: "10px", minHeight: "100vh"}}>
                 <AboutUsTextContainer>
                     <img width={"200px"} src={LOGO}/>

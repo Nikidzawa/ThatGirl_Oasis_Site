@@ -1,11 +1,10 @@
 import styled from "styled-components";
 
 const PageNameContainer = styled.div`
-    padding: 20px;
     background-color: #333333;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 10px;
 `
 
 const NameContainer = styled.div`
@@ -14,9 +13,9 @@ const NameContainer = styled.div`
     color: #eeded2;
 `
 
-export default function PageNameHeader({image, pageName}) {
+export default function PageNameHeader({image, pageName, padding}) {
     return (
-        <PageNameContainer>
+        <PageNameContainer style={{padding: padding}}>
             <img width={"35px"} src={image}/>
             <NameContainer>{pageName}</NameContainer>
         </PageNameContainer>

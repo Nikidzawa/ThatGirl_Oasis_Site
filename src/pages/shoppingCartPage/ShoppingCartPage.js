@@ -136,7 +136,7 @@ export default function ShoppingCartPage () {
 
     return (
         <div className={"main"}>
-            <PageNameHeader pageName={"Корзина"} image={SHOPPING_CART_IMAGE} />
+            <PageNameHeader padding={"20px"} pageName={"Корзина"} image={SHOPPING_CART_IMAGE} />
             {
                 loading ? <LoaderWrapper><Loading circleColor={"black"}/></LoaderWrapper> : eventCarts && eventCarts.length > 0 ?
                     <div style={{padding: "5px 5px 70px 5px"}}>

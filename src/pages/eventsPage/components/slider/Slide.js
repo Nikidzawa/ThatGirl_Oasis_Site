@@ -15,7 +15,6 @@ const SlideContainer = styled.div`
 const EventName = styled.div`
     font-size: 25px;
     font-weight: bold;
-    font-family: Candara;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;

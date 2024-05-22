@@ -141,7 +141,6 @@ export default function CreateEventPage() {
                     throw new Error(response.status)
                 }
                 const eventId = eventObject.id;
-                await FireBase.deleteFolder(eventId);
                 const mainImageHref = await FireBase.uploadImage(image, eventId);
                 eventObject.mainImage = { href: mainImageHref };
 
@@ -205,7 +204,7 @@ export default function CreateEventPage() {
 
     return (
         <Content className={"main"}>
-            <PageNameHeader image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
+            <PageNameHeader padding={"20px"} image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
                 <ButtonAndText>
