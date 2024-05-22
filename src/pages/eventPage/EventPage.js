@@ -146,6 +146,7 @@ export default function EventPage ({role}) {
     const [checkContainsInCart, setCheckContainsInCart] = useState(true);
 
     const [selectedImage, setSelectedImage] = useState(null);
+    const [eventImages, setEventImages] = useState(null);
 
     const [isOpen,setOpen] = useState(false);
     const [eventContainsInCart, setEventContainsInCart] = useState(false);
@@ -162,7 +163,8 @@ export default function EventPage ({role}) {
                 if (response.ok) {
                     const eventData = await response.json();
                     setEvent(eventData);
-                    setSelectedImage(eventData.mainImage)
+                    setSelectedImage(eventData.mainImage);
+                    getEventImages(eventData.id);
                     checkEventInCart(eventData.id);
                     checkFavourite(eventData.id);
                 } else {
@@ -170,6 +172,14 @@ export default function EventPage ({role}) {
                     console.error("Мероприятие не найдено")
                 }
             setLoading(false)
+        }
+
+        async function getEventImages (eventId) {
+            const response = await EventsAPI.getEventImagesByEventId(eventId);
+            if (response.ok) {
+                const json = await response.json();
+                setEventImages(json);
+            } else console.error(response.status)
         }
 
         async function checkEventInCart(eventId) {
@@ -275,13 +285,13 @@ export default function EventPage ({role}) {
                             selectedImage && <img height={"auto"} width={"100%"} src={selectedImage.href} alt={"Фотография"}/>
                         }
                         <Images>
-                            {event.eventImages && event.eventImages.length > 0 &&
+                            {eventImages && eventImages.length > 0 &&
                                 <>
                                     {
                                         <Img onClick={() => setSelectedImage(event.mainImage)} src={event.mainImage.href}/>
                                     }
                                     {
-                                        event.eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
+                                        eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
                                     }
                                 </>
                             }
