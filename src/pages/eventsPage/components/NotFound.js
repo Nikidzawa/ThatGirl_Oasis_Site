@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import NOTFOUND_IMAGE from "../../../img/notFound.png"
+import NOTFOUND_IMAGE from "../../../img/notFound2.png"
 
 const Background = styled.div`
     display: flex;
