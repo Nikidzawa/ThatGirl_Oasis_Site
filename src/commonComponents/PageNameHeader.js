@@ -11,6 +11,7 @@ const PageNameContainer = styled.div`
 const NameContainer = styled.div`
     font-size: 27px;
     font-weight: bold;
+    color: #eeded2;
 `
 
 export default function PageNameHeader({image, pageName}) {

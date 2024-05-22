@@ -141,12 +141,12 @@ export default function CreateEventPage() {
                     throw new Error(response.status)
                 }
                 const eventId = eventObject.id;
-
+                await FireBase.deleteFolder(eventId);
                 const mainImageHref = await FireBase.uploadImage(image, eventId);
                 eventObject.mainImage = { href: mainImageHref };
 
                 if (images && images.length > 0) {
-                    const imagesPromises = images.map(image => FireBase.uploadImage(image, eventId));
+                    const imagesPromises = images.map(singleImage => FireBase.uploadImage(singleImage, eventId));
                     const imagesHrefs = await Promise.all(imagesPromises);
                     eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
                 }
