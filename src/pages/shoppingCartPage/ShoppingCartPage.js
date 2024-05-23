@@ -1,11 +1,12 @@
 import SHOPPING_CART_IMAGE from "../../img/cart.png"
 import CART_NOT_FOUND_IMAGE from "../../img/cartNotFound.png"
 import PageNameHeader from "../../commonComponents/PageNameHeader";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import EventCart from "./components/EventCart";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
 import PaymentAPI from "../../API/internal/categoryes/PaymentAPI";
+import {useNavigate} from "react-router-dom";
 
 const EventsContainer = styled.div`
     display: flex;
@@ -43,7 +44,7 @@ const Button = styled.button`
     flex: 1;
 `
 const CenterText = styled.div`
-    height: 100vh;
+    height: calc(100vh - 180px);
     justify-content: center;
     display: flex;
     flex-direction: column;
@@ -86,6 +87,7 @@ export default function ShoppingCartPage () {
     const [emailIsValid, setEmailIsValid] = useState(true);
     const [emailIsNull, setEmailIsNull] = useState(false);
     const [emailIsEquals, setEmailIsEquals] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -133,6 +135,9 @@ export default function ShoppingCartPage () {
             setEmailIsNull(true);
         }
     }
+    function goToEventsPage () {
+        navigate("/events")
+    }
 
     return (
         <div className={"main"}>
@@ -171,6 +176,7 @@ export default function ShoppingCartPage () {
                     <CenterText>
                         <img width={"80px"} src={CART_NOT_FOUND_IMAGE} alt={"Не найдено"}/>
                         <div style={{textAlign: "center"}}>Вы пока не добавили мероприятия в корзину</div>
+                        <div style={{fontSize: "20px", color: "green", cursor: "pointer"}} onClick={goToEventsPage}>Добавить мероприятие</div>
                     </CenterText>
             }
             {

@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {useEffect} from "react";
 import NOT_FOUND_IMAGE from "../../img/notFound.png"
+import React from 'react';
 
 const MainContainer = styled.div`
     display: flex;

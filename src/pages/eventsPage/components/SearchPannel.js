@@ -6,6 +6,7 @@ import RedHeart from "../../../img/red_heart.png";
 import styled from "styled-components";
 import {useEffect, useMemo, useState} from "react";
 import EventTypesAPI from "../../../API/internal/categoryes/events/EventTypesAPI";
+import React from 'react';
 
 const Button = styled.button`
     height: 40px;
@@ -80,6 +81,7 @@ const Select = styled.select`
     background-repeat: no-repeat;
     background-position: center left 5px;
     background-size: 25px;
+    cursor: pointer;
     ${(props) => props.value !== "NONE" ? 
             `
             background-color: green;
@@ -96,6 +98,8 @@ const Select = styled.select`
         color: black;
     }
 `
+
+
 
 export default function SearchPanel ({events, setSortedEvents}) {
     const [sortBy, setSortBy] = useState(["Скоро", "Рядом"]);

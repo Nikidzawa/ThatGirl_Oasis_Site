@@ -3,6 +3,7 @@ import PLUS from "../../../img/plus.png"
 import MINUS from "../../../img/minus.png"
 import BUCKET from "../../../img/bucket.png"
 import {useNavigate} from "react-router-dom";
+import React from 'react';
 
 const Background = styled.div`
     height: 80px;
@@ -34,8 +35,9 @@ const PriceAndCountContainer = styled.div`
     justify-content: space-between;
     padding-top: 6px;
 `
-const Text = styled.div`
+const Count = styled.div`
     font-size: 20px;
+    cursor: default;
 `
 const UpperRow = styled.div`
     display: flex;
@@ -84,15 +86,15 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>
                         <Title>{eventCart.name}</Title>
-                        <img alt={"удалить"} onClick={deleteEvent} style={{marginLeft: "auto"}} width={"30px"} src={BUCKET}/>
+                        <img alt={"удалить"} onClick={deleteEvent} style={{marginLeft: "auto", cursor: "pointer"}} width={"30px"} src={BUCKET}/>
                     </UpperRow>
                     <PriceAndCountContainer>
                         <ButtonsContainer>
-                            <img alt={"увеличить"} onClick={plusCount} width={"35px"} src={PLUS}/>
-                            <Text>{eventCart.count}</Text>
-                            <img alt={"уменьшить"} onClick={minusCount} width={"35px"} src={MINUS}/>
+                            <img style={{cursor: "pointer"}} alt={"увеличить"} onClick={plusCount} width={"35px"} src={PLUS}/>
+                            <Count>{eventCart.count}</Count>
+                            <img style={{cursor: "pointer"}} alt={"уменьшить"} onClick={minusCount} width={"35px"} src={MINUS}/>
                         </ButtonsContainer>
-                        <Text>{eventCart.cost}₽</Text>
+                        <Count>{eventCart.cost}₽</Count>
                     </PriceAndCountContainer>
                 </div>
             }

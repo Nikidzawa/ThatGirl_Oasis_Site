@@ -4,9 +4,11 @@ import RIGHT_ARROW from "../../../../img/right-arrow.png"
 import LEFT_ARROW from "../../../../img/left-arrow.png"
 import "../../../../index.css"
 import Slide from "./Slide";
+import React from 'react';
 
 const Background = styled.div`
     background-color: #333;
+    cursor: pointer;
     display: flex;
     max-width: 800px;
     position: relative;

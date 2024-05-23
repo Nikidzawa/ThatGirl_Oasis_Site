@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import React from 'react';
 
 const ModalWindow = styled.div`
     z-index: 9999;
@@ -60,7 +61,7 @@ export default function AcceptDeleteEventModal ({visible, setVisible, deleteEven
         <ModalWindow visible={visible} onClick={() => setVisible(false)}>
             <ModalContent onClick={e => e.stopPropagation()}>
                 <h2>Вы действительно хотите удалить событие?</h2>
-                <div style={{color: 'red'}}>Восстановить его будет уже невозможно, а купленные билеты аннулируются</div>
+                <div style={{color: 'red'}}>Восстановить его будет уже невозможно, а купленные билеты будут недействительны</div>
                 <ButtonContainer>
                     <RedButton onClick={handleDelete}>Удалить</RedButton>
                     <GreenButton onClick={() => setVisible(false)}>Отменить</GreenButton>

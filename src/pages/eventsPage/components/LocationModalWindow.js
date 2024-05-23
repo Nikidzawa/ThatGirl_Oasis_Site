@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import CLOSE_BUTTON from "../../../img/delete.png"
 import {useEffect, useState} from "react";
+import React from 'react';
 
 const ModalWindow = styled.div`
     z-index: 2;

@@ -3,6 +3,7 @@ import {useEffect, useState} from "react";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
 import styled from "styled-components";
 import DateFormatter from "../../commonComponents/DateFormatter";
+import React from 'react';
 
 const Container = styled.div`
     text-align: center;

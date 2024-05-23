@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import EventCard from "./components/EventCard";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import GridContainer from "../../commonComponents/GridContainer";
 import SearchPanel from "./components/SearchPannel";
@@ -38,6 +38,7 @@ const Background = styled.div`
 
 const LocationContainer = styled.div`
     display: flex;
+    cursor: pointer;
 `
 
 const Location = styled.div`

@@ -5,6 +5,7 @@ import TeamData from "./TeamData";
 import styled from "styled-components";
 import LOGO from "../../img/logo.png"
 import {useEffect} from "react";
+import React from 'react';
 
 const Title = styled.div`
     font-size: 25px;
@@ -17,6 +18,7 @@ const TeamContainer = styled.div`
     display: flex;
     gap: 10px;
     overflow: auto;
+    padding-bottom: 7px;
 `
 
 const Footer = styled.footer`
@@ -47,7 +49,7 @@ export default function AboutUsPage() {
             <PageNameHeader padding={"20px"} pageName={"О нас"} image={OUR_IMAGE}></PageNameHeader>
             <div style={{padding: "10px", minHeight: "100vh"}}>
                 <AboutUsTextContainer>
-                    <img width={"200px"} src={LOGO}/>
+                    <img width={"200px"} src={LOGO} alt={"Logo"}/>
                     <div>Проект «That Girl Oasis» — это место для «той самой» девушки, которая хочет вести яркую и
                         богатую во всех сферах жизнь
                     </div>

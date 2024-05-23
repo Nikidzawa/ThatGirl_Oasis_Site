@@ -12,6 +12,7 @@ import AboutUsPage from "./pages/aboutUs/AboutUsPage";
 import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
 import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
 import CheckRegister from "./pages/checkRegister/CheckRegister";
+import React from 'react';
 
 
 const LoaderWrapper = styled.div`

@@ -12,6 +12,7 @@ import CLOSE_BUTTON from "../img/close.png"
 import LOGO from "../img/logo.png"
 import OUR_IMAGE from "../img/our.png"
 import OUR_GREEN_IMAGE from "../img/our_green.png"
+import React from 'react';
 
 const fadeIn = keyframes`
     from {
@@ -116,11 +117,37 @@ const LinkTextAdmin = styled.div`
     font-size: 20px;
 `
 
+const Circle = styled.div`
+    display: ${props => props.count > 0 ? 'flex' : 'none'};;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    background-color: green;
+    border-radius: 50%;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    margin-left: 138px;
+    margin-top: 2px;
+`
+
 export default function Header ({userStatus}) {
     const [menuVisible, setMenuVisible] = useState(false);
     const [buttonSelected, setButton] = useState("events");
+    const [cartItemsCount, setCartItemsCount] = useState(0)
     const location = useLocation();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        getCartEventsCount();
+        function getCartEventsCount () {
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents"));
+            setCartItemsCount(cartsData.length);
+        }
+    }, [menuVisible]);
 
     useEffect(() => {
         if (location.pathname.includes("/events")) {
@@ -158,16 +185,17 @@ export default function Header ({userStatus}) {
             <ModalWindow visible={menuVisible} onClick={() => setMenuVisible(false)}>
                 <ModalWindowContent>
                     <PageLink to={"/events"} className={buttonSelected === "events" ? "active" : ""}>
-                        <LinkImage src={buttonSelected === "events" ? GREEN_EVENT_IMAGE : EVENT_IMAGE} value={"230px"}/>
+                        <LinkImage src={buttonSelected === "events" ? GREEN_EVENT_IMAGE : EVENT_IMAGE} value={"225px"}/>
                         <LinkText>мероприятия</LinkText>
                     </PageLink>
                     <PageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>
-                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"160px"}/>
+                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"155px"}/>
                         <LinkText>корзина</LinkText>
+                        <Circle count={cartItemsCount}>{cartItemsCount}</Circle>
                     </PageLink>
                     <PageLink to={"/aboutUs"} className={buttonSelected === "aboutUs" ? "active" : ""}>
-                        <LinkImage src={buttonSelected === "aboutUs" ? OUR_GREEN_IMAGE : OUR_IMAGE} value={"150px"}/>
-                        <LinkText>О нас</LinkText>
+                        <LinkImage src={buttonSelected === "aboutUs" ? OUR_GREEN_IMAGE : OUR_IMAGE} value={"130px"}/>
+                        <LinkText>о нас</LinkText>
                     </PageLink>
                     {userStatus && (userStatus === "creator" || userStatus === "administrator") &&
                         <div>

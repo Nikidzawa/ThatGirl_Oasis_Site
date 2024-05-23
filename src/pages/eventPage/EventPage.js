@@ -9,6 +9,7 @@ import BUCKET from "../../img/bucket.png"
 import FireBase from "../../API/FireBase";
 import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
+import React from 'react';
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -131,6 +132,16 @@ const Images = styled.div`
 const Img = styled.img`
     width: 70px;
     height: 75px;
+    cursor: pointer;
+    border-bottom: ${props => props.isSelected ? '2px solid green' : 'none'};
+    padding-bottom: 5px;
+`
+const SelectedImage = styled.img`
+    max-width: 600px;
+    width: 100%;
+    min-height: 250px;
+    max-height: 600px;
+    height: auto;
 `
 
 export default function EventPage ({role}) {
@@ -255,6 +266,11 @@ export default function EventPage ({role}) {
         }
     }
 
+    function handleSelect (image) {
+        setSelectedImage(image);
+
+    }
+
 
     return (
         loading && checkContainsInCart ? <LoadingWrapper><Loading circleColor={"#333"}/></LoadingWrapper> :
@@ -270,19 +286,26 @@ export default function EventPage ({role}) {
                     </div>
                 </NameContainer>
                 <MainContainer>
-                    <div style={{minHeight: "200px", maxWidth: "600px"}}>
+                    <div>
                         {
-                            selectedImage && <img height={"auto"} width={"100%"} src={selectedImage.href} alt={"Фотография"}/>
+                            selectedImage && <SelectedImage src={selectedImage.href} alt={"Фотография"}/>
                         }
                         <Images>
                             {event.eventImages && event.eventImages.length > 0 &&
                                 <>
-                                    {
-                                        <Img onClick={() => setSelectedImage(event.mainImage)} src={event.mainImage.href}/>
-                                    }
-                                    {
-                                        event.eventImages.map(image => <Img onClick={() => setSelectedImage(image)} src={image.href}/>)
-                                    }
+                                    <Img
+                                        onClick={() => handleSelect(event.mainImage)}
+                                        src={event.mainImage.href}
+                                        isSelected={selectedImage === event.mainImage}
+                                    />
+                                    {event.eventImages.map((image, index) => (
+                                        <Img
+                                            key={index}
+                                            onClick={() => handleSelect(image)}
+                                            src={image.href}
+                                            isSelected={selectedImage === image}
+                                        />
+                                    ))}
                                 </>
                             }
                         </Images>
@@ -291,7 +314,7 @@ export default function EventPage ({role}) {
                         <Title>Описание</Title>
                         <Description>{event.fullDescription}</Description>
                     </BLock>
-                    <BLock>
+                    <BLock style={{paddingBottom: "10px"}}>
                         <Title>Место и время</Title>
                         <Description>
                             <div>{event.city.name}, {event.address}</div>

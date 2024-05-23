@@ -2,6 +2,7 @@ import DateFormatter from "../../../../commonComponents/DateFormatter";
 import FIRE_IMAGE from "../../../../img/fire.png";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
+import React from 'react';
 
 const SlideContainer = styled.div`
     position: absolute;
