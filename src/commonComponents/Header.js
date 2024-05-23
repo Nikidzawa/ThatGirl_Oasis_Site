@@ -143,7 +143,7 @@ export default function Header ({userStatus}) {
     useEffect(() => {
         getCartEventsCount();
         function getCartEventsCount () {
-            const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || [];
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || 0;
             setCartItemsCount(cartsData.length);
         }
     }, [menuVisible]);
