@@ -1,6 +1,6 @@
 import {Navigate, Route, Routes} from "react-router-dom";
 import EventsPage from "./pages/eventsPage/EventsPage";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "./commonComponents/Loading";
 import CreateEventPage from "./pages/createEventPage/CreateEventPage";
 import styled from "styled-components";
@@ -12,7 +12,6 @@ import AboutUsPage from "./pages/aboutUs/AboutUsPage";
 import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
 import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
 import CheckRegister from "./pages/checkRegister/CheckRegister";
-import React from 'react';
 
 
 const LoaderWrapper = styled.div`

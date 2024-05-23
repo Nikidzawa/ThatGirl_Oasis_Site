@@ -1,10 +1,9 @@
 import styled from "styled-components";
-import {useState} from "react";
+import React, {useState} from "react";
 import RIGHT_ARROW from "../../../../img/right-arrow.png"
 import LEFT_ARROW from "../../../../img/left-arrow.png"
 import "../../../../index.css"
 import Slide from "./Slide";
-import React from 'react';
 
 const Background = styled.div`
     background-color: #333;

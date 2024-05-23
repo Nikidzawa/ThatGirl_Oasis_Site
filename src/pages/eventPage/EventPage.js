@@ -1,5 +1,5 @@
 import {useNavigate, useParams} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
 import HEART_IMG from "../../img/heart.png"
@@ -9,7 +9,6 @@ import BUCKET from "../../img/bucket.png"
 import FireBase from "../../API/FireBase";
 import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
-import React from 'react';
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -314,7 +313,7 @@ export default function EventPage ({role}) {
                         <Title>Описание</Title>
                         <Description>{event.fullDescription}</Description>
                     </BLock>
-                    <BLock style={{paddingBottom: "10px"}}>
+                    <BLock style={{marginBottom: "20px"}}>
                         <Title>Место и время</Title>
                         <Description>
                             <div>{event.city.name}, {event.address}</div>
@@ -324,7 +323,7 @@ export default function EventPage ({role}) {
                     </BLock>
                 </MainContainer>
                 <ButtonsContainer>
-                    <ModalWindow visible={isOpen}> Добавлено ✨</ModalWindow>
+                    <ModalWindow visible={isOpen}>Добавлено ✨</ModalWindow>
                     {
                         eventContainsInCart ? <Button onClick={goToShopCartPage}>В корзине</Button> :
                             <Button onClick={addEventToCart}>В корзину {event.cost}₽</Button>

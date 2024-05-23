@@ -1,6 +1,6 @@
 import {Link, useLocation, useNavigate} from "react-router-dom";
 import styled, {keyframes} from "styled-components";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import MENU_BUTTON_IMAGE from "../img/menu.png"
 import SHOPPING_CART_IMAGE from "../img/cart.png"
 import GREEN_SHOPPING_CART_IMAGE from "../img/cart_green.png"
@@ -12,7 +12,6 @@ import CLOSE_BUTTON from "../img/close.png"
 import LOGO from "../img/logo.png"
 import OUR_IMAGE from "../img/our.png"
 import OUR_GREEN_IMAGE from "../img/our_green.png"
-import React from 'react';
 
 const fadeIn = keyframes`
     from {
@@ -144,7 +143,7 @@ export default function Header ({userStatus}) {
     useEffect(() => {
         getCartEventsCount();
         function getCartEventsCount () {
-            const cartsData = JSON.parse(localStorage.getItem("cartEvents"));
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || [];
             setCartItemsCount(cartsData.length);
         }
     }, [menuVisible]);

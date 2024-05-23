@@ -4,8 +4,7 @@ import TeamMember from "./TeamMember";
 import TeamData from "./TeamData";
 import styled from "styled-components";
 import LOGO from "../../img/logo.png"
-import {useEffect} from "react";
-import React from 'react';
+import React, {useEffect} from "react";
 
 const Title = styled.div`
     font-size: 25px;
