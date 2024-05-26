@@ -86,22 +86,27 @@ export default function EventsPage ({user}) {
         fetchCities();
 
         async function fetchCities () {
-            const responseCities = await EventCityAPI.getAllCities();
-            if (responseCities.length === 0) {
+            const response = await EventCityAPI.getAllCities();
+            if (response.ok) {
+                const citiesJson = await response.json();
+                await setSelectedCity(citiesJson);
+                setCities(citiesJson);
+            } else {
                 setLoading(false);
-                return;
             }
-            setCities(responseCities);
+        }
+
+        async function setSelectedCity (citiesJson) {
             let selectedCity;
             if (user) {
-                const filteredCities = responseCities.sort((city1, city2) => {
+                const filteredCities = citiesJson.sort((city1, city2) => {
                     const distance1 = calculateDistance(user.latitude, user.longitude, city1.latitude, city1.longitude);
                     const distance2 = calculateDistance(user.latitude, user.longitude, city2.latitude, city2.longitude);
                     return distance1 - distance2;
                 });
                 selectedCity = filteredCities[0];
             } else {
-                selectedCity = responseCities[0];
+                selectedCity = citiesJson[0];
             }
             setCity(selectedCity);
         }

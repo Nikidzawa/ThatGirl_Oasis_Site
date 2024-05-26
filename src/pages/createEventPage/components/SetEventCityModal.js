@@ -58,7 +58,9 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
         getAllEventCities();
         async function getAllEventCities() {
             const data = await EventCityAPI.getAllCities();
-            setCities(data);
+            if (data.ok) {
+                setCities(data);
+            }
         }
     }, []);
 

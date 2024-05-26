@@ -5,7 +5,7 @@ export default class EventCityAPI extends BasePath {
 
     static getAllCities () {
         const url = `${this.eventCityUrl}/getAll`
-        return fetch(url).then(response => response.json());
+        return fetch(url);
     }
 
     static getEventsByCityId (cityId) {
