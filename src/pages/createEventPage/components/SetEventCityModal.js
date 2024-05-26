@@ -2,6 +2,7 @@ import styled from "styled-components";
 import React, {useEffect, useState} from "react";
 import DELETE_IMAGE from "../../../img/delete.png"
 import EventCityAPI from "../../../API/internal/categoryes/events/EventCityAPI";
+import {json} from "react-router-dom";
 
 const ModalWindow = styled.div`
     position: fixed;
@@ -57,9 +58,10 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
     useEffect(() => {
         getAllEventCities();
         async function getAllEventCities() {
-            const data = await EventCityAPI.getAllCities();
-            if (data.ok) {
-                setCities(data);
+            const response = await EventCityAPI.getAllCities();
+            if (response.ok) {
+                const json = await response.json();
+                setCities(json);
             }
         }
     }, []);
@@ -113,20 +115,22 @@ const SetEventCityModal = ({modalIsVisible, setModalVisible, setSelectedCity, se
                 <h2>Присвоить город</h2>
                 <input placeholder={"Поиск"} style={{width: "100%", height: "30px"}}/>
                 <div style={{minHeight: "200px"}}>
-                    {!cities ? (
-                        <div style={{marginTop: "20px"}}>Города не созданы</div>
-                    ) : (
-                        <EventCitiesContainer>
-                            {cities.map((city, index) => (
-                                <EventCity onClick={() => selectCityAndCloseWindow(city)} key={index}>
-                                    <div style={{marginRight: "auto"}}>{city.name}</div>
-                                    <img onClick={(e) => deleteEventCity(e, city)} width={"30px"} src={DELETE_IMAGE}/>
-                                </EventCity>
-                            ))}
-                        </EventCitiesContainer>
-                    )}
+                    {
+                        cities ?
+                            <EventCitiesContainer>
+                                {cities.map(city => (
+                                    <EventCity onClick={() => selectCityAndCloseWindow(city)} key={city.id}>
+                                        <div style={{marginRight: "auto"}}>{city.name}</div>
+                                        <img onClick={(e) => deleteEventCity(e, city)}
+                                             width={"30px"}
+                                             src={DELETE_IMAGE}
+                                        />
+                                    </EventCity>
+                                ))}
+                            </EventCitiesContainer> : <div style={{marginTop: "20px"}}>Города не созданы</div>
+                    }
                 </div>
-                <h2>Создать тип</h2>
+                <h2>Создать город</h2>
                 {
                     cityExists && <p style={{color: "red"}}>Указаный город уже существует</p>
                 }

@@ -91,9 +91,8 @@ export default function EventsPage ({user}) {
                 const citiesJson = await response.json();
                 await setSelectedCity(citiesJson);
                 setCities(citiesJson);
-            } else {
-                setLoading(false);
             }
+            setLoading(false);
         }
 
         async function setSelectedCity (citiesJson) {
