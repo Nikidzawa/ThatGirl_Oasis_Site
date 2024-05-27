@@ -144,7 +144,8 @@ export default function Header ({userStatus}) {
         getCartEventsCount();
         function getCartEventsCount () {
             const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || 0;
-            setCartItemsCount(cartsData.length);
+            const length = cartsData.length;
+            setCartItemsCount(length > 99 ? 99 : length);
         }
     }, [menuVisible]);
 

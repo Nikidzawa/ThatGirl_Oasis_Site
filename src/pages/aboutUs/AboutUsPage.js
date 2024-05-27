@@ -68,15 +68,15 @@ export default function AboutUsPage() {
                 <div style={{padding: "10px 0"}}>
                     <Title>Документы</Title>
                     <div style={{margin: "10px 0"}}>
-                        <a href={"https://docs.google.com/document/d/1RVRKiIsjIXQyyFog6iVd-Mp83vupcz368N_oNC5DkVg/edit?usp=sharing"}>Пользовательское
-                            соглашение</a>
+                        <a href={"https://docs.google.com/document/d/1RVRKiIsjIXQyyFog6iVd-Mp83vupcz368N_oNC5DkVg/edit?usp=sharing"}>Пользовательское соглашение</a>
                     </div>
                 </div>
             </div>
             <Footer>
-                <div>© 2024 ThatGirlsOasis.ru</div>
+            <div>© 2024 ThatGirlsOasis.ru</div>
                 <div style={{paddingTop: "10px"}}>ИНН: 262804322510</div>
             </Footer>
+
         </div>
     )
 }

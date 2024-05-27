@@ -86,13 +86,18 @@ export default function EventsPage ({user}) {
         fetchCities();
 
         async function fetchCities () {
-            const response = await EventCityAPI.getAllCities();
-            if (response.ok) {
-                const citiesJson = await response.json();
-                await setSelectedCity(citiesJson);
-                setCities(citiesJson);
+            try {
+                const response = await EventCityAPI.getAllCities();
+                if (response.ok) {
+                    const citiesJson = await response.json();
+                    await setSelectedCity(citiesJson);
+                    setCities(citiesJson);
+                }
+            } catch (ex) {
+                throw new Error('Ошибка сервера, мероприятия не получены');
+            } finally {
+                setLoading(false)
             }
-            setLoading(false);
         }
 
         async function setSelectedCity (citiesJson) {

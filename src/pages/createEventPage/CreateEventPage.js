@@ -272,10 +272,10 @@ export default function CreateEventPage() {
             }
             <div style={{textAlign: "center", marginTop: "20px"}}>
                 {
-                    exception && <div style={{color: "red"}}>Неизвестная ошибка, возможно проболема с облаком</div>
+                    exception && <div style={{color: "red", padding: "10px"}}>Неизвестная ошибка, возможно проболема с облаком</div>
                 }
                 {
-                    success && <div style={{color: "green"}}>Успешно создано</div>
+                    success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>
                 }
                 {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={sendData}>Создать</Button>}
             </div>

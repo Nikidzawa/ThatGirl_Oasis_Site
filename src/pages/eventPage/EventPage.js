@@ -167,7 +167,6 @@ export default function EventPage ({role}) {
         window.scrollTo(0, 0);
         getEventData();
         async function getEventData () {
-
                 const response = await EventsAPI.getEventById(id);
                 if (response.ok) {
                     const eventData = await response.json();
