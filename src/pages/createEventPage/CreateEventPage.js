@@ -46,6 +46,7 @@ const BigInput = styled.textarea`
     width: 90%;
     min-height: 60px;
     margin-bottom: 20px;
+    border-color: ${props => props.active ? 'red' : 'black'};
 `;
 
 const Button = styled.button`
@@ -53,6 +54,7 @@ const Button = styled.button`
     width: 150px;
     height: 40px;
     border-radius: 20px;
+    border-color: ${props => props.active ? 'red' : 'black'};
 `;
 
 const LoadingWrapper = styled.div`
@@ -83,17 +85,22 @@ const ButtonAndText = styled.div`
     padding-bottom: 20px;
     align-items: center;
 `
+
+const Input = styled.div`
+    border-color: ${props => props.active ? 'red' : 'black'};
+`
+
 export default function CreateEventPage() {
     const [selectedCity, setSelectedCity] = useState(null);
-    const [address, setAddress] = useState("");
-    const [name, setName] = useState("");
+    const [address, setAddress] = useState(null);
+    const [name, setName] = useState(null);
     const [date, setDate] = useState(null)
-    const [time, setTime] = useState("")
-    const [rating, setRating] = useState("");
-    const [cost, setCost] = useState("");
-    const [smallDescription, setSmallDescription] = useState("");
-    const [fullDescription, setFullDescription] = useState("");
-    const [contactPhone, setContactPhone] =useState("")
+    const [time, setTime] = useState(null)
+    const [rating, setRating] = useState(null);
+    const [cost, setCost] = useState(null);
+    const [smallDescription, setSmallDescription] = useState(null);
+    const [fullDescription, setFullDescription] = useState(null);
+    const [contactPhone, setContactPhone] =useState(null)
 
     const [image, setImage] = useState(null);
     const [images, setImages] = useState([]);
@@ -110,16 +117,25 @@ export default function CreateEventPage() {
     const [eventTypeModalIsVisible, setEventTypeModalIsVisible] = useState(false)
 
 
+    const [cityValidation, setCityValidation] = useState(false);
+    const [addressValidation, setAddressValidation] = useState(false);
+    const [nameValidation, setNameValidation] = useState(false);
+    const [dateValidation, setDateValidation] = useState(false);
+    const [timeValidation, setTimeValidation] = useState(false);
+    const [contactPhoneValidation, setContactPhoneValidation] = useState(false);
+    const [ratingValidation, setRatingValidation] = useState(false);
+    const [costValidation, setCostValidation] = useState(false);
+    const [fullDescriptionValidation, setFullDescriptionValidation] = useState(false);
+    const [eventTypeValidation, setEventTypeValidation] = useState(false);
+    const [mainImageValidation, setMainImageValidation] = useState(false);
+
+
     const [exception, setException] = useState(false);
     const [success, setSuccess] = useState(false);
 
     async function sendData() {
-        setLoading(true);
-        const regex = /^\d+(\.\d+)?$/;
-        if (selectedCity && address && name && contactPhone && date && time && regex.test(rating) && regex.test(cost) && fullDescription && handleImage && selectedType) {
-            setInputsError(false);
-            let eventId;
-            let eventObject = {
+        let eventId;
+        let eventObject = {
                 city: selectedCity,
                 address: address,
                 name: name,
@@ -132,43 +148,40 @@ export default function CreateEventPage() {
                 fullDescription: fullDescription,
                 favorite: favorite,
                 eventType: selectedType
-            }
-            try {
-                const response = await EventsAPI.postEvent(eventObject);
-                if (response.ok) {
-                    eventObject = await response.json();
-                } else {
-                    throw new Error(response.status)
-                }
-                const eventId = eventObject.id;
-                const mainImageHref = await FireBase.uploadImage(image, eventId);
-                eventObject.mainImage = { href: mainImageHref };
-
-                if (images && images.length > 0) {
-                    const imagesPromises = images.map(singleImage => FireBase.uploadImage(singleImage, eventId));
-                    const imagesHrefs = await Promise.all(imagesPromises);
-                    eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
-                }
-
-                const response2 = await EventsAPI.setImages(eventObject);
-                if (response2.ok) {
-                    setException(false);
-                    setSuccess(true)
-                } else {
-                    throw new Error(response2.status);
-                }
-            } catch (error) {
-                if (eventId) {
-                    await FireBase.deleteFolder(eventId);
-                }
-                setException(true);
-                console.error("Ошибка при отправке данных: ", error);
-            }
-        } else {
-            setInputsError(true);
         }
-        setLoading(false);
+        try {
+            const response = await EventsAPI.postEvent(eventObject);
+            if (response.ok) {
+                eventObject = await response.json();
+            } else {
+                throw new Error(response.status)
+            }
+            const eventId = eventObject.id;
+            const mainImageHref = await FireBase.uploadImage(image, eventId);
+            eventObject.mainImage = { href: mainImageHref };
+
+            if (images && images.length > 0) {
+                const imagesPromises = images.map(singleImage => FireBase.uploadImage(singleImage, eventId));
+                const imagesHrefs = await Promise.all(imagesPromises);
+                eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
+            }
+
+            const response2 = await EventsAPI.setImages(eventObject);
+            if (response2.ok) {
+                setException(false);
+                setSuccess(true)
+            } else {
+                throw new Error(response2.status);
+            }
+        } catch (error) {
+            if (eventId) {
+                await FireBase.deleteFolder(eventId);
+            }
+            setException(true);
+            console.error("Ошибка при отправке данных: ", error);
+        }
     }
+
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -202,37 +215,86 @@ export default function CreateEventPage() {
         }
     };
 
+    function validation () {
+        setLoading(true);
+        const regex = /^\d+(\.\d+)?$/;
+
+        if (date === null) {
+            setDateValidation(true);
+        } else setDateValidation(false);
+        if (time === null) {
+            setTimeValidation(true);
+        } else setTimeValidation(false)
+        if (selectedCity === null) {
+            setCityValidation(true);
+        } else setCityValidation(false);
+        if (address === null) {
+            setAddressValidation(true);
+        } else setAddressValidation(false);
+        if (name === null) {
+            setNameValidation(true);
+        } else setNameValidation(false);
+        if (contactPhone === null) {
+            setContactPhoneValidation(true);
+        } else setContactPhoneValidation(false);
+        if (rating === null && regex.test(rating)) {
+            setRatingValidation(true);
+        } else setRatingValidation(false);
+        if (cost === null && regex.test(cost)) {
+            setCostValidation(true);
+        } else setCostValidation(false);
+        if (fullDescription === null) {
+            setFullDescriptionValidation(true);
+        } else setFullDescriptionValidation(false);
+        if (selectedType === null) {
+            setEventTypeValidation(true);
+        } else setEventTypeValidation(false);
+        if (image === null) {
+            setMainImageValidation(true);
+        } else setMainImageValidation(false);
+
+        if (dateValidation || timeValidation || cityValidation || addressValidation || nameValidation || contactPhoneValidation || ratingValidation || costValidation || fullDescriptionValidation || eventTypeValidation || mainImageValidation) {
+            setInputsError(true);
+        } else {
+            setInputsError(false);
+            sendData();
+        }
+        setLoading(false);
+    }
+
     return (
         <Content className={"main"}>
             <PageNameHeader padding={"20px"} image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
                 <ButtonAndText>
-                    <Button onClick={() => setEventCityModalIsVisible(true)}>*Выбрать город</Button>
+                    <Button active={cityValidation}
+                            onClick={() => setEventCityModalIsVisible(true)}>*Выбрать город</Button>
                     {
                         selectedCity ? selectedCity.name : <div>Город не задан</div>
                     }
                 </ButtonAndText>
-                <BasicInput onChange={e => setAddress(e.target.value)} placeholder={"*Адрес"}/>
+                <BasicInput active={addressValidation} onChange={e => setAddress(e.target.value)} placeholder={"*Адрес"}/>
                 <Block>*Дата и время (МСК)</Block>
                 <FlexInput>
-                    <input onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
-                    <input onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
+                    <Input active={dateValidation} onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
+                    <Input active={timeValidation} onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
                 </FlexInput>
                 <Block>Основная информация</Block>
-                <BasicInput onChange={e => setName(e.target.value)} placeholder={"*Название"}/>
-                <ButtonAndText onClick={() => setEventTypeModalIsVisible(true)}>
-                    <Button>*Выбрать тип мероприятия</Button>
+                <BasicInput active={nameValidation} onChange={e => setName(e.target.value)} placeholder={"*Название"}/>
+                <ButtonAndText>
+                    <Button active={eventTypeValidation}
+                            onClick={() => setEventTypeModalIsVisible(true)}>*Выбрать тип мероприятия</Button>
                     {
                         selectedType ? <div>Тип мероприятия: {selectedType.name}</div> : <div>Тип мероприятия не выбран</div>
                     }
                 </ButtonAndText>
                 <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
-                <BigInput onChange={e => setFullDescription(e.target.value)} placeholder={"*Развёрнутое описание"}/>
-                <BasicInput onChange={e => setContactPhone(e.target.value)} placeholder={"*Контактный номер телефона"}/>
+                <BigInput active={fullDescriptionValidation} onChange={e => setFullDescription(e.target.value)} placeholder={"*Развёрнутое описание"}/>
+                <BasicInput active={contactPhoneValidation} onChange={e => setContactPhone(e.target.value)} placeholder={"*Контактный номер телефона"}/>
                 <FlexInput>
-                    <BasicInput onChange={e => setRating(e.target.value)} placeholder={"*Рейтинг (нап. 4.7)"}/>
-                    <BasicInput onChange={e => setCost(e.target.value)} placeholder={"*Цена"}/>
+                    <BasicInput active={ratingValidation} onChange={e => setRating(e.target.value)} placeholder={"*Рейтинг (нап. 4.7)"}/>
+                    <BasicInput active={costValidation} onChange={e => setCost(e.target.value)} placeholder={"*Цена"}/>
                 </FlexInput>
                 <label>
                     <input
@@ -243,7 +305,7 @@ export default function CreateEventPage() {
                     Дополнительно поместить в слайдер
                 </label>
                 <Block>Главная картинка</Block>
-                <input type="file" onChange={handleImageChange} accept="image/*"></input>
+                <Input active={mainImageValidation} type="file" onChange={handleImageChange} accept="image/*"></Input>
             </InputBlock>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <CreateEventCard name={name}
@@ -277,7 +339,7 @@ export default function CreateEventPage() {
                 {
                     success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>
                 }
-                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={sendData}>Создать</Button>}
+                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={validation}>Создать</Button>}
             </div>
             <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>
             <SetEventTypeModal modalIsVisible={eventTypeModalIsVisible} setModalVisible={setEventTypeModalIsVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>

@@ -20,8 +20,8 @@ const Name = styled.div`
 `
 
 const Image = styled.img`
-    width: 250px;
-    height: 220px;
+    width: 235px;
+    height: 225px;
     border-radius: 50%;
 `
 
