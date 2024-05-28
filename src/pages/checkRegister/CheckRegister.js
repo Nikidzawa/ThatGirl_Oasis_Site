@@ -5,13 +5,25 @@ import styled from "styled-components";
 import DateFormatter from "../../commonComponents/DateFormatter";
 
 const Container = styled.div`
-    min-height: 1200px;
-    max-width: 1000px;
-    margin: 0 auto;
-    text-align: center;
     display: flex;
     flex-direction: column;
     justify-content: center;
+`
+const MainDiv = styled.div`
+    min-height: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    color: black;
+`
+
+const AcceptText = styled.h3`
+    color: yellowgreen;
+    font-size: 25px;
+`
+
+const NotRegisterText = styled.h3`
+    color: red;
+    font-size: 25px;
 `
 
 export default function CheckRegister() {
@@ -34,16 +46,16 @@ export default function CheckRegister() {
     }, [eventId, token]);
 
     return (
-        <>
+        <MainDiv>
             {
-                loading ? <div>Загрузка</div> : !event ? <div>Событие не найдено</div> :
+                loading ? <div>Загрузка</div> : event ?
                     <Container>
                         <h1>{event.name} {DateFormatter.format(event.date)}</h1>
-                        <h3 style={{color: 'green'}}>Билет подтверждён</h3>
-                        <img src={event.mainImage}/>
-                    </Container>
+                        <img src={event.mainImage} width={"120px"}/>
+                        <AcceptText style={{color: 'green'}}>Билет подтверждён</AcceptText>
+                    </Container> : <NotRegisterText>Токен не подтверждён</NotRegisterText>
             }
-        </>
+        </MainDiv>
     );
 }
 
