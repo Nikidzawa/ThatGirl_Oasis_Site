@@ -5,6 +5,9 @@ import styled from "styled-components";
 import DateFormatter from "../../commonComponents/DateFormatter";
 
 const Container = styled.div`
+    min-height: 1200px;
+    max-width: 1000px;
+    margin: 0 auto;
     text-align: center;
     display: flex;
     flex-direction: column;
