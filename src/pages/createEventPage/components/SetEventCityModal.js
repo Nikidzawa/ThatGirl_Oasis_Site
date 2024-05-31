@@ -2,7 +2,6 @@ import styled from "styled-components";
 import React, {useEffect, useState} from "react";
 import DELETE_IMAGE from "../../../img/delete.png"
 import EventCityAPI from "../../../API/internal/categoryes/events/EventCityAPI";
-import {json} from "react-router-dom";
 
 const ModalWindow = styled.div`
     position: fixed;

@@ -4,6 +4,7 @@ import TeamMember from "./TeamMember";
 import TeamData from "./TeamData";
 import styled from "styled-components";
 import LOGO from "../../img/logo.png"
+import PDF from "./attention.pdf"
 import React, {useEffect} from "react";
 
 const Title = styled.div`
@@ -68,7 +69,7 @@ export default function AboutUsPage() {
                 <div style={{padding: "10px 0"}}>
                     <Title>Документы</Title>
                     <div style={{margin: "10px 0"}}>
-                        <a href={"https://docs.google.com/document/d/1RVRKiIsjIXQyyFog6iVd-Mp83vupcz368N_oNC5DkVg/edit?usp=sharing"}>Пользовательское соглашение</a>
+                        <a href={PDF} target={"_blank"}>Пользовательское соглашение</a>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,6 @@
 import CreateEventCard from "./components/CreateEventCard";
 import styled from "styled-components";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Loading from "../../commonComponents/Loading";
 import FireBase from "../../API/FireBase";
 import PageNameHeader from "../../commonComponents/PageNameHeader";
@@ -40,6 +40,7 @@ const BasicInput = styled.input`
     width: 90%;
     height: 30px;
     margin-bottom: 20px;
+    border: 1px solid ${props => props.active ? 'red' : 'black'};
 `;
 
 const BigInput = styled.textarea`
@@ -54,7 +55,7 @@ const Button = styled.button`
     width: 150px;
     height: 40px;
     border-radius: 20px;
-    border-color: ${props => props.active ? 'red' : 'black'};
+    border: ${props => props.active ? '1px solid red' : 'none'};;
 `;
 
 const LoadingWrapper = styled.div`
@@ -86,10 +87,6 @@ const ButtonAndText = styled.div`
     align-items: center;
 `
 
-const Input = styled.div`
-    border-color: ${props => props.active ? 'red' : 'black'};
-`
-
 export default function CreateEventPage() {
     const [selectedCity, setSelectedCity] = useState(null);
     const [address, setAddress] = useState(null);
@@ -101,21 +98,18 @@ export default function CreateEventPage() {
     const [smallDescription, setSmallDescription] = useState(null);
     const [fullDescription, setFullDescription] = useState(null);
     const [contactPhone, setContactPhone] =useState(null)
-
-    const [image, setImage] = useState(null);
-    const [images, setImages] = useState([]);
-
-    const [handleImage, setHandleImage] = useState(null);
-    const [handleImages, setHandleImages] = useState([]);
-
     const [selectedType, setSelectedType] = useState(null);
     const [favorite, setFavorite] = useState(false);
+
+    const [image, setImage] = useState(null);
+    const [handleImage, setHandleImage] = useState(null);
+    const [images, setImages] = useState([]);
+    const [handleImages, setHandleImages] = useState([]);
 
     const [inputsError, setInputsError] = useState(false);
     const [loading, setLoading] = useState(false);
     const [eventCityModalIsVisible, setEventCityModalIsVisible] = useState(false);
     const [eventTypeModalIsVisible, setEventTypeModalIsVisible] = useState(false)
-
 
     const [cityValidation, setCityValidation] = useState(false);
     const [addressValidation, setAddressValidation] = useState(false);
@@ -129,9 +123,10 @@ export default function CreateEventPage() {
     const [eventTypeValidation, setEventTypeValidation] = useState(false);
     const [mainImageValidation, setMainImageValidation] = useState(false);
 
-
     const [exception, setException] = useState(false);
     const [success, setSuccess] = useState(false);
+
+    const [cashedEvent, setCashedEvent] = useState()
 
     async function sendData() {
         let eventId;
@@ -156,7 +151,7 @@ export default function CreateEventPage() {
             } else {
                 throw new Error(response.status)
             }
-            const eventId = eventObject.id;
+            eventId = eventObject.id;
             const mainImageHref = await FireBase.uploadImage(image, eventId);
             eventObject.mainImage = { href: mainImageHref };
 
@@ -189,7 +184,7 @@ export default function CreateEventPage() {
             reader.onloadend = () => {
                 setHandleImage(reader.result);
             };
-            setImage(file)
+            setImage(file);
             reader.readAsDataURL(file);
         }
     };
@@ -215,52 +210,137 @@ export default function CreateEventPage() {
         }
     };
 
-    function validation () {
+    function validation() {
         setLoading(true);
         const regex = /^\d+(\.\d+)?$/;
 
-        if (date === null) {
-            setDateValidation(true);
-        } else setDateValidation(false);
-        if (time === null) {
-            setTimeValidation(true);
-        } else setTimeValidation(false)
-        if (selectedCity === null) {
-            setCityValidation(true);
-        } else setCityValidation(false);
-        if (address === null) {
-            setAddressValidation(true);
-        } else setAddressValidation(false);
-        if (name === null) {
-            setNameValidation(true);
-        } else setNameValidation(false);
-        if (contactPhone === null) {
-            setContactPhoneValidation(true);
-        } else setContactPhoneValidation(false);
-        if (rating === null && regex.test(rating)) {
-            setRatingValidation(true);
-        } else setRatingValidation(false);
-        if (cost === null && regex.test(cost)) {
-            setCostValidation(true);
-        } else setCostValidation(false);
-        if (fullDescription === null) {
-            setFullDescriptionValidation(true);
-        } else setFullDescriptionValidation(false);
-        if (selectedType === null) {
-            setEventTypeValidation(true);
-        } else setEventTypeValidation(false);
-        if (image === null) {
-            setMainImageValidation(true);
-        } else setMainImageValidation(false);
+        let isDateValid = !!date;
+        let isTimeValid = !!time;
+        let isCityValid = !!selectedCity;
+        let isAddressValid = !!address;
+        let isNameValid = !!name;
+        let isContactPhoneValid = !!contactPhone;
+        let isRatingValid = rating && regex.test(rating);
+        let isCostValid = cost && regex.test(cost);
+        let isFullDescriptionValid = !!fullDescription;
+        let isEventTypeValid = !!selectedType;
+        let isMainImageValid = !!image;
 
-        if (dateValidation || timeValidation || cityValidation || addressValidation || nameValidation || contactPhoneValidation || ratingValidation || costValidation || fullDescriptionValidation || eventTypeValidation || mainImageValidation) {
-            setInputsError(true);
-        } else {
+        setDateValidation(!isDateValid);
+        setTimeValidation(!isTimeValid);
+        setCityValidation(!isCityValid);
+        setAddressValidation(!isAddressValid);
+        setNameValidation(!isNameValid);
+        setContactPhoneValidation(!isContactPhoneValid);
+        setRatingValidation(!isRatingValid);
+        setCostValidation(!isCostValid);
+        setFullDescriptionValidation(!isFullDescriptionValid);
+        setEventTypeValidation(!isEventTypeValid);
+        setMainImageValidation(!isMainImageValid);
+
+        if (
+            isDateValid && isTimeValid && isCityValid && isAddressValid &&
+            isNameValid && isContactPhoneValid && isRatingValid &&
+            isCostValid && isFullDescriptionValid && isEventTypeValid && isMainImageValid
+        )
+        {
             setInputsError(false);
             sendData();
+        } else {
+            setInputsError(true);
         }
+
         setLoading(false);
     }
+
+    useEffect(() => {
+        let data = JSON.parse(localStorage.getItem("cachedEvent"))
+        if (!data) {
+            data = {
+                selectedCity: selectedCity,
+                selectedType: selectedType,
+                address: address,
+                name: name,
+                date: date,
+                time: time,
+                contactPhone: contactPhone,
+                rating: rating,
+                cost: cost,
+                smallDescription: smallDescription,
+                fullDescription: fullDescription,
+                favorite: favorite,
+            };
+            localStorage.setItem("cachedEvent", JSON.stringify(data))
+        }
+        setCashedEvent(data)
+        setDate(data.date)
+        setTime(data.time)
+        setName(data.name)
+        setRating(data.rating)
+        setCost(data.cost)
+        setAddress(data.address)
+        setSelectedType(data.selectedType)
+        setSelectedCity(data.selectedCity)
+        setContactPhone(data.contactPhone)
+        setSmallDescription(data.smallDescription)
+        setFullDescription(data.fullDescription)
+    }, [])
+
+    const updateCachedEvent = (key, value) => {
+        setCashedEvent(prev => {
+            const updated = { ...prev, [key]: value };
+            localStorage.setItem("cachedEvent", JSON.stringify(updated));
+            return updated;
+        });
+    };
+
+    useEffect(() => {
+        updateCachedEvent("date", date);
+    }, [date]);
+
+    useEffect(() => {
+        updateCachedEvent("time", time);
+    }, [time]);
+
+    useEffect(() => {
+        updateCachedEvent("name", name);
+    }, [name]);
+
+    useEffect(() => {
+        updateCachedEvent("favorite", favorite);
+    }, [favorite]);
+
+    useEffect(() => {
+        updateCachedEvent("rating", rating);
+    }, [rating]);
+
+    useEffect(() => {
+        updateCachedEvent("cost", cost);
+    }, [cost]);
+
+    useEffect(() => {
+        updateCachedEvent("address", address);
+    }, [address]);
+
+    useEffect(() => {
+        updateCachedEvent("selectedType", selectedType);
+    }, [selectedType]);
+
+    useEffect(() => {
+        updateCachedEvent("selectedCity", selectedCity);
+    }, [selectedCity]);
+
+    useEffect(() => {
+        updateCachedEvent("contactPhone", contactPhone);
+    }, [contactPhone]);
+
+    useEffect(() => {
+        updateCachedEvent("fullDescription", fullDescription);
+    }, [fullDescription]);
+
+    useEffect(() => {
+        updateCachedEvent("smallDescription", smallDescription);
+    }, [smallDescription]);
 
     return (
         <Content className={"main"}>
@@ -268,44 +348,57 @@ export default function CreateEventPage() {
             <InputBlock>
                 <Block>Геолокация</Block>
                 <ButtonAndText>
-                    <Button active={cityValidation}
-                            onClick={() => setEventCityModalIsVisible(true)}>*Выбрать город</Button>
+                    <Button onClick={() => setEventCityModalIsVisible(true)} active={cityValidation}>*Выбрать город</Button>
                     {
                         selectedCity ? selectedCity.name : <div>Город не задан</div>
                     }
                 </ButtonAndText>
-                <BasicInput active={addressValidation} onChange={e => setAddress(e.target.value)} placeholder={"*Адрес"}/>
+                <BasicInput value={address} active={addressValidation} onChange={e => setAddress(e.target.value)} placeholder={"*Адрес"}/>
                 <Block>*Дата и время (МСК)</Block>
                 <FlexInput>
-                    <Input active={dateValidation} onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
-                    <Input active={timeValidation} onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
+                    {
+                        dateValidation ? <input value={date} style={{borderColor: "red"}} onChange={e => setDate(e.target.value)} type="date" id="datePicker"/> :
+                            <input value={date} onChange={e => setDate(e.target.value)} type="date" id="datePicker"/>
+                    }
+                    {
+                        timeValidation ? <input value={time} style={{borderColor: "red"}} onChange={e => setTime(e.target.value)} type="time" id="timePicker"/> :
+                            <input value={time} onChange={e => setTime(e.target.value)} type="time" id="timePicker"/>
+                    }
                 </FlexInput>
                 <Block>Основная информация</Block>
-                <BasicInput active={nameValidation} onChange={e => setName(e.target.value)} placeholder={"*Название"}/>
+                <BasicInput active={nameValidation}
+                            onChange={e => setName(e.target.value)}
+                            value={name}
+                            placeholder={"*Название"}/>
                 <ButtonAndText>
-                    <Button active={eventTypeValidation}
-                            onClick={() => setEventTypeModalIsVisible(true)}>*Выбрать тип мероприятия</Button>
+                    <Button onClick={() => setEventTypeModalIsVisible(true)}
+                            active={eventTypeValidation}>*Выбрать тип мероприятия</Button>
                     {
                         selectedType ? <div>Тип мероприятия: {selectedType.name}</div> : <div>Тип мероприятия не выбран</div>
                     }
                 </ButtonAndText>
-                <BigInput onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
-                <BigInput active={fullDescriptionValidation} onChange={e => setFullDescription(e.target.value)} placeholder={"*Развёрнутое описание"}/>
-                <BasicInput active={contactPhoneValidation} onChange={e => setContactPhone(e.target.value)} placeholder={"*Контактный номер телефона"}/>
+                <BigInput value={smallDescription} onChange={e => setSmallDescription(e.target.value)} placeholder={"Краткое описание"}/>
+                <BigInput value={fullDescription} active={fullDescriptionValidation} onChange={e => setFullDescription(e.target.value)} placeholder={"*Развёрнутое описание"}/>
+                <BasicInput value={contactPhone} active={contactPhoneValidation} onChange={e => setContactPhone(e.target.value)} placeholder={"*Контактный номер телефона"}/>
                 <FlexInput>
-                    <BasicInput active={ratingValidation} onChange={e => setRating(e.target.value)} placeholder={"*Рейтинг (нап. 4.7)"}/>
-                    <BasicInput active={costValidation} onChange={e => setCost(e.target.value)} placeholder={"*Цена"}/>
+                    <BasicInput value={rating} active={ratingValidation} onChange={e => setRating(e.target.value)} placeholder={"*Рейтинг (нап. 4.7)"}/>
+                    <BasicInput value={cost} active={costValidation} onChange={e => setCost(e.target.value)} placeholder={"*Цена"}/>
                 </FlexInput>
                 <label>
                     <input
                     type={"checkbox"}
                     checked={favorite}
                     onChange={() => setFavorite(!favorite)}
+                    value={favorite}
                     />
                     Дополнительно поместить в слайдер
                 </label>
                 <Block>Главная картинка</Block>
-                <Input active={mainImageValidation} type="file" onChange={handleImageChange} accept="image/*"></Input>
+                {
+                    mainImageValidation ?
+                        <input style={{border: "1px solid red"}} type="file" onChange={handleImageChange} accept="image/*"></input> :
+                        <input type="file" onChange={handleImageChange} accept="image/*"></input>
+                }
             </InputBlock>
             <div style={{display: "flex", justifyContent: "center"}}>
                 <CreateEventCard name={name}
@@ -334,7 +427,7 @@ export default function CreateEventPage() {
             }
             <div style={{textAlign: "center", marginTop: "20px"}}>
                 {
-                    exception && <div style={{color: "red", padding: "10px"}}>Неизвестная ошибка, возможно проболема с облаком</div>
+                    exception && <div style={{color: "red", padding: "10px"}}>Неизвестная ошибка сервера</div>
                 }
                 {
                     success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>

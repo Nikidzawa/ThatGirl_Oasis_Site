@@ -6,6 +6,7 @@ import HEART_IMG from "../../img/heart.png"
 import RED_HEART_IMG from "../../img/red_heart.png"
 import DateFormatter from "../../commonComponents/DateFormatter";
 import BUCKET from "../../img/bucket.png"
+import EDIT from "../../img/addEvent.png"
 import FireBase from "../../API/FireBase";
 import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
@@ -279,7 +280,13 @@ export default function EventPage ({role}) {
                         <Types><Circle/>{event.eventType.name}</Types>
                         {
                             role && (role === "administrator" || role === "creator") &&
-                            <img onClick={() => setModalVisible(true)} style={{cursor: "pointer", padding: "5px 0 0 5px"}} height={"30px"} width={"35px"} src={BUCKET}/>
+                            <div style={{gap: "10px", display: "flex", alignItems: "center"}}>
+                                <img onClick={() => setModalVisible(true)}
+                                     style={{cursor: "pointer"}} height={"30px"} width={"35px"}
+                                     src={BUCKET}/>
+                                <img style={{cursor: "pointer"}} height={"30px"} width={"35px"}
+                                     src={EDIT} />
+                            </div>
                         }
                     </div>
                 </NameContainer>

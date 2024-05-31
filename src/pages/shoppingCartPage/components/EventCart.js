@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import PLUS from "../../../img/plus.png"
+import PLUS_GREEN from "../../../img/plus_green.png"
 import MINUS from "../../../img/minus.png"
+import MINUS_RED from "../../../img/minus_red.png"
 import BUCKET from "../../../img/bucket.png"
 import {useNavigate} from "react-router-dom";
 import React from 'react';
@@ -90,9 +92,9 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
                     </UpperRow>
                     <PriceAndCountContainer>
                         <ButtonsContainer>
-                            <img style={{cursor: "pointer"}} alt={"увеличить"} onClick={plusCount} width={"35px"} src={PLUS}/>
+                            <img style={{cursor: "pointer"}} alt={"увеличить"} onClick={plusCount} width={"35px"} src={PLUS_GREEN}/>
                             <Count>{eventCart.count}</Count>
-                            <img style={{cursor: "pointer"}} alt={"уменьшить"} onClick={minusCount} width={"35px"} src={MINUS}/>
+                            <img style={{cursor: "pointer"}} alt={"уменьшить"} onClick={minusCount} width={"35px"} src={MINUS_RED}/>
                         </ButtonsContainer>
                         <Count>{eventCart.cost}₽</Count>
                     </PriceAndCountContainer>

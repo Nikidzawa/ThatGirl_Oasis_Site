@@ -8,16 +8,17 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
 `
 const MainDiv = styled.div`
-    min-height: 1200px;
+    min-height: 600px;
     margin: 0 auto;
     text-align: center;
     color: black;
 `
 
 const AcceptText = styled.h3`
-    color: yellowgreen;
+    color: forestgreen;
     font-size: 25px;
 `
 
@@ -33,13 +34,13 @@ export default function CheckRegister() {
 
     useEffect(() => {
         async function checkRegister() {
-            if (eventId && token) {
-                const response = await EventsAPI.checkRegister(eventId, token);
-                if (response.ok) {
-                    const responseJson = await response.json();
-                    setEvent(responseJson);
-                }
+
+            const response = await EventsAPI.checkRegister(eventId, token);
+            if (response.ok) {
+                const responseJson = await response.json();
+                setEvent(responseJson);
             }
+
             setLoading(false);
         }
         checkRegister();
@@ -51,9 +52,9 @@ export default function CheckRegister() {
                 loading ? <div>Загрузка</div> : event ?
                     <Container>
                         <h1>{event.name} {DateFormatter.format(event.date)}</h1>
-                        <img src={event.mainImage} width={"120px"}/>
-                        <AcceptText style={{color: 'green'}}>Билет подтверждён</AcceptText>
-                    </Container> : <NotRegisterText>Токен не подтверждён</NotRegisterText>
+                        <img src={event.mainImage.href} width={"240px"}/>
+                        <AcceptText>Билет подтверждён</AcceptText>
+                    </Container> : <NotRegisterText>Билет не подтверждён</NotRegisterText>
             }
         </MainDiv>
     );
