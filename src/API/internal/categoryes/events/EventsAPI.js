@@ -29,11 +29,6 @@ export default class EventsAPI extends BasePath {
         return fetch(url);
     }
 
-    static getEventImagesByEventId (eventId) {
-        const url = `${this.eventsUrl}/${eventId}/images`;
-        return fetch(url);
-    }
-
     static setImages(event) {
         const userId = localStorage.getItem("userId");
         const url = `${this.eventsUrl}/setImages/${userId}`

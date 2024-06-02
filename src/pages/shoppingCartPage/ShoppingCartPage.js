@@ -7,6 +7,7 @@ import styled from "styled-components";
 import Loading from "../../commonComponents/Loading";
 import PaymentAPI from "../../API/internal/categoryes/PaymentAPI";
 import {useNavigate} from "react-router-dom";
+import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
 
 const EventsContainer = styled.div`
     display: flex;
@@ -91,12 +92,27 @@ export default function ShoppingCartPage () {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        fetchEvents();
+        setLoading(true);
+        fetchEvents()
+
         async function fetchEvents () {
-            setLoading(true)
-            const cartsData = JSON.parse(localStorage.getItem("cartEvents"));
-            setEventCarts(cartsData);
-            calculateFinalCost(cartsData);
+            setLoading(true);
+
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || [];
+            const eventPromises = cartsData.map(async (event) => {
+                let response = await EventsAPI.getEventById(event.id);
+                if (response.ok) {
+                    return event;
+                }
+                return null;
+            });
+
+            const resolvedEvents = await Promise.all(eventPromises);
+            const filteredEvents = resolvedEvents.filter(event => event !== null);
+
+            localStorage.setItem("cartEvents", JSON.stringify(filteredEvents));
+            setEventCarts(filteredEvents);
+            await calculateFinalCost(filteredEvents);
             setLoading(false);
         }
     }, [])

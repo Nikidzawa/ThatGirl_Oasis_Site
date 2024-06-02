@@ -1,13 +1,13 @@
-import CreateEventCard from "./components/CreateEventCard";
+import CreateEventCard from "../components/CreateEventCard";
 import styled from "styled-components";
 import React, {useEffect, useState} from "react";
-import Loading from "../../commonComponents/Loading";
-import FireBase from "../../API/FireBase";
-import PageNameHeader from "../../commonComponents/PageNameHeader";
-import CREATE_EVENT_IMAGE from "../../img/addEvent.png"
-import SetEventTypeModal from "./components/SetEventTypeModal";
-import SetEventCityModal from "./components/SetEventCityModal";
-import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
+import Loading from "../../../commonComponents/Loading";
+import FireBase from "../../../API/FireBase";
+import PageNameHeader from "../../../commonComponents/PageNameHeader";
+import CREATE_EVENT_IMAGE from "../../../img/addEvent.png"
+import SetEventTypeModal from "../components/SetEventTypeModal";
+import SetEventCityModal from "../components/SetEventCityModal";
+import EventsAPI from "../../../API/internal/categoryes/events/EventsAPI";
 
 
 const Content = styled.div`
@@ -87,6 +87,20 @@ const ButtonAndText = styled.div`
     align-items: center;
 `
 
+const base64ToFile = (base64String, fileName) => {
+    const arr = base64String.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+
+    return new File([u8arr], fileName, { type: mime });
+};
+
 export default function CreateEventPage() {
     const [selectedCity, setSelectedCity] = useState(null);
     const [address, setAddress] = useState(null);
@@ -102,9 +116,7 @@ export default function CreateEventPage() {
     const [favorite, setFavorite] = useState(false);
 
     const [image, setImage] = useState(null);
-    const [handleImage, setHandleImage] = useState(null);
     const [images, setImages] = useState([]);
-    const [handleImages, setHandleImages] = useState([]);
 
     const [inputsError, setInputsError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -152,18 +164,19 @@ export default function CreateEventPage() {
                 throw new Error(response.status)
             }
             eventId = eventObject.id;
-            const mainImageHref = await FireBase.uploadImage(image, eventId);
+            await FireBase.deleteFolder(eventId);
+            const mainImageHref = await FireBase.uploadImage(base64ToFile(image, `mainImage${eventId}`), eventId);
             eventObject.mainImage = { href: mainImageHref };
 
             if (images && images.length > 0) {
-                const imagesPromises = images.map(singleImage => FireBase.uploadImage(singleImage, eventId));
+                const imagesPromises = images.map((singleImage, index) => 
+                    FireBase.uploadImage(base64ToFile(singleImage, `otherImage${eventId}:${index}`), eventId));
                 const imagesHrefs = await Promise.all(imagesPromises);
                 eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
             }
 
             const response2 = await EventsAPI.setImages(eventObject);
             if (response2.ok) {
-                setException(false);
                 setSuccess(true)
             } else {
                 throw new Error(response2.status);
@@ -182,9 +195,8 @@ export default function CreateEventPage() {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setHandleImage(reader.result);
+                setImage(reader.result);
             };
-            setImage(file);
             reader.readAsDataURL(file);
         }
     };
@@ -192,17 +204,14 @@ export default function CreateEventPage() {
     const handleImagesChange = (e) => {
         const files = e.target.files;
         const newImages = [];
-        const newFiles = [];
         if (files) {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 const reader = new FileReader();
                 reader.onloadend = () => {
                     newImages.push(reader.result);
-                    newFiles.push(file);
                     if (newImages.length === files.length) {
-                        setHandleImages(newImages);
-                        setImages(newFiles);
+                        setImages(newImages);
                     }
                 };
                 reader.readAsDataURL(file);
@@ -210,8 +219,18 @@ export default function CreateEventPage() {
         }
     };
 
-    function validation() {
+    async function createEvent () {
         setLoading(true);
+        setSuccess(false);
+        setException(false);
+        setInputsError(false);
+        if (validation()) {
+            await sendData();
+        }
+        setLoading(false);
+    }
+
+    function validation() {
         const regex = /^\d+(\.\d+)?$/;
 
         let isDateValid = !!date;
@@ -237,20 +256,18 @@ export default function CreateEventPage() {
         setFullDescriptionValidation(!isFullDescriptionValid);
         setEventTypeValidation(!isEventTypeValid);
         setMainImageValidation(!isMainImageValid);
-
         if (
             isDateValid && isTimeValid && isCityValid && isAddressValid &&
             isNameValid && isContactPhoneValid && isRatingValid &&
             isCostValid && isFullDescriptionValid && isEventTypeValid && isMainImageValid
         )
         {
-            setInputsError(false);
-            sendData();
+            return true;
         } else {
             setInputsError(true);
+            return false;
         }
 
-        setLoading(false);
     }
 
     useEffect(() => {
@@ -269,6 +286,8 @@ export default function CreateEventPage() {
                 smallDescription: smallDescription,
                 fullDescription: fullDescription,
                 favorite: favorite,
+                image: image,
+                images: images
             };
             localStorage.setItem("cachedEvent", JSON.stringify(data))
         }
@@ -284,7 +303,16 @@ export default function CreateEventPage() {
         setContactPhone(data.contactPhone)
         setSmallDescription(data.smallDescription)
         setFullDescription(data.fullDescription)
+        setFavorite(data.favorite)
+        setImage(data.image)
+        setImages(data.images)
     }, [])
+
+    useEffect(() => {
+        if (success) {
+            localStorage.removeItem("cachedEvent")
+        }
+    }, [success])
 
     const updateCachedEvent = (key, value) => {
         setCashedEvent(prev => {
@@ -341,7 +369,12 @@ export default function CreateEventPage() {
     useEffect(() => {
         updateCachedEvent("smallDescription", smallDescription);
     }, [smallDescription]);
-
+    useEffect(() => {
+        updateCachedEvent("image", image)
+    }, [image]);
+    useEffect(() => {
+        updateCachedEvent("images", images)
+    }, [images]);
     return (
         <Content className={"main"}>
             <PageNameHeader padding={"20px"} image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
@@ -407,7 +440,7 @@ export default function CreateEventPage() {
                                  rating={rating}
                                  smallDescription={smallDescription}
                                  date={date}
-                                 image={handleImage}
+                                 image={image}
                                  type={selectedType}
                 />
             </div>
@@ -418,10 +451,10 @@ export default function CreateEventPage() {
             <Block>Второстепенные картинки</Block>
             <input style={{marginBottom: "20px"}} type="file" onChange={handleImagesChange} name="photos" id="photos" multiple/>
             {
-                handleImages &&
+                images &&
                 <Images>
                     {
-                        handleImages.map(image => <Img key={image.id} src={image}/>)
+                        images.map(image => <Img key={image.id} src={image}/>)
                     }
                 </Images>
             }
@@ -432,7 +465,10 @@ export default function CreateEventPage() {
                 {
                     success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>
                 }
-                {loading ? <LoadingWrapper><Loading/></LoadingWrapper> : <Button onClick={validation}>Создать</Button>}
+                {
+                    loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
+                        <Button onClick={createEvent}>Создать</Button>
+                }
             </div>
             <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>
             <SetEventTypeModal modalIsVisible={eventTypeModalIsVisible} setModalVisible={setEventTypeModalIsVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>

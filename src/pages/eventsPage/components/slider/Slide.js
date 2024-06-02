@@ -97,7 +97,7 @@ export default function Slide ({event, index, currentPosition}) {
     const navigate = useNavigate();
     return (
         <SlideContainer onClick={() => navigate(`/events/${event.id}`)} key={index} active={index === currentPosition}>
-            <IMAGE src={event.mainImage.href}/>
+            <IMAGE src={event.mainImage && event.mainImage.href}/>
             <ModalWindow>
                 <ModalContent>
                     <EventName>{event.name}</EventName>

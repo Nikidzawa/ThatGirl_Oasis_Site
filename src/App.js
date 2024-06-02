@@ -2,7 +2,7 @@ import {Navigate, Route, Routes} from "react-router-dom";
 import EventsPage from "./pages/eventsPage/EventsPage";
 import React, {useEffect, useState} from "react";
 import Loading from "./commonComponents/Loading";
-import CreateEventPage from "./pages/createEventPage/CreateEventPage";
+import CreateEventPage from "./pages/eventManipulationPages/createEventPage/CreateEventPage";
 import styled from "styled-components";
 import Header from "./commonComponents/Header";
 import EventPage from "./pages/eventPage/EventPage";
@@ -12,6 +12,7 @@ import AboutUsPage from "./pages/aboutUs/AboutUsPage";
 import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
 import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
 import CheckRegister from "./pages/checkRegister/CheckRegister";
+import EditEventPage from "./pages/eventManipulationPages/editEvent/EditEventPage";
 
 
 const LoaderWrapper = styled.div`
@@ -67,6 +68,7 @@ function App() {
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
                             {/*//TODO-СТАТУС*/}
                             <Route path={"/events/:id"} element={<EventPage role={"creator"}/>} />
+                            <Route path={"/events/edit/:id"} element={<EditEventPage/>}></Route>
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
                             <Route path={"/aboutUs"} element={<AboutUsPage />} />

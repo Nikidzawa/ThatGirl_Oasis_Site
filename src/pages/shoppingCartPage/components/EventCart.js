@@ -1,7 +1,5 @@
 import styled from "styled-components";
-import PLUS from "../../../img/plus.png"
 import PLUS_GREEN from "../../../img/plus_green.png"
-import MINUS from "../../../img/minus.png"
 import MINUS_RED from "../../../img/minus_red.png"
 import BUCKET from "../../../img/bucket.png"
 import {useNavigate} from "react-router-dom";
@@ -51,6 +49,7 @@ const UpperRow = styled.div`
 
 export default function EventCart ({setEventCarts, eventCarts, eventCart, setFinalCost, finalCost}) {
     const navigate = useNavigate()
+
     async function plusCount () {
         const count = Number.parseInt(eventCart.count) + 1;
         if (count < 100) {
@@ -83,7 +82,7 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
 
     return (
         <Background>
-            <img alt={"картинка"} onClick={() => navigate(`/events/${eventCart.id}`)} width={"75px"} height={"65px"} src={eventCart.mainImage.href}/>
+            <img alt={"картинка"} onClick={() => navigate(`/events/${eventCart.id}`)} width={"75px"} height={"65px"} src={eventCart.mainImage && eventCart.mainImage.href}/>
             {
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>

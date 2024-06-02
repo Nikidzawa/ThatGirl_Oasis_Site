@@ -285,7 +285,7 @@ export default function EventPage ({role}) {
                                      style={{cursor: "pointer"}} height={"30px"} width={"35px"}
                                      src={BUCKET}/>
                                 <img style={{cursor: "pointer"}} height={"30px"} width={"35px"}
-                                     src={EDIT} />
+                                     src={EDIT} onClick={() => navigate(`/events/edit/${id}`)}/>
                             </div>
                         }
                     </div>

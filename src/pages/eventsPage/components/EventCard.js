@@ -183,7 +183,7 @@ export default function EventCard ({event}) {
                     favourite ? <img width={"38px"} src={HEART_RED} alt={"Избранное"}/> : <img width={"38px"} src={HEART} alt={"Избранное"}/>
                 }
             </HeartContainer>
-            <Image src={event.mainImage.href}></Image>
+            <Image src={event.mainImage && event.mainImage.href}></Image>
             <Content>
                 <MainContainer>
                     <Location>
