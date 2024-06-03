@@ -141,8 +141,12 @@ export default function EditEventPage() {
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
+    let previousEventTypeId;
+    let previousEventCityId;
+
     async function sendData() {
         let eventObject = {
+            id: id,
             city: selectedCity,
             address: address,
             name: name,
@@ -157,7 +161,7 @@ export default function EditEventPage() {
             eventType: selectedType
         }
         try {
-            const response = await EventsAPI.postEvent(eventObject);
+            const response = await EventsAPI.updateEvent(eventObject, previousEventTypeId, previousEventCityId);
             if (response.ok) {
                 eventObject = await response.json();
             } else {
@@ -201,15 +205,16 @@ export default function EditEventPage() {
                 setRating(json.rating)
                 setTime(json.time)
                 setName(json.name)
-                setHandleImage(json.mainImage)
                 setImage(json.mainImage)
-                setHandleImages(json.eventImages)
                 setFavorite(json.favorite)
                 setContactPhone(json.contactPhone)
                 setFullDescription(json.fullDescription)
                 setSmallDescription(json.smallDescription)
                 setSelectedType(json.eventType)
                 setSelectedCity(json.city)
+
+                previousEventTypeId = json.eventType.id;
+                previousEventCityId = json.city.id;
             } else navigate("/404")
         }
     }, []);
@@ -243,7 +248,7 @@ export default function EditEventPage() {
         }
     };
 
-    async function createEvent () {
+    async function editEvent () {
         setLoading(true);
         setSuccess(false);
         setException(false);
@@ -297,7 +302,7 @@ export default function EditEventPage() {
 
     return (
         <Content className={"main"}>
-            <PageNameHeader padding={"20px"} image={CREATE_EVENT_IMAGE} pageName={"Создать мероприятие"}/>
+            <PageNameHeader padding={"20px"} image={CREATE_EVENT_IMAGE} pageName={"Изменить мероприятие"}/>
             <InputBlock>
                 <Block>Геолокация</Block>
                 <ButtonAndText>
@@ -383,11 +388,12 @@ export default function EditEventPage() {
                     exception && <div style={{color: "red", padding: "10px"}}>Неизвестная ошибка сервера</div>
                 }
                 {
-                    success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>
+                    success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно изменено</div>
                 }
+
                 {
                     loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
-                        <Button onClick={createEvent}>Создать</Button>
+                        <Button onClick={editEvent}>Создать</Button>
                 }
             </div>
             <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>

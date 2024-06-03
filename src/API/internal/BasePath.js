@@ -1,3 +1,3 @@
 export default class BasePath {
-    static baseUrl = 'https://thatgirloasis.ru/api'
+    static baseUrl = 'http://localhost:8080/api'
 }

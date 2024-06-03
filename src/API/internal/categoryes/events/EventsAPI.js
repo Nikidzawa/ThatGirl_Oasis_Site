@@ -14,6 +14,17 @@ export default class EventsAPI extends BasePath {
         return fetch(url, requestOptions);
     }
 
+    static updateEvent (event, previousEventTypeId, previousEventCityId) {
+        const userId = localStorage.getItem("userId");
+        const url = `${this.eventsUrl}/${userId}/${previousEventTypeId}/${previousEventCityId}`;
+        const requestOptions = {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(event)
+        };
+        return fetch(url, requestOptions);
+    }
+
     static deleteEvent(eventId) {
         const userId = localStorage.getItem("userId");
         const url = `${this.eventsUrl}/${eventId}/${userId}`;
