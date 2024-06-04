@@ -12,9 +12,4 @@ export default class PaymentAPI extends BasePath {
         };
         return fetch(url, requestOptions).then(response => response.json());
     }
-
-    static receivePay () {
-        const url = `${this.paymentUrl}/receivePay`
-
-    }
 }

@@ -8,6 +8,8 @@ import Loading from "../../commonComponents/Loading";
 import PaymentAPI from "../../API/internal/categoryes/PaymentAPI";
 import {useNavigate} from "react-router-dom";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
+import SUCCESS_IMG from "../../img/success.png"
+import ModalWindow from "./components/ModalWindow";
 
 const EventsContainer = styled.div`
     display: flex;
@@ -72,28 +74,29 @@ const InputsContainer = styled.div`
 
 const Input = styled.input`
     min-height: 25px;
+    width: 100%;
     font-size: 16px;
     background-color: #eeded2;
     border: none;
     border-bottom: solid 1px ${props => props.error ? 'red' : 'black'};
-`
+`;
 
-export default function ShoppingCartPage () {
+export default function ShoppingCartPage ({user}) {
     const [eventCarts, setEventCarts] = useState(null);
     const [loading, setLoading] = useState(null);
     const [finalCost, setFinalCost] = useState(null);
     const [email, setEmail] = useState("");
-    const [confirmEmail, setConfirmEmail] = useState("");
 
     const [emailIsValid, setEmailIsValid] = useState(true);
     const [emailIsNull, setEmailIsNull] = useState(false);
-    const [emailIsEquals, setEmailIsEquals] = useState(true);
+    const [emailSuccess, setEmailSuccess] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
         setLoading(true);
-        fetchEvents()
+        fetchEvents();
+        fetchEmail();
 
         async function fetchEvents () {
             setLoading(true);
@@ -115,6 +118,14 @@ export default function ShoppingCartPage () {
             await calculateFinalCost(filteredEvents);
             setLoading(false);
         }
+
+        async function fetchEmail () {
+            let email = localStorage.getItem("email") || user.email;
+            if (email) {
+                setEmail(email)
+                setEmailSuccess(true);
+            }
+        }
     }, [])
 
     useEffect(() => {
@@ -132,18 +143,13 @@ export default function ShoppingCartPage () {
     }
 
     async function startPay () {
-        if (email && confirmEmail) {
+        if (email) {
             setEmailIsNull(false);
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (emailRegex.test(email)) {
                 setEmailIsValid(true);
-                if (email === confirmEmail) {
-                    setEmailIsEquals(true);
-                    const result = await PaymentAPI.startPay(eventCarts, email.trim());
-                    window.location.href = result.confirmation.confirmation_url;
-                } else {
-                    setEmailIsEquals(false);
-                }
+                const result = await PaymentAPI.startPay(eventCarts, email.trim());
+                window.location.href = result.confirmation.confirmation_url;
             } else {
                 setEmailIsValid(false);
             }
@@ -176,16 +182,18 @@ export default function ShoppingCartPage () {
                         <Separator/>
                         <InputsContainer>
                         <div style={{color: "black", textAlign: "center"}}>После покупки, билеты придут на указанный адрес электронной почты</div>
-                            <Input placeholder={"Почтовый адрес"} onChange={e => setEmail(e.target.value)} error={!emailIsValid || emailIsNull || !emailIsEquals}/>
-                            <Input placeholder={"Подтвердите почтовый адрес"} onChange={e => setConfirmEmail(e.target.value)} error={!emailIsValid || emailIsNull || !emailIsEquals}/>
+                            <div style={{display: "flex", gap: "10px"}}>
+                                <Input value={email}
+                                       placeholder={"Почтовый адрес"}
+                                       onChange={e => setEmail(e.target.value)}
+                                       error={!emailIsValid || emailIsNull}/>
+                                <img src={SUCCESS_IMG} width={"45px"} style={{marginLeft: "auto", alignItems: "center"}}/>
+                            </div>
                             {
                                 !emailIsValid && <div style={{color: "red"}}>Введите корректный адрес электронной почты</div>
                             }
                             {
-                                emailIsNull && <div style={{color: "red"}}>Поля должны быть заполнены</div>
-                            }
-                            {
-                                !emailIsEquals && <div style={{color: "red"}}>Адреса не равны</div>
+                                emailIsNull && <div style={{color: "red"}}>Поле должно быть заполнено</div>
                             }
                         </InputsContainer>
                     </div> :
@@ -201,6 +209,7 @@ export default function ShoppingCartPage () {
                     <Button onClick={startPay}>Оплатить {finalCost}₽</Button>
                 </ButtonsContainer>
             }
+            <ModalWindow/>
         </div>
     )
 }

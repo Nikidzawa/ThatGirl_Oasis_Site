@@ -141,8 +141,8 @@ export default function EditEventPage() {
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
 
-    let previousEventTypeId;
-    let previousEventCityId;
+    const [previousEventTypeId, setPreviousEventTypeId] = useState(null)
+    const [previousEventCityId, setPreviousEventCityId] = useState(null)
 
     async function sendData() {
         let eventObject = {
@@ -205,7 +205,6 @@ export default function EditEventPage() {
                 setRating(json.rating)
                 setTime(json.time)
                 setName(json.name)
-                setImage(json.mainImage)
                 setFavorite(json.favorite)
                 setContactPhone(json.contactPhone)
                 setFullDescription(json.fullDescription)
@@ -213,8 +212,8 @@ export default function EditEventPage() {
                 setSelectedType(json.eventType)
                 setSelectedCity(json.city)
 
-                previousEventTypeId = json.eventType.id;
-                previousEventCityId = json.city.id;
+                setPreviousEventTypeId(json.eventType.id);
+                setPreviousEventCityId(json.city.id);
             } else navigate("/404")
         }
     }, []);
@@ -390,14 +389,13 @@ export default function EditEventPage() {
                 {
                     success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно изменено</div>
                 }
-
                 {
                     loading ? <LoadingWrapper><Loading/></LoadingWrapper> :
-                        <Button onClick={editEvent}>Создать</Button>
+                        <Button onClick={editEvent}>Изменить</Button>
                 }
             </div>
-            <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}></SetEventCityModal>
-            <SetEventTypeModal modalIsVisible={eventTypeModalIsVisible} setModalVisible={setEventTypeModalIsVisible} setSelectedType={setSelectedType} selectedType={selectedType}></SetEventTypeModal>
+            <SetEventCityModal modalIsVisible={eventCityModalIsVisible} setModalVisible={setEventCityModalIsVisible} selectedCity={selectedCity} setSelectedCity={setSelectedCity}/>
+            <SetEventTypeModal modalIsVisible={eventTypeModalIsVisible} setModalVisible={setEventTypeModalIsVisible} setSelectedType={setSelectedType} selectedType={selectedType}/>
         </Content>
     );
 }
