@@ -89,7 +89,8 @@ export default function ShoppingCartPage ({user}) {
 
     const [emailIsValid, setEmailIsValid] = useState(true);
     const [emailIsNull, setEmailIsNull] = useState(false);
-    const [emailSuccess, setEmailSuccess] = useState(false)
+    const [emailSuccess, setEmailSuccess] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -120,11 +121,14 @@ export default function ShoppingCartPage ({user}) {
         }
 
         async function fetchEmail () {
-            let email = localStorage.getItem("email") || user.email;
-            if (email) {
-                setEmail(email)
-                setEmailSuccess(true);
+            let email;
+            if (user && user.email) {
+                localStorage.setItem("email", user.email);
+                email = user.email;
+            } else {
+                email = localStorage.getItem("email") || null;
             }
+            setEmail(email);
         }
     }, [])
 
@@ -187,7 +191,7 @@ export default function ShoppingCartPage ({user}) {
                                        placeholder={"Почтовый адрес"}
                                        onChange={e => setEmail(e.target.value)}
                                        error={!emailIsValid || emailIsNull}/>
-                                <img src={SUCCESS_IMG} width={"45px"} style={{marginLeft: "auto", alignItems: "center"}}/>
+                                <img src={SUCCESS_IMG} onClick={() => setModalVisible(true)} width={"45px"} style={{cursor: "pointer", marginLeft: "auto", alignItems: "center"}}/>
                             </div>
                             {
                                 !emailIsValid && <div style={{color: "red"}}>Введите корректный адрес электронной почты</div>
@@ -209,7 +213,7 @@ export default function ShoppingCartPage ({user}) {
                     <Button onClick={startPay}>Оплатить {finalCost}₽</Button>
                 </ButtonsContainer>
             }
-            <ModalWindow/>
+            <ModalWindow email={email} setModalVisible={setModalVisible} modalVisible={modalVisible} setEmailSuccess={setEmailSuccess}/>
         </div>
     )
 }
