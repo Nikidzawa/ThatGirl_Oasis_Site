@@ -10,6 +10,7 @@ import {useNavigate} from "react-router-dom";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
 import SUCCESS_IMG from "../../img/success.png"
 import ModalWindow from "./components/ModalWindow";
+import MAIL_IMG from "../../img/mail.png"
 
 const EventsContainer = styled.div`
     display: flex;
@@ -78,8 +79,23 @@ const Input = styled.input`
     font-size: 16px;
     background-color: #eeded2;
     border: none;
+    background-image: ${props => `url('${props.backgroundImage}')`};
+    background-repeat: no-repeat;
+    background-position: center left 5px;
+    background-size: 25px;
     border-bottom: solid 1px ${props => props.error ? 'red' : 'black'};
+    padding-left: 35px;
+    padding-bottom: 0;
+    align-items: center;
 `;
+
+const SuccessEmailButton = styled.div`
+    padding: 10px;
+    background-color: green;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+`
 
 export default function ShoppingCartPage ({user}) {
     const [eventCarts, setEventCarts] = useState(null);
@@ -91,6 +107,7 @@ export default function ShoppingCartPage ({user}) {
     const [emailIsNull, setEmailIsNull] = useState(false);
     const [emailSuccess, setEmailSuccess] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -121,16 +138,20 @@ export default function ShoppingCartPage ({user}) {
         }
 
         async function fetchEmail () {
-            let email;
-            if (user && user.email) {
-                localStorage.setItem("email", user.email);
-                email = user.email;
-            } else {
-                email = localStorage.getItem("email") || null;
+            let email = localStorage.getItem("email") || null;
+            if (email) {
+                setEmailSuccess(true)
+                setEmail(email);
             }
-            setEmail(email);
         }
     }, [])
+
+    useEffect(() => {
+        const localStorageEmail = localStorage.getItem("email") || null;
+        if (email !== localStorageEmail) {
+            setEmailSuccess(false)
+        } else setEmailSuccess(true)
+    }, [email])
 
     useEffect(() => {
         calculateFinalCost(eventCarts);
@@ -147,13 +168,21 @@ export default function ShoppingCartPage ({user}) {
     }
 
     async function startPay () {
+        if (emailSuccess) {
+            const result = await PaymentAPI.startPay(eventCarts, email.trim());
+            window.location.href = result.confirmation.confirmation_url;
+        } else {
+            await emailValidation()
+        }
+    }
+
+    async function emailValidation () {
         if (email) {
             setEmailIsNull(false);
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (emailRegex.test(email)) {
                 setEmailIsValid(true);
-                const result = await PaymentAPI.startPay(eventCarts, email.trim());
-                window.location.href = result.confirmation.confirmation_url;
+                setModalVisible(true)
             } else {
                 setEmailIsValid(false);
             }
@@ -161,6 +190,7 @@ export default function ShoppingCartPage ({user}) {
             setEmailIsNull(true);
         }
     }
+
     function goToEventsPage () {
         navigate("/events")
     }
@@ -188,10 +218,17 @@ export default function ShoppingCartPage ({user}) {
                         <div style={{color: "black", textAlign: "center"}}>После покупки, билеты придут на указанный адрес электронной почты</div>
                             <div style={{display: "flex", gap: "10px"}}>
                                 <Input value={email}
+                                       backgroundImage={MAIL_IMG}
                                        placeholder={"Почтовый адрес"}
                                        onChange={e => setEmail(e.target.value)}
                                        error={!emailIsValid || emailIsNull}/>
-                                <img src={SUCCESS_IMG} onClick={() => setModalVisible(true)} width={"45px"} style={{cursor: "pointer", marginLeft: "auto", alignItems: "center"}}/>
+                                {
+                                    emailSuccess ?
+                                        <img src={SUCCESS_IMG}
+                                             width={"45px"}
+                                             /> :
+                                        <SuccessEmailButton onClick={emailValidation}>Подтвердить</SuccessEmailButton>
+                                }
                             </div>
                             {
                                 !emailIsValid && <div style={{color: "red"}}>Введите корректный адрес электронной почты</div>

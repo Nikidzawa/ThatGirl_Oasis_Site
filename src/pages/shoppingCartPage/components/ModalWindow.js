@@ -17,7 +17,7 @@ const ModalWindowBackground = styled.div`
     left: 0;
 `
 const ModalWindowContent = styled.div`
-    height: 400px;
+    height: 420px;
     width: 80%;
     max-width: 600px;
     background-color: #eeded2;
@@ -116,7 +116,7 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
         }
     }, [timeLeft, isRunning, modalVisible]);
 
-    function handleRestartButtonClick () {
+    function handleRestartButton () {
         setTimeLeft(60);
         setIsRunning(true);
         sendMessageToMail();
@@ -128,11 +128,13 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
         setCode(randomCode);
     }
 
-    function successCode () {
-        const userValue = Number.parseInt(firstInput + secondInput + thirdInput + fourthInput);
+    function successCode (value) {
+        const userValue = Number.parseInt(firstInput + secondInput + thirdInput + value);
         if (userValue === code) {
             setEmailSuccess(true)
             setException(false)
+            setModalVisible(false)
+            localStorage.setItem("email", email)
         } else setException(true)
     }
 
@@ -170,6 +172,9 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
         const value = e.target.value;
         if (/^\d?$/.test(value)) {
             setFourthInput(value);
+            if (firstVisible && secondInput && thirdInput) {
+                successCode(value)
+            }
         }
     }
 
@@ -207,7 +212,7 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
                         ref={fourthInputRef}
                     />
                 </InputsDiv>
-                <Button onClick={successCode}>Подтвердить почту</Button>
+                <Button onClick={() => successCode(fourthInput)}>Подтвердить почту</Button>
                 <TimerSection>
                     {
                         exception && <div style={{color: "red"}}>Неверный код</div>
@@ -215,7 +220,7 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
                     {isRunning ? (
                         <div>Вы сможете переотправить письмо через: {timeLeft}</div>
                     ) : (
-                        <button onClick={handleRestartButtonClick}>Переотправить письмо</button>
+                        <button onClick={handleRestartButton}>Переотправить письмо</button>
                     )}
                 </TimerSection>
             </ModalWindowContent>
