@@ -10,7 +10,7 @@ import DateFormatter from "../../../commonComponents/DateFormatter";
 
 const Card = styled.div`
     height: 450px;
-    width: 340px;
+    width: 320px;
     cursor: pointer;
     overflow: hidden;
     position: relative;

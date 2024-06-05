@@ -13,6 +13,7 @@ import UsersAPI from "./API/internal/categoryes/users/UsersAPI";
 import RolesAPI from "./API/internal/categoryes/users/RolesAPI";
 import CheckRegister from "./pages/checkRegister/CheckRegister";
 import EditEventPage from "./pages/eventManipulationPages/editEvent/EditEventPage";
+import EventsAPI from "./API/internal/categoryes/events/EventsAPI";
 
 
 const LoaderWrapper = styled.div`
@@ -31,10 +32,12 @@ function App() {
     const [user, setUser] = useState(null);
     const [userStatus, setUserStatus] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [eventsCart, setEventsCart] = useState(null)
 
     useEffect(() => {
         getUser();
         async function getUser() {
+            updateCartData()
             const tg = window.Telegram.WebApp;
             const user = tg.initDataUnsafe.user;
             if (user) {
@@ -52,9 +55,26 @@ function App() {
         async function getUserStatus (user) {
             const status = await RolesAPI.getRole(user.id);
             setUserStatus(status);
-            setLoading(false);
         }
 
+        async function updateCartData () {
+            const cartsData = JSON.parse(localStorage.getItem("cartEvents")) || [];
+            const eventPromises = cartsData.map(async (event) => {
+                let response = await EventsAPI.getEventById(event.id);
+                if (response.ok) {
+                    let updatedEvent = await response.json()
+                    updatedEvent.count = event.count;
+                    return updatedEvent;
+                }
+                return null;
+            });
+
+            const resolvedEvents = await Promise.all(eventPromises);
+            const filteredEvents = resolvedEvents.filter(event => event !== null);
+
+            localStorage.setItem("cartEvents", JSON.stringify(filteredEvents));
+            setEventsCart(filteredEvents);
+        }
     }, []);
 
     return (
@@ -70,7 +90,7 @@ function App() {
                             <Route path={"/events/:id"} element={<EventPage role={"creator"}/>} />
                             <Route path={"/events/edit/:id"} element={<EditEventPage/>}></Route>
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
-                            <Route path={"/shopping_cart"} element={<ShoppingCartPage user={user} />} />
+                            <Route path={"/shopping_cart"} element={<ShoppingCartPage eventCarts={eventsCart} setEventCarts={setEventsCart}/>} />
                             <Route path={"/aboutUs"} element={<AboutUsPage />} />
                             <Route path={"/checkMemberStatus/:eventId/:token"} element={<CheckRegister/>}></Route>
                             <Route path={"/404"} element={<NotFoundPage />} />

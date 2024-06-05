@@ -97,7 +97,7 @@ const SuccessEmailButton = styled.div`
     border-radius: 10px;
 `
 
-export default function ShoppingCartPage ({user}) {
+export default function ShoppingCartPage () {
     const [eventCarts, setEventCarts] = useState(null);
     const [loading, setLoading] = useState(null);
     const [finalCost, setFinalCost] = useState(null);
@@ -123,7 +123,9 @@ export default function ShoppingCartPage ({user}) {
             const eventPromises = cartsData.map(async (event) => {
                 let response = await EventsAPI.getEventById(event.id);
                 if (response.ok) {
-                    return event;
+                    const actualEvent = await response.json();
+                    actualEvent.count = event.count;
+                    return actualEvent;
                 }
                 return null;
             });

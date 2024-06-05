@@ -82,7 +82,11 @@ export default function EventCart ({setEventCarts, eventCarts, eventCart, setFin
 
     return (
         <Background>
-            <img alt={"картинка"} onClick={() => navigate(`/events/${eventCart.id}`)} width={"75px"} height={"65px"} src={eventCart.mainImage && eventCart.mainImage.href}/>
+            <img alt={"картинка"}
+                 onClick={() => navigate(`/events/${eventCart.id}`)}
+                 width={"75px"}
+                 height={"65px"}
+                 src={eventCart.mainImage && eventCart.mainImage.href}/>
             {
                 <div style={{marginLeft: "10px", flex: "1"}}>
                     <UpperRow>

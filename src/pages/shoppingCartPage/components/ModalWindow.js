@@ -66,7 +66,7 @@ const Image = styled.img`
     position: absolute;
     right: 20px;
     top: 20px;
-    width: 40px;
+    width: 35px;
     cursor: pointer;
 `
 
