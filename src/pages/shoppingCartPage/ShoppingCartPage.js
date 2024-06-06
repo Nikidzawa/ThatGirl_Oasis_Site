@@ -76,7 +76,7 @@ const InputsContainer = styled.div`
 const Input = styled.input`
     min-height: 25px;
     width: 100%;
-    font-size: 16px;
+    font-size: 18px;
     background-color: #eeded2;
     border: none;
     background-image: ${props => `url('${props.backgroundImage}')`};
@@ -87,7 +87,13 @@ const Input = styled.input`
     padding-left: 35px;
     padding-bottom: 0;
     align-items: center;
+
+    &:focus {
+        outline: none;
+        border-bottom: solid 1px green;
+    }
 `;
+
 
 const SuccessEmailButton = styled.div`
     padding: 10px;

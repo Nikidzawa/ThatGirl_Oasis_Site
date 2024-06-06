@@ -80,15 +80,18 @@ const FireAndCostContainer = styled.div`
 const Fire = styled.div`
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 50%;
-    padding: 0.3125rem 0.625rem;
+    text-align: center;
+    padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
 `;
 
 const Cost = styled.div`
     font-size: 1.5625rem;
     color: white;
+    text-align: center;
+    align-items: center;
     background-color: rgba(0, 0, 0, 0.75);
     border-radius: 0.625rem;
-    padding: 0.3125rem 0.625rem;
+    padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
 
     @media screen and (max-width: 300px) {
         font-size: 1.375rem;

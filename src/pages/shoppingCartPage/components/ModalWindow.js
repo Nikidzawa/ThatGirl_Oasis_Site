@@ -17,7 +17,7 @@ const ModalWindowBackground = styled.div`
     left: 0;
 `
 const ModalWindowContent = styled.div`
-    height: 420px;
+    height: 440px;
     width: 80%;
     max-width: 600px;
     background-color: #eeded2;
