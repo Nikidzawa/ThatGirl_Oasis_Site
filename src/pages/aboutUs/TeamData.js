@@ -22,7 +22,7 @@ class TeamData {
             {
                 img: TANYA,
                 name: "Татьяна",
-                role: "Концепт-специалист",
+                role: "Бренд менеджер",
                 description: "Веду соц сети, публикую материалы",
                 socialLinks: [
                     {

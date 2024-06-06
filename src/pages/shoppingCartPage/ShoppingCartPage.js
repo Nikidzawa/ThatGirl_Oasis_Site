@@ -228,7 +228,7 @@ export default function ShoppingCartPage () {
                                     emailSuccess ?
                                         <img src={SUCCESS_IMG}
                                              width={"45px"}
-                                             /> :
+                                             alt={"успешно подтверждено"}/> :
                                         <SuccessEmailButton onClick={emailValidation}>Подтвердить</SuccessEmailButton>
                                 }
                             </div>

@@ -183,7 +183,7 @@ export default function ModalWindow ({email, setModalVisible, modalVisible, setE
             <ModalWindowContent>
                 <Image src={EXIT_IMAGE} onClick={e => setModalVisible(false)}/>
                 <div>
-                    <img src={LOGO} width={"120px"}/>
+                    <img src={LOGO} width={"120px"} alt={"лого"}/>
                     <h4>На почту {email} было отправлено письмо с кодом подтверждения</h4>
                 </div>
                 <InputsDiv>

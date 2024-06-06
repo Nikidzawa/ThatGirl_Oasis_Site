@@ -52,7 +52,7 @@ export default function CheckRegister() {
                 loading ? <div>Загрузка</div> : event ?
                     <Container>
                         <h1>{event.name} {DateFormatter.format(event.date)}</h1>
-                        <img src={event.mainImage.href} width={"240px"}/>
+                        <img src={event.mainImage.href} width={"240px"} alt={"Картинка мероприятия"}/>
                         <AcceptText>Билет подтверждён</AcceptText>
                     </Container> : <NotRegisterText>Билет не подтверждён</NotRegisterText>
             }

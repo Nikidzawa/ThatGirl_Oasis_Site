@@ -8,96 +8,97 @@ import React, {useEffect, useMemo, useState} from "react";
 import EventTypesAPI from "../../../API/internal/categoryes/events/EventTypesAPI";
 
 const Button = styled.button`
-    height: 40px;
-    font-size: 15px;
+    height: 2.5rem;
+    font-size: 0.9375rem;
     min-width: auto;
-    border-radius: 20px;
+    border-radius: 1.25rem;
     background-color: #F5F5F5;
-    padding: ${props => props.backgroundImage ? "10px 15px 10px 32px" : "10px 20px 10px 20px"};
+    padding: ${props => props.backgroundImage ? "0.625rem 0.9375rem 0.625rem 2rem" : "0.625rem 1.25rem"};
     background-image: ${props => props.backgroundImage ? `url('${props.backgroundImage}')` : 'none'};
     background-repeat: no-repeat;
-    background-position: center left 5px;
-    background-size: 25px;
+    background-position: center left 0.3125rem;
+    background-size: 1.5625rem;
 
     ${(props) =>
-    props.selected &&
-    `
-            background-color: green;
-            color: white;
+            props.selected &&
             `
-}
+        background-color: green;
+        color: white;
+    `
+    }
 
     ${(props) =>
-    !props.selected &&
-    `
-            background-color: white;
-            color: black;
+            !props.selected &&
             `
-}
+        background-color: white;
+        color: black;
+    `
+    }
 `;
 
 const ButtonContainer = styled.div`
     display: flex;
-    gap: 10px;
-    height: 50px;
+    gap: 0.625rem;
+    height: 3.125rem;
     overflow-x: auto;
     white-space: nowrap;
     @media screen and (max-width: 300px) {
-        gap: 8px;
+        gap: 0.5rem;
     }
 `;
 
 const Input = styled.input`
     width: 100%;
-    padding-left: 38px;
-    border-radius: 20px;
-    font-size: 14px;
-    height: 40px;
+    padding-left: 2.375rem;
+    border-radius: 1.25rem;
+    font-size: 0.875rem;
+    height: 2.5rem;
     outline: none;
     background-image: ${props => `url('${props.backgroundImage}')`};
     background-repeat: no-repeat;
-    background-position: center left 5px;
-    background-size: 28px;
-`
+    background-position: center left 0.3125rem;
+    background-size: 1.75rem;
+`;
 
 const SearchContainer = styled.div`
     background-color: #333;
-    padding: 10px 15px 10px 15px;
-`
+    padding: 0.625rem 0.9375rem;
+`;
 
 const Select = styled.select`
-    height: 40px;
-    border-radius: 20px;
-    font-size: 15px;
+    height: 2.5rem;
+    border-radius: 1.25rem;
+    font-size: 0.9375rem;
     width: auto;
     border: none;
     outline: none;
     text-align: center;
-    max-width: 190px;
+    max-width: 11.875rem;
     background-color: #F5F5F5;
-    padding: ${props => props.backgroundImage ? "10px 10px 10px 32px" : "10px 10px 10px 10px"};
+    padding: ${props => props.backgroundImage ? "0.625rem 0.625rem 0.625rem 2rem" : "0.625rem"};
     background-image: ${props => props.backgroundImage ? `url('${props.backgroundImage}')` : 'none'};
     background-repeat: no-repeat;
-    background-position: center left 5px;
-    background-size: 25px;
+    background-position: center left 0.3125rem;
+    background-size: 1.5625rem;
     cursor: pointer;
-    ${(props) => props.value !== "NONE" ? 
+
+    ${(props) => props.value !== "NONE" ?
             `
-            background-color: green;
-            color: white;
-            ` 
-            : 
+        background-color: green;
+        color: white;
+        `
+            :
             `
-            background-color: #F5F5F5;
-            color: black;
-            `
+        background-color: #F5F5F5;
+        color: black;
+        `
     }
+
     option {
         background-color: white;
         color: black;
     }
-`
-
+`;
 
 
 export default function SearchPanel ({events, setSortedEvents}) {

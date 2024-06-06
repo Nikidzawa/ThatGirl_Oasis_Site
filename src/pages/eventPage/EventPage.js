@@ -10,6 +10,8 @@ import EDIT from "../../img/addEvent.png"
 import FireBase from "../../API/FireBase";
 import AcceptDeleteEventModal from "./components/AcceptDeleteEventModal";
 import EventsAPI from "../../API/internal/categoryes/events/EventsAPI";
+import LOCATION_IMG from "../../img/location.png"
+import ARTICLE_IMG from "../../img/article.png"
 
 const LoadingWrapper = styled.div`
     display: flex;
@@ -22,33 +24,33 @@ const LoadingWrapper = styled.div`
     right: 0;
     bottom: 0;
     left: 0;
-`
+`;
 
 const MainContainer = styled.div`
-    padding: 10px 10px 0 10px;
+    padding: 0.625rem 0.625rem 0 0.625rem;
     color: azure;
-
-`
+    font-family: arial;
+`;
 
 const Title = styled.div`
-    font-size: 30px;
+    font-size: 1.875rem;
     font-weight: bold;
-`
+`;
 
 const Description = styled.div`
-    padding: 10px 0;
-    font-size: 17px;
+    padding: 0.625rem 0;
+    font-size: 1.0625rem;
     display: flex;
     flex-direction: column;
-    gap: 5px;
-`
+    gap: 0.3125rem;
+`;
 
 const BLock = styled.div`
-    margin-top: 25px;
+    margin-top: 1.5625rem;
     background: rgba(0, 0, 0, 0.5);
-    padding: 20px;
-    border-radius: 20px;
-`
+    padding: 1.25rem;
+    border-radius: 1.25rem;
+`;
 
 const ButtonsContainer = styled.div`
     position: fixed;
@@ -56,93 +58,98 @@ const ButtonsContainer = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
-    border-radius: 20px;
-    height: 70px;
-    max-width: 1000px;
-`
+    border-radius: 1.25rem;
+    height: 4.375rem;
+    max-width: 62.5rem;
+`;
 
 const Button = styled.button`
     background-color: green;
     border-top: 1px black solid;
     color: azure;
     height: 100%;
-    font-size: 28px;
-    padding: 10px 15px;
+    font-size: 1.75rem;
+    padding: 0.625rem 0.9375rem;
     flex: 1;
-`
+    font-family: Ubuntu, arial;
+`;
 
 const ModalWindow = styled.div`
     position: fixed;
-    bottom: 100px;
+    bottom: 6.25rem;
     left: 50%;
     transform: translateX(-50%);
     background-color: #333333;
     color: #fff;
-    font-size: 20px;
-    padding: 10px 20px;
-    border-radius: 10px;
-    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.3);
+    font-size: 1.25rem;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.625rem;
+    box-shadow: 0 0.1875rem 0.375rem rgba(0, 0, 0, 0.3);
     opacity: ${props => props.visible ? "1" : "0"};
-    pointer-events: ${props => props.visible ? "auto" : "none"};;
+    pointer-events: ${props => props.visible ? "auto" : "none"};
     transition: opacity 0.5s ease-in-out;
 `;
 
 const ImageContainer = styled.div`
     height: 100%;
-    width: 80px;
+    width: 5rem;
     background-color: #333;
     border-top: 1px black solid;
     display: flex;
     align-items: center;
     justify-content: center;
-`
+`;
+
 const Image = styled.img`
-    width: 45px;
-`
+    width: 2.8125rem;
+`;
 
 const NameContainer = styled.div`
-    padding: 20px;
-    margin-bottom: 10px;
+    padding: 1.25rem;
+    margin-bottom: 0.625rem;
     background-color: #333333;
-`
+    font-family: arial;
+`;
 
 const Types = styled.div`
-    padding-top: 10px;
-    font-size: 18px;
+    padding-top: 0.625rem;
+    font-size: 1.125rem;
     display: flex;
     align-items: center;
-`
+`;
 
 const Circle = styled.div`
-    width: 7px;
-    height: 7px;
+    width: 0.4375rem;
+    height: 0.4375rem;
     border-radius: 50%;
     background-color: white;
-    margin-right: 5px;
-`
+    margin-right: 0.3125rem;
+`;
+
 const Images = styled.div`
     display: flex;
-    padding-bottom: 5px;
-    grid-gap: 10px;
+    padding-bottom: 0.3125rem;
+    grid-gap: 0.625rem;
     align-items: center;
     overflow-x: auto;
     white-space: nowrap;
-`
+`;
 
 const Img = styled.img`
-    width: 70px;
-    height: 75px;
+    width: 4.375rem;
+    height: 4.6875rem;
     cursor: pointer;
     border-bottom: ${props => props.isSelected ? '2px solid green' : 'none'};
-    padding-bottom: 5px;
-`
+    padding-bottom: 0.3125rem;
+`;
+
 const SelectedImage = styled.img`
-    max-width: 600px;
+    max-width: 37.5rem;
     width: 100%;
-    min-height: 250px;
-    max-height: 600px;
+    min-height: 15.625rem;
+    max-height: 37.5rem;
     height: auto;
-`
+`;
 
 export default function EventPage ({role}) {
     const { id } = useParams();
@@ -283,9 +290,9 @@ export default function EventPage ({role}) {
                             <div style={{gap: "10px", display: "flex", alignItems: "center"}}>
                                 <img onClick={() => setModalVisible(true)}
                                      style={{cursor: "pointer"}} height={"30px"} width={"35px"}
-                                     src={BUCKET}/>
+                                     src={BUCKET} alt={"Удалить"}/>
                                 <img style={{cursor: "pointer"}} height={"30px"} width={"35px"}
-                                     src={EDIT} onClick={() => navigate(`/events/edit/${id}`)}/>
+                                     src={EDIT} onClick={() => navigate(`/events/edit/${id}`)} alt={"Редактировать"}/>
                             </div>
                         }
                     </div>
@@ -316,11 +323,17 @@ export default function EventPage ({role}) {
                         </Images>
                     </div>
                     <BLock>
-                        <Title>Описание</Title>
+                        <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                            <img width={"30px"} src={ARTICLE_IMG}/>
+                            <Title>Описание</Title>
+                        </div>
                         <Description>{event.fullDescription}</Description>
                     </BLock>
                     <BLock style={{marginBottom: "20px"}}>
-                        <Title>Место и время</Title>
+                        <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                            <img width={"30px"} src={LOCATION_IMG}/>
+                            <Title>Место и время</Title>
+                        </div>
                         <Description>
                             <div>{event.city.name}, {event.address}</div>
                             <div>{DateFormatter.format(event.date)} в {event.time} по МСК</div>

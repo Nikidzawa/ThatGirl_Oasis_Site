@@ -5,8 +5,8 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     color: #333;
-    width: 300px;
-    height: 400px;
+    width: 350px;
+    height: 430px;
     text-align: center;
     align-items: center;
     padding: 10px;
@@ -16,12 +16,12 @@ const Container = styled.div`
 `
 const Name = styled.div`
     font-size: 25px;
-    padding-top: 5px;
+    padding-top: 10px;
 `
 
 const Image = styled.img`
-    width: 235px;
-    height: 225px;
+    width: 240px;
+    height: 245px;
     border-radius: 50%;
 `
 

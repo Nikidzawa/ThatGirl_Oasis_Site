@@ -118,7 +118,7 @@ const SetEventTypeModal = ({modalIsVisible, setModalVisible, setSelectedType, se
                             {eventTypes.map((type, index) => (
                                 <EventType onClick={() => selectTypeAndCloseWindow(type)} key={index}>
                                     <div style={{marginRight: "auto"}}>{type.name}</div>
-                                    <img onClick={(e) => deleteEventType(e, type)} width={"30px"} src={DELETE_IMAGE}/>
+                                    <img onClick={(e) => deleteEventType(e, type)} width={"30px"} src={DELETE_IMAGE} alt={"Закрыть"}/>
                                 </EventType>
                             ))}
                         </EventTypesContainer>

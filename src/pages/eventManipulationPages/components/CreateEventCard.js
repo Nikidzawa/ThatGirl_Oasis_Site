@@ -140,7 +140,7 @@ export default function CreateEventCard ({name, date, address, smallDescription,
                     <Location>
                         <div>{address ? address : "Адрес"}</div>
                         <div style={{display: "flex", alignItems: "center", paddingLeft: "10px"}}>
-                            <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE}/>
+                            <img style={{paddingRight: "7px"}} width={"18px"} src={IMAGE} alt={"календарь"}/>
                             <Date>{date ? DateFormatter.format(date) : "Дата"}</Date>
                         </div>
                     </Location>
@@ -150,7 +150,7 @@ export default function CreateEventCard ({name, date, address, smallDescription,
                 </MainContainer>
                 <StarAndCostContainer>
                     <StarContainer>
-                        <img width={"25spx"} src={STAR}/>
+                        <img alt={"рейтинг"} width={"25spx"} src={STAR}/>
                         <div style={{paddingLeft: "2px"}}>{rating ? rating : "Рейтинг"}</div>
                     </StarContainer>
                     <Cost>{cost ? cost : "цена"}₽</Cost>

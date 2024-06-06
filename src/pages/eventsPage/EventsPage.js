@@ -154,7 +154,6 @@ export default function EventsPage ({user}) {
                             }
                             <SearchPanel events={events} setSortedEvents={setSortedEvents}/>
                         </div>
-
                         <GridContainer>{!sortedEvents || sortedEvents.length === 0 ?
                             <NotFound/> : sortedEvents.map(event => <EventCard key={event.id} event={event} user={user}/>)}
                         </GridContainer>
