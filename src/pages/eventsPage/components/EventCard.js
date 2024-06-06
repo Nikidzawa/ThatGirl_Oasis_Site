@@ -122,7 +122,6 @@ const StarContainer = styled.div`
     padding: 5px 10px;
     border: 1px solid black;
     font-size: 1.3rem;
-    font-family: Ubuntu, arial, serif;
     gap: 3px;
 
     @media screen and (max-width: 360px) {

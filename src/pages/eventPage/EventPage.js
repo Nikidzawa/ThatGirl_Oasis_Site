@@ -29,8 +29,8 @@ const LoadingWrapper = styled.div`
 const MainContainer = styled.div`
     padding: 0.625rem 0.625rem 0 0.625rem;
     color: azure;
-    font-family: arial;
-`;
+    font-family: Ubuntu, arial, sans-serif;
+`
 
 const Title = styled.div`
     font-size: 1.875rem;
@@ -71,7 +71,7 @@ const Button = styled.button`
     font-size: 1.75rem;
     padding: 0.625rem 0.9375rem;
     flex: 1;
-    font-family: Ubuntu, arial;
+    font-family: Ubuntu, arial, sans-serif;
 `;
 
 const ModalWindow = styled.div`
@@ -108,7 +108,7 @@ const NameContainer = styled.div`
     padding: 1.25rem;
     margin-bottom: 0.625rem;
     background-color: #333333;
-    font-family: arial;
+    font-family: Ubuntu, arial, sans-serif;
 `;
 
 const Types = styled.div`

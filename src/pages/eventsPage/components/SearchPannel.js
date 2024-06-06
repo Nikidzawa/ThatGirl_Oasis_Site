@@ -13,10 +13,10 @@ const Button = styled.button`
     min-width: auto;
     border-radius: 1.25rem;
     background-color: #F5F5F5;
-    padding: ${props => props.backgroundImage ? "0.625rem 0.9375rem 0.625rem 2rem" : "0.625rem 1.25rem"};
+    padding: ${props => props.backgroundImage ? "0.625rem 0.9375rem 0.625rem 2.15rem" : "0.625rem 1.25rem"};
     background-image: ${props => props.backgroundImage ? `url('${props.backgroundImage}')` : 'none'};
     background-repeat: no-repeat;
-    background-position: center left 0.3125rem;
+    background-position: center left 0.4rem;
     background-size: 1.5625rem;
 
     ${(props) =>
@@ -78,7 +78,7 @@ const Select = styled.select`
     padding: ${props => props.backgroundImage ? "0.625rem 0.625rem 0.625rem 2rem" : "0.625rem"};
     background-image: ${props => props.backgroundImage ? `url('${props.backgroundImage}')` : 'none'};
     background-repeat: no-repeat;
-    background-position: center left 0.3125rem;
+    background-position: center left 0.5rem;
     background-size: 1.5625rem;
     cursor: pointer;
 

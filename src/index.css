@@ -4,7 +4,7 @@ html, body, #root {
 }
 
 body {
-  font-family: "Candara", arial, serif, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
+  font-family: "Candara", Ubuntu, arial, sans-serif, 'Segoe UI Emoji', 'Apple Color Emoji', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: aliceblue;
