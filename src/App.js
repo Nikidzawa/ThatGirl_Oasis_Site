@@ -81,13 +81,11 @@ function App() {
         <div>
             {loading ? <LoaderWrapper><Loading circleColor={"#333"}/></LoaderWrapper> :
                 <div>
-                    {/*//TODO-СТАТУС*/}
-                    <Header userStatus={"creator"}/>
+                    <Header userStatus={userStatus}/>
                     <div style={{paddingTop: "70px"}}>
                         <Routes>
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
-                            {/*//TODO-СТАТУС*/}
-                            <Route path={"/events/:id"} element={<EventPage role={"creator"}/>} />
+                            <Route path={"/events/:id"} element={<EventPage role={userStatus}/>} />
                             <Route path={"/events/edit/:id"} element={<EditEventPage/>}></Route>
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage eventCarts={eventsCart} setEventCarts={setEventsCart}/>} />
