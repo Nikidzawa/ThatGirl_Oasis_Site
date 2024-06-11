@@ -43,15 +43,26 @@ function App() {
                 const tg = window.Telegram.WebApp;
                 const user = tg.initDataUnsafe.user;
                 if (user) {
-                    const userData = await UsersAPI.getUser(user.id);
-                    if (userData.ok) {
-                        setUser(await userData.json());
-                        setUserStatus(await RolesAPI.getRole(user.id));
-                    }
+                    fetchUser();
+                    fetchStatus();
                 }
             } finally {
                 localStorage.setItem("userId", user ? user.id : 0);
                 setLoading(false);
+            }
+
+            async function fetchUser() {
+                const responseUser = await UsersAPI.getUser(user.id);
+                if (responseUser.ok) {
+                    setUser(await responseUser.json());
+                }
+            }
+
+            async function fetchStatus() {
+                const responseStatus = await RolesAPI.getRole(user.id);
+                if (responseStatus.ok) {
+                    setUserStatus(await responseStatus.text());
+                }
             }
         }
 

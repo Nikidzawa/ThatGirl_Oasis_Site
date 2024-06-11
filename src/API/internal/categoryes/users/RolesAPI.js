@@ -5,6 +5,6 @@ export default class RolesAPI extends BasePath {
 
     static getRole (userId) {
         const url = `${this.rolesUrl}/${userId}`
-        return fetch(url).then(response => response.text());
+        return fetch(url)
     }
 }
