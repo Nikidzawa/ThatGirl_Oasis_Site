@@ -107,8 +107,10 @@ const Cost = styled.div`
     color: white;
     background-color: rgba(0, 0, 0, 0.5);
     border-radius: 10px;
-    padding: 5px 10px;
-
+    padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
+    text-align: center;
+    align-items: center;
+    
     @media screen and (max-width: 360px) {
         font-size: 1.375rem;
     }
@@ -116,10 +118,11 @@ const Cost = styled.div`
 
 const StarContainer = styled.div`
     display: flex;
+    text-align: center;
     align-items: center;
     background-color: green;
     border-radius: 10px;
-    padding: 5px 10px;
+    padding: 0.3125rem 0.625rem 0.3125rem 0.625rem;
     border: 1px solid black;
     font-size: 1.3rem;
     gap: 3px;
