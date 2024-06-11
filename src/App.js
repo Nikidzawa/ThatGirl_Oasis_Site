@@ -36,25 +36,23 @@ function App() {
 
     useEffect(() => {
         getUser();
-        async function getUser() {
-            updateCartData()
-            const tg = window.Telegram.WebApp;
-            const user = tg.initDataUnsafe.user;
-            if (user) {
-                const userData = await UsersAPI.getUser(user.id);
-                if (userData.ok) {
-                    const user = await userData.json();
-                    setUser(user);
-                    getUserStatus(user)
-                }
-            }
-            localStorage.setItem("userId", user ? user.id : 0);
-            setLoading(false);
-        }
+        updateCartData()
 
-        async function getUserStatus (user) {
-            const status = await RolesAPI.getRole(user.id);
-            setUserStatus(status);
+        async function getUser() {
+            try {
+                const tg = window.Telegram.WebApp;
+                const user = tg.initDataUnsafe.user;
+                if (user) {
+                    const userData = await UsersAPI.getUser(user.id);
+                    if (userData.ok) {
+                        setUser(await userData.json());
+                        setUserStatus(await RolesAPI.getRole(user.id));
+                    }
+                }
+            } finally {
+                localStorage.setItem("userId", user ? user.id : 0);
+                setLoading(false);
+            }
         }
 
         async function updateCartData () {
@@ -81,13 +79,11 @@ function App() {
         <div>
             {loading ? <LoaderWrapper><Loading circleColor={"#333"}/></LoaderWrapper> :
                 <div>
-                    {/*//TODO-СТАТУС*/}
-                    <Header userStatus={"creator"}/>
+                    <Header userStatus={userStatus}/>
                     <div style={{paddingTop: "70px"}}>
                         <Routes>
                             <Route path={"/events"} element={<EventsPage user={user}/>} />
-                            {/*//TODO-СТАТУС*/}
-                            <Route path={"/events/:id"} element={<EventPage role={"creator"}/>} />
+                            <Route path={"/events/:id"} element={<EventPage role={userStatus}/>} />
                             <Route path={"/events/edit/:id"} element={<EditEventPage/>}></Route>
                             <Route path={"/createEvents"} element={<CreateEventPage user={user}/>} />
                             <Route path={"/shopping_cart"} element={<ShoppingCartPage eventCarts={eventsCart} setEventCarts={setEventsCart}/>} />
