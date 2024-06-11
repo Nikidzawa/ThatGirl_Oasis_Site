@@ -41,27 +41,29 @@ function App() {
         async function getUser() {
             try {
                 const tg = window.Telegram.WebApp;
-                const user = tg.initDataUnsafe.user;
-                if (user) {
-                    fetchUser();
-                    fetchStatus();
+                const tgUser = tg.initDataUnsafe.user;
+                if (tgUser) {
+                    fetchUser(tgUser);
+                    fetchStatus(tgUser);
                 }
             } finally {
                 localStorage.setItem("userId", user ? user.id : 0);
                 setLoading(false);
             }
 
-            async function fetchUser() {
-                const responseUser = await UsersAPI.getUser(user.id);
+            async function fetchUser(tgUser) {
+                const responseUser = await UsersAPI.getUser(tgUser.id);
                 if (responseUser.ok) {
-                    setUser(await responseUser.json());
+                    const user = await responseUser.json();
+                    setUser(user);
                 }
             }
 
-            async function fetchStatus() {
-                const responseStatus = await RolesAPI.getRole(user.id);
+            async function fetchStatus(tgUser) {
+                const responseStatus = await RolesAPI.getRole(tgUser.id);
                 if (responseStatus.ok) {
-                    setUserStatus(await responseStatus.text());
+                    const status = await responseStatus.text();
+                    setUserStatus(status);
                 }
             }
         }
