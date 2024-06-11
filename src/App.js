@@ -39,15 +39,17 @@ function App() {
         updateCartData()
 
         async function getUser() {
+            let tg;
+            let tgUser;
             try {
-                const tg = window.Telegram.WebApp;
-                const tgUser = tg.initDataUnsafe.user;
+                tg = window.Telegram.WebApp;
+                tgUser = tg.initDataUnsafe.user;
                 if (tgUser) {
                     fetchUser(tgUser);
                     fetchStatus(tgUser);
                 }
             } finally {
-                localStorage.setItem("userId", user ? user.id : 0);
+                localStorage.setItem("userId", tgUser ? tgUser.id : 0);
                 setLoading(false);
             }
 
