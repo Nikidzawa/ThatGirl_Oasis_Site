@@ -135,7 +135,7 @@ export default function CreateEventPage() {
     const [eventTypeValidation, setEventTypeValidation] = useState(false);
     const [mainImageValidation, setMainImageValidation] = useState(false);
 
-    const [exception, setException] = useState(false);
+    const [exception, setException] = useState("");
     const [success, setSuccess] = useState(false);
 
     const [cashedEvent, setCashedEvent] = useState()
@@ -158,34 +158,59 @@ export default function CreateEventPage() {
         }
         try {
             const response = await EventsAPI.postEvent(eventObject);
-            if (response.ok) {
-                eventObject = await response.json();
-            } else {
-                throw new Error(response.status)
+            if (!response.ok) {
+                const responseJson = await response.json();
+                throw new Error(`Ошибка при сохарнении мероприятия: ${response.status} - ${responseJson.message}`);
             }
+
+            eventObject = await response.json();
             eventId = eventObject.id;
-            await FireBase.deleteFolder(eventId);
-            const mainImageHref = await FireBase.uploadImage(base64ToFile(image, `mainImage${eventId}`), eventId);
-            eventObject.mainImage = { href: mainImageHref };
+
+            try {
+                await FireBase.deleteFolder(eventId);
+            } catch (firebaseError) {
+                console.error("Ошибка при удалении папки в Firebase: ", firebaseError);
+                throw firebaseError;
+            }
+
+            try {
+                const mainImageHref = await FireBase.uploadImage(base64ToFile(image, `mainImage${eventId}`), eventId);
+                eventObject.mainImage = { href: mainImageHref };
+            } catch (firebaseError) {
+                console.error("Ошибка при загрузке главного изображения: ", firebaseError);
+                throw firebaseError;
+            }
 
             if (images && images.length > 0) {
-                const imagesPromises = images.map((singleImage, index) => 
-                    FireBase.uploadImage(base64ToFile(singleImage, `otherImage${eventId}:${index}`), eventId));
-                const imagesHrefs = await Promise.all(imagesPromises);
-                eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
+                try {
+                    const imagesPromises = images.map((singleImage, index) =>
+                        FireBase.uploadImage(base64ToFile(singleImage, `otherImage${eventId}:${index}`), eventId)
+                    );
+                    const imagesHrefs = await Promise.all(imagesPromises);
+                    eventObject.eventImages = images.map((image, index) => ({ href: imagesHrefs[index] }));
+                } catch (firebaseError) {
+                    console.error("Ошибка при загрузке дополнительных изображений: ", firebaseError);
+                    throw firebaseError;
+                }
             }
 
             const response2 = await EventsAPI.setImages(eventObject);
-            if (response2.ok) {
-                setSuccess(true)
-            } else {
-                throw new Error(response2.status);
+            if (!response2.ok) {
+                const responseJson = await response.json();
+                throw new Error(`Ошибка при сохранении изображения: ${response2.status} - ${responseJson.message}`);
             }
+
+            setSuccess(true);
+
         } catch (error) {
             if (eventId) {
-                await FireBase.deleteFolder(eventId);
+                try {
+                    await FireBase.deleteFolder(eventId);
+                } catch (firebaseError) {
+                    console.error("Ошибка при повторном удалении папки в Firebase: ", firebaseError);
+                }
             }
-            setException(true);
+            setException(error);
             console.error("Ошибка при отправке данных: ", error);
         }
     }
@@ -222,7 +247,7 @@ export default function CreateEventPage() {
     async function createEvent () {
         setLoading(true);
         setSuccess(false);
-        setException(false);
+        setException("");
         setInputsError(false);
         if (validation()) {
             await sendData();
@@ -460,7 +485,7 @@ export default function CreateEventPage() {
             }
             <div style={{textAlign: "center", marginTop: "20px"}}>
                 {
-                    exception && <div style={{color: "red", padding: "10px"}}>Неизвестная ошибка сервера</div>
+                    exception && <div style={{color: "red", padding: "10px"}}>Ошибка сервера: {exception}</div>
                 }
                 {
                     success && <div style={{color: "greenyellow", padding: "10px"}}>Успешно создано</div>

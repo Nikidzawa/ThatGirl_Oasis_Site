@@ -43,7 +43,7 @@ const HeaderContent = styled.div`
     font-weight: bold;
     height: 100%;
     margin: 0 auto;
-    max-width: 1000px;
+    max-width: 1200px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -116,6 +116,25 @@ const LinkTextAdmin = styled.div`
     font-size: 20px;
 `
 
+const HeaderPagesLine = styled.div`
+    display: flex;
+    gap: 25px;
+    font-size: 19px;
+`
+
+const InlinePageLink = styled(Link)`
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #562626;
+
+    &.active {
+        border-bottom: 3px green solid;
+        border-radius: 2px;
+    }
+`
+
 const Circle = styled.div`
     display: ${props => props.count > 0 ? 'flex' : 'none'};;
     position: absolute;
@@ -137,6 +156,8 @@ export default function Header ({userStatus}) {
     const [menuVisible, setMenuVisible] = useState(false);
     const [buttonSelected, setButton] = useState("events");
     const [cartItemsCount, setCartItemsCount] = useState(0)
+    const [isPhone, setIsPhone] = useState(false);
+    const [isLoading, setLoading] = useState(true);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -163,6 +184,11 @@ export default function Header ({userStatus}) {
         }
     }, [location.pathname]);
 
+    useEffect(() => {
+        window.innerWidth > 600 ? setIsPhone(false) : setIsPhone(true);
+        setLoading(false);
+    }, [])
+
     function handleMenu() {
         setMenuVisible(!menuVisible);
     }
@@ -172,16 +198,27 @@ export default function Header ({userStatus}) {
     }
 
     return (
-        <header>
-            <HeaderContainer>
-                <HeaderContent>
-                    <SiteName onClick={goToEventsPage}>
-                        <img src={LOGO} width={"40px"}/>
-                        <div>THAT GIRL OASIS</div>
-                    </SiteName>
-                    <MenuButton onClick={handleMenu} src={menuVisible ? CLOSE_BUTTON : MENU_BUTTON_IMAGE}/>
-                </HeaderContent>
-            </HeaderContainer>
+        <>
+            <header>
+                <HeaderContainer>
+                    <HeaderContent>
+                        <SiteName onClick={goToEventsPage}>
+                            <img src={LOGO} width={"40px"}/>
+                            <div>THAT GIRL OASIS</div>
+                        </SiteName>
+                        {
+                            !isLoading &&
+                            isPhone ? <MenuButton onClick={handleMenu} src={menuVisible ? CLOSE_BUTTON : MENU_BUTTON_IMAGE}/> :
+                            <HeaderPagesLine>
+                                <InlinePageLink to={"/events"} className={buttonSelected === "events" ? "active" : ""}>Мероприятия</InlinePageLink>
+                                <InlinePageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>корзина</InlinePageLink>
+                                <InlinePageLink to={"/aboutUs"} className={buttonSelected === "aboutUs" ? "active" : ""}>о нас</InlinePageLink>
+                            </HeaderPagesLine>
+                        }
+                    </HeaderContent>
+                </HeaderContainer>
+            </header>
+
             <ModalWindow visible={menuVisible} onClick={() => setMenuVisible(false)}>
                 <ModalWindowContent>
                     <PageLink to={"/events"} className={buttonSelected === "events" ? "active" : ""}>
@@ -189,7 +226,9 @@ export default function Header ({userStatus}) {
                         <LinkText>мероприятия</LinkText>
                     </PageLink>
                     <PageLink to={"shopping_cart"} className={buttonSelected === "shopping_cart" ? "active" : ""}>
-                        <LinkImage onClick={handleMenu} src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE} value={"155px"}/>
+                        <LinkImage onClick={handleMenu}
+                                   src={buttonSelected === "shopping_cart" ? GREEN_SHOPPING_CART_IMAGE : SHOPPING_CART_IMAGE}
+                                   value={"155px"}/>
                         <LinkText>корзина</LinkText>
                         <Circle count={cartItemsCount}>{cartItemsCount}</Circle>
                     </PageLink>
@@ -201,8 +240,11 @@ export default function Header ({userStatus}) {
                         <div>
                             <div style={{marginBottom: "20px"}}>---------Функции Администратора---------</div>
                             <ModalWindowContent>
-                                <PageLink to={"/createEvents"} className={buttonSelected === "createEvents" ? "active" : ""}>
-                                    <LinkImage src={buttonSelected === "createEvents" ? GREEN_ADD_EVENT_IMAGE : ADD_EVENT_IMAGE} value={"255px"}/>
+                                <PageLink to={"/createEvents"}
+                                          className={buttonSelected === "createEvents" ? "active" : ""}>
+                                    <LinkImage
+                                        src={buttonSelected === "createEvents" ? GREEN_ADD_EVENT_IMAGE : ADD_EVENT_IMAGE}
+                                        value={"255px"}/>
                                     <LinkTextAdmin>Создать мероприятие</LinkTextAdmin>
                                 </PageLink>
                             </ModalWindowContent>
@@ -210,6 +252,6 @@ export default function Header ({userStatus}) {
                     }
                 </ModalWindowContent>
             </ModalWindow>
-        </header>
+        </>
     )
 }

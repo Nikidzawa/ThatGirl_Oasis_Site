@@ -19,7 +19,6 @@ const LoadingWrapper = styled.div`
     justify-content: center;
     align-items: center;
     position: fixed;
-    background: rgba(0, 0, 0, 0.6);
     top: 0;
     right: 0;
     bottom: 0;
@@ -45,8 +44,7 @@ const Description = styled.div`
     gap: 0.3125rem;
 `;
 
-const BLock = styled.div`
-    margin-top: 1.5625rem;
+const Block = styled.div`
     background: rgba(0, 0, 0, 0.5);
     padding: 1.25rem;
     border-radius: 1.25rem;
@@ -144,12 +142,20 @@ const Img = styled.img`
 `;
 
 const SelectedImage = styled.img`
-    max-width: 37.5rem;
-    width: 100%;
-    min-height: 15.625rem;
-    max-height: 37.5rem;
-    height: auto;
+    width: 37.5rem;
+    height: 37.5rem;
+    flex-shrink: 0;
+    
+    @media screen and (max-width: 600px) {
+        width: 100%;
+        min-height: 15.625rem;
+        height: auto;
+    }
 `;
+
+const Separator = styled.div`
+    margin-top: 1.5625rem;
+`
 
 export default function EventPage ({role}) {
     const { id } = useParams();
@@ -169,11 +175,13 @@ export default function EventPage ({role}) {
     const [eventContainsInCart, setEventContainsInCart] = useState(false);
 
     const [favourite, setFavourite] = useState(false);
+    const [isPhone, setIsPhone] = useState(false)
     const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
         getEventData();
+
         async function getEventData () {
                 const response = await EventsAPI.getEventById(id);
                 if (response.ok) {
@@ -182,6 +190,7 @@ export default function EventPage ({role}) {
                     setSelectedImage(eventData.mainImage);
                     checkEventInCart(eventData.id);
                     checkFavourite(eventData.id);
+                    getScreenWidth();
                 } else {
                     navigate("/404")
                     console.error("Мероприятие не найдено")
@@ -202,6 +211,10 @@ export default function EventPage ({role}) {
             } else {
                 setFavourite(false);
             }
+        }
+
+        async function getScreenWidth () {
+            window.innerWidth > 600 ? setIsPhone(false) : setIsPhone(true)
         }
     }, []);
 
@@ -300,7 +313,25 @@ export default function EventPage ({role}) {
                 <MainContainer>
                     <div>
                         {
-                            selectedImage && <SelectedImage src={selectedImage.href} alt={"Фотография"}/>
+                            <div style={{display: "flex", gap: "10px"}}>
+                                {
+                                    selectedImage && <SelectedImage src={selectedImage.href} alt={"Фотография"}/>
+                                }
+                                {
+                                    !isPhone &&
+                                    <>
+                                    {
+                                        <Block>
+                                            <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                                                <img width={"30px"} src={ARTICLE_IMG}/>
+                                                <Title>Описание</Title>
+                                            </div>
+                                            <Description>{event.fullDescription}</Description>
+                                        </Block>
+                                    }
+                                    </>
+                                }
+                            </div>
                         }
                         <Images>
                             {event.eventImages && event.eventImages.length > 0 &&
@@ -322,14 +353,21 @@ export default function EventPage ({role}) {
                             }
                         </Images>
                     </div>
-                    <BLock>
-                        <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
-                            <img width={"30px"} src={ARTICLE_IMG}/>
-                            <Title>Описание</Title>
-                        </div>
-                        <Description>{event.fullDescription}</Description>
-                    </BLock>
-                    <BLock style={{marginBottom: "20px"}}>
+                    <Separator/>
+                    {
+                        isPhone &&
+                        <>
+                            <Block>
+                                <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
+                                    <img width={"30px"} src={ARTICLE_IMG}/>
+                                    <Title>Описание</Title>
+                                </div>
+                                <Description>{event.fullDescription}</Description>
+                            </Block>
+                            <Separator/>
+                        </>
+                    }
+                    <Block style={{marginBottom: "20px"}}>
                         <div style={{display: "flex", alignItems: "center", gap: "8px"}}>
                             <img width={"30px"} src={LOCATION_IMG}/>
                             <Title>Место и время</Title>
@@ -339,7 +377,7 @@ export default function EventPage ({role}) {
                             <div>{DateFormatter.format(event.date)} в {event.time} по МСК</div>
                             <div>+{event.contactPhone}</div>
                         </Description>
-                    </BLock>
+                    </Block>
                 </MainContainer>
                 <ButtonsContainer>
                     <ModalWindow visible={isOpen}>Добавлено ✨</ModalWindow>

@@ -10,7 +10,7 @@ import DateFormatter from "../../../commonComponents/DateFormatter";
 import MONEY_PNG from "../../../img/money2.png"
 
 const Card = styled.div`
-    height: 450px;
+    height: 453px;
     width: 320px;
     cursor: pointer;
     overflow: hidden;
@@ -35,12 +35,13 @@ const Card = styled.div`
 
 const Image = styled.img`
     width: 100%;
-    height: 50%;
+    height: 49%;
     border-radius: 20px 20px 0 0;
     object-fit: cover;
 `;
 
 const Content = styled.div`
+    position: relative;
     padding: 10px;
     flex-grow: 1;
     display: flex;
@@ -50,7 +51,7 @@ const Content = styled.div`
 const Name = styled.div`
     font-size: 1.375rem;
     font-weight: bold;
-    padding: 10px 0 2px 0;
+    padding: 8px 0 2px 0;
 
     @media screen and (max-width: 360px) {
         font-size: 1.125rem;
@@ -60,10 +61,11 @@ const Name = styled.div`
 
 const Location = styled.div`
     font-size: 0.9375rem;
-    padding-top: 5px;
+    padding-top: 2px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding-right: 5px;
 
     @media screen and (max-width: 360px) {
         font-size: 0.8125rem;
@@ -97,7 +99,12 @@ const Date = styled.div`
 `;
 
 const StarAndCostContainer = styled.div`
+    position: absolute;
+    bottom: 8px;
+    right: 9px;
+    left: 9px;
     display: flex;
+    flex: 1;
     justify-content: space-between;
     align-items: center;
 `;
@@ -111,7 +118,7 @@ const Cost = styled.div`
     text-align: center;
     align-items: center;
     
-    @media screen and (max-width: 360px) {
+    @media screen and (max-width: 370px) {
         font-size: 1.375rem;
     }
 `;
@@ -127,8 +134,9 @@ const StarContainer = styled.div`
     font-size: 1.3rem;
     gap: 3px;
 
-    @media screen and (max-width: 360px) {
-        font-size: 1.375rem;
+    @media screen and (max-width: 370px) {
+        padding: 0.25rem 0.55rem 0.25rem 0.55rem;
+        font-size: 1.2rem;
     }
 `;
 

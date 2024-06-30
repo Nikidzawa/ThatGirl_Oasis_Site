@@ -10,9 +10,4 @@ export default class DateFormatter {
 
         return day + ' ' + months[month - 1];
     }
-    static extraForm(dateString) {
-        const dayAndMonth = this.format(dateString);
-        const year = dateString.split("-")[0];
-        return `${dayAndMonth} ${year} год`;
-    }
 }

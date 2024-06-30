@@ -36,7 +36,7 @@ const ButtonsContainer = styled.div`
     align-items: center;
     border-radius: 20px;
     height: 70px;
-    max-width: 1000px;
+    max-width: 1200px;
 `
 const Button = styled.button`
     background-color: green;
