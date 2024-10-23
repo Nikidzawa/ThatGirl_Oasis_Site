@@ -1,8 +1,6 @@
 # That Girl Oasis: Site
 
-Часть коммерческого FullStack проекта That Girl Oasis - сайт для регистрации на офлайн мероприятия.
-
-Вторая часть проекта - это [телеграм бот для знакомств](https://github.com/Nikidzawa/That_Girls_Oasis_TeleBot)
+ThatGirl Oasis - сайт для регистрации на офлайн мероприятия
 
 ## Основные функции
 
